@@ -5,6 +5,6 @@
 	<title>LOGIN</title>
 </head>
 <body>
-	
+	LOGIN ADMIN
 </body>
 </html>
