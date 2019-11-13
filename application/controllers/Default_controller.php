@@ -57,6 +57,245 @@ class Default_controller extends CI_Controller {
 	
 	//GET DATA
 
+	//get all data
+	//note: ambil semua data dari database tanpa filter
+	//parameter: tidak untuk frontend, kosongi parameternya
+	public function get_all_admin($return_var = NULL){
+		$data = $this->Default_model->get_data_admin();
+		if (empty($data)){
+			$data = [];
+		}else{
+			foreach ($data as &$row){
+				unset($row['password']);
+			}
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	public function get_all_owner($return_var = NULL){
+		$data = $this->Default_model->get_data_owner();
+		if (empty($data)){
+			$data = [];
+		}else{
+			foreach ($data as &$row){
+				unset($row['password']);
+			}
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	public function get_all_hotel($return_var = NULL){
+		$data = $this->Default_model->get_data_hotel();
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	public function get_all_receptionist($return_var = NULL){
+		$data = $this->Default_model->get_data_receptionist();
+		if (empty($data)){
+			$data = [];
+		}else{
+			foreach ($data as &$row){
+				unset($row['password']);
+			}
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	public function get_all_kamar($return_var = NULL){
+		$data = $this->Default_model->get_data_kamar();
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	public function get_all_order($return_var = NULL){
+		$data = $this->Default_model->get_data_order();
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	//get by id
+	//parameter: username atau id
+	//note: ambil data dari database berdasarkan id / username
+	public function get_admin_by_id($id, $return_var = NULL){
+		$filter = array('username_admin'=> $id);
+		$data = $this->Default_model->get_data_admin($filter);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	public function get_owner_by_id($id, $return_var = NULL){
+		$filter = array('username_owner'=> $id);
+		$data = $this->Default_model->get_data_owner($filter);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	public function get_hotel_by_id($id, $return_var = NULL){
+		$filter = array('id_hotel'=> $id);
+		$data = $this->Default_model->get_data_hotel($filter);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	public function get_receptionist_by_id($id, $return_var = NULL){
+		$filter = array('username_receptionist'=> $id);
+		$data = $this->Default_model->get_data_receptionist($filter);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	public function get_kamar_by_id($id, $return_var = NULL){
+		$filter = array('id_kamar'=> $id);
+		$data = $this->Default_model->get_data_kamar($filter);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	public function get_order_by_id($id, $return_var = NULL){
+		$filter = array('id_order'=> $id);
+		$data = $this->Default_model->get_data_order($filter);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	//get hotel by owner
+	//parameter: username owner
+	//note: ambil data hotel berdasarkan owner
+	public function get_hotel_by_owner($id, $return_var = NULL){
+		$filter = array('username_owner'=> $id);
+		$data = $this->Default_model->get_data_hotel($filter);
+		if (empty($data)){
+			$data = [];
+		}else{
+			foreach ($data as &$row){
+				unset($row['password']);
+			}
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	//get kamar by hotel
+	//parameter: id hotel
+	//note: ambil data kamar berdasarkan hotel
+	public function get_kamar_by_hotel($id, $return_var = NULL){
+		$filter = array('id_hotel'=> $id);
+		$data = $this->Default_model->get_data_kamar($filter);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	//get receptionist by hotel
+	//parameter: id hotel
+	//note: ambil data receptionist berdasarkan hotel
+	public function get_receptionist_by_hotel($id, $return_var = NULL){
+		$filter = array('id_hotel'=> $id);
+		$data = $this->Default_model->get_data_receptionist($filter);
+		if (empty($data)){
+			$data = [];
+		}else{
+			foreach ($data as &$row){
+				unset($row['password']);
+			}
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	//get order by hotel
+	//parameter: id hotel
+	//note: ambil data order berdasarkan hotel
+	public function get_order_by_hotel($id, $return_var = NULL){
+		$filter = array('id_hotel'=> $id);
+		$data = $this->Default_model->get_data_order($filter);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
 	
 
 	//INSERT
@@ -74,8 +313,7 @@ class Default_controller extends CI_Controller {
 	//OTHER
 
 	//Login
-	//note: login dengan request POST seperti di bawah. 
-	//Melakukan pengecekan login admin dulu, jika gagal, pengecekan login user yang aktif
+	//note: login dengan request POST seperti di bawah.
 	//Output: berhasil login / gagal login
 	public function cekloginadmin(){
 		$username = $this->input->post('username');
@@ -145,7 +383,6 @@ class Default_controller extends CI_Controller {
 	public function checkcookieadmin(){
 		$this->load->helper('cookie');
 		if ($this->input->cookie('adminCookie',true)!=NULL) {
-			// echo $this->input->cookie('adminCookie'); //to output cookie
 			return true;
 		}else{
 			return false;
@@ -155,7 +392,6 @@ class Default_controller extends CI_Controller {
 	public function checkcookieowner(){
 		$this->load->helper('cookie');
 		if ($this->input->cookie('ownerCookie',true)!=NULL) {
-			// echo $this->input->cookie('ownerCookie'); //to output cookie
 			return true;
 		}else{
 			return false;
@@ -165,7 +401,6 @@ class Default_controller extends CI_Controller {
 	public function checkcookiereceptionist(){
 		$this->load->helper('cookie');
 		if ($this->input->cookie('receptionistCookie',true)!=NULL) {
-			// echo $this->input->cookie('receptionistCookie'); //to output cookie
 			return true;
 		}else{
 			return false;
@@ -196,19 +431,23 @@ class Default_controller extends CI_Controller {
 	}
 
 	//untuk membuat cookie
+	//parameter: name, value dan expire cookie
 	//output: cookie created
-	public function create_cookie($name = NULL, $value = NULL){
+	public function create_cookie($name = NULL, $value = NULL, $expire = NULL){
 		if ($name == NULL) {
 			$name = $this->input->post('name');
 		}
 		if ($value == NULL) {
 			$value = $this->input->post('value');
 		}
+		if ($expire == NULL) {
+			$expire = 0;
+		}
 		$this->load->helper('cookie');
 		$cookie= array(
 			'name'   => $name,
 			'value'  => $value,
-			'expire' => 0
+			'expire' => $expire
 		);
 		$this->input->set_cookie($cookie);
 		echo "cookie created";
