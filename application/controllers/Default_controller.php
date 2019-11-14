@@ -66,7 +66,7 @@ class Default_controller extends CI_Controller {
 			$data = [];
 		}else{
 			foreach ($data as &$row){
-				unset($row['password']);
+				unset($row['password_admin']);
 			}
 		}
 		if ($return_var == true) {
@@ -82,7 +82,7 @@ class Default_controller extends CI_Controller {
 			$data = [];
 		}else{
 			foreach ($data as &$row){
-				unset($row['password']);
+				unset($row['password_owner']);
 			}
 		}
 		if ($return_var == true) {
@@ -96,6 +96,10 @@ class Default_controller extends CI_Controller {
 		$data = $this->Default_model->get_data_hotel();
 		if (empty($data)){
 			$data = [];
+		}else{
+			foreach ($data as &$row){
+				unset($row['password_owner']);
+			}
 		}
 		if ($return_var == true) {
 			return $data;
@@ -110,7 +114,7 @@ class Default_controller extends CI_Controller {
 			$data = [];
 		}else{
 			foreach ($data as &$row){
-				unset($row['password']);
+				unset($row['password_receptionist']);
 			}
 		}
 		if ($return_var == true) {
@@ -152,6 +156,10 @@ class Default_controller extends CI_Controller {
 		$data = $this->Default_model->get_data_admin($filter);
 		if (empty($data)){
 			$data = [];
+		}else{
+			foreach ($data as &$row){
+				unset($row['password_admin']);
+			}
 		}
 		if ($return_var == true) {
 			return $data;
@@ -165,6 +173,10 @@ class Default_controller extends CI_Controller {
 		$data = $this->Default_model->get_data_owner($filter);
 		if (empty($data)){
 			$data = [];
+		}else{
+			foreach ($data as &$row){
+				unset($row['password_owner']);
+			}
 		}
 		if ($return_var == true) {
 			return $data;
@@ -178,6 +190,10 @@ class Default_controller extends CI_Controller {
 		$data = $this->Default_model->get_data_hotel($filter);
 		if (empty($data)){
 			$data = [];
+		}else{
+			foreach ($data as &$row){
+				unset($row['password_owner']);
+			}
 		}
 		if ($return_var == true) {
 			return $data;
@@ -191,6 +207,10 @@ class Default_controller extends CI_Controller {
 		$data = $this->Default_model->get_data_receptionist($filter);
 		if (empty($data)){
 			$data = [];
+		}else{
+			foreach ($data as &$row){
+				unset($row['password_receptionist']);
+			}
 		}
 		if ($return_var == true) {
 			return $data;
@@ -229,13 +249,13 @@ class Default_controller extends CI_Controller {
 	//parameter: username owner
 	//note: ambil data hotel berdasarkan owner
 	public function get_hotel_by_owner($id, $return_var = NULL){
-		$filter = array('username_owner'=> $id);
+		$filter = array('hotel.username_owner'=> $id);
 		$data = $this->Default_model->get_data_hotel($filter);
 		if (empty($data)){
 			$data = [];
 		}else{
 			foreach ($data as &$row){
-				unset($row['password']);
+				unset($row['password_owner']);
 			}
 		}
 		if ($return_var == true) {
@@ -249,7 +269,7 @@ class Default_controller extends CI_Controller {
 	//parameter: id hotel
 	//note: ambil data kamar berdasarkan hotel
 	public function get_kamar_by_hotel($id, $return_var = NULL){
-		$filter = array('id_hotel'=> $id);
+		$filter = array('kamar.id_hotel'=> $id);
 		$data = $this->Default_model->get_data_kamar($filter);
 		if (empty($data)){
 			$data = [];
@@ -265,13 +285,13 @@ class Default_controller extends CI_Controller {
 	//parameter: id hotel
 	//note: ambil data receptionist berdasarkan hotel
 	public function get_receptionist_by_hotel($id, $return_var = NULL){
-		$filter = array('id_hotel'=> $id);
+		$filter = array('receptionist.id_hotel'=> $id);
 		$data = $this->Default_model->get_data_receptionist($filter);
 		if (empty($data)){
 			$data = [];
 		}else{
 			foreach ($data as &$row){
-				unset($row['password']);
+				unset($row['password_receptionist']);
 			}
 		}
 		if ($return_var == true) {
@@ -285,7 +305,7 @@ class Default_controller extends CI_Controller {
 	//parameter: id hotel
 	//note: ambil data order berdasarkan hotel
 	public function get_order_by_hotel($id, $return_var = NULL){
-		$filter = array('id_hotel'=> $id);
+		$filter = array('order.id_hotel'=> $id);
 		$data = $this->Default_model->get_data_order($filter);
 		if (empty($data)){
 			$data = [];
