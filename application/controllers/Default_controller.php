@@ -320,6 +320,134 @@ class Default_controller extends CI_Controller {
 
 	//INSERT
 
+	//Tambah data admin
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function insert_admin(){
+		if ($this->checkcookieadmin()) {
+			$data = array(
+				'username_admin' => $this->input->post('username'),
+				'password_admin' => md5($this->input->post('password'))
+			);
+			$insertStatus = $this->Default_model->insert_admin($data);
+			echo $insertStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//Tambah data owner
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function insert_owner(){
+		if ($this->checkcookieadmin()) {
+			$data = array(
+				'username_owner' => $this->input->post('username'),
+				'password_owner' => md5($this->input->post('password')),
+				'nama_owner' => $this->input->post('nama'),
+				'telepon_owner' => $this->input->post('telepon')
+			);
+			$insertStatus = $this->Default_model->insert_owner($data);
+			echo $insertStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//Tambah data hotel
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function insert_hotel(){
+		if ($this->checkcookieadmin()) {
+			$data = array(
+				'id_hotel' => $this->input->post('id_hotel'),
+				'username_owner' => $this->input->post('username_owner'),
+				'nama_hotel' => $this->input->post('nama'),
+				'alamat_hotel' => $this->input->post('alamat'),
+				'telepon_hotel' => $this->input->post('telepon')
+			);
+			$insertStatus = $this->Default_model->insert_hotel($data);
+			echo $insertStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//Tambah data receptionist
+	//note: API hanya bisa diakses saat ada cookie admin atau cookie owner
+	//output: success/failed/access denied
+	public function insert_receptionist(){
+		if ($this->checkcookieadmin() || $this->checkcookieowner()) {
+			$data = array(
+				'username_receptionist' => $this->input->post('username'),
+				'password_receptionist' => $this->input->post('password'),
+				'id_hotel' => $this->input->post('id_hotel'),
+				'nama_receptionist' => $this->input->post('nama'),
+				'telepon_receptionist' => $this->input->post('telepon')
+			);
+			$insertStatus = $this->Default_model->insert_receptionist($data);
+			echo $insertStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//Tambah data kamar
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function insert_kamar(){
+		if ($this->checkcookieadmin()) {
+			$data = array(
+				'id_kamar' => $this->input->post('id_kamar'),
+				'id_hotel' => $this->input->post('id_hotel'),
+				'nama_kamar' => $this->input->post('nama'),
+				'jumlah_kamar' => $this->input->post('jumlah'),
+				'max_guest' => $this->input->post('max_guest')
+			);
+			$insertStatus = $this->Default_model->insert_kamar($data);
+			echo $insertStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//Tambah data order
+	//note: API hanya bisa diakses saat ada cookie admin atau owner atau receptionist
+	//output: success/failed/access denied
+	public function insert_order(){
+		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
+			date_default_timezone_set('Asia/Jakarta');
+			$data = array(
+				'id_hotel' => $this->input->post('id_hotel'),
+				'id_kamar' => $this->input->post('id_kamar'),
+				'nama_pemesan' => $this->input->post('nama_pemesan'),
+				'telepon_pemesan' => $this->input->post('telepon_pemesan'),
+				'email_pemesan' => $this->input->post('email_pemesan'),
+				'no_ktp_pemesan' => $this->input->post('no_ktp_pemesan'),
+				'tanggal_check_in' => date("Y-m-d", strtotime($this->input->post('tanggal_check_in'))),
+				'tanggal_check_out' => date("Y-m-d", strtotime($this->input->post('tanggal_check_out'))),
+				'jumlah_guest' => $this->input->post('jumlah_guest'),
+				'jumlah_room' => $this->input->post('jumlah_room'),
+				'max_guest' => $this->input->post('max_guest'),
+				'nama_kamar' => $this->input->post('nama_kamar'),
+				'nama_hotel' => $this->input->post('nama_hotel'),
+				'alamat_hotel' => $this->input->post('alamat_hotel'),
+				'telepon_hotel' => $this->input->post('telepon_hotel'),
+				'request_jam_check_in_awal' => $this->input->post('request_jam_check_in_awal'),
+				'request_jam_check_in_akhir' => $this->input->post('request_jam_check_in_akhir'),
+				'request_breakfast' => $this->input->post('request_breakfast'),
+				'request_rent_car' => $this->input->post('request_rent_car'),
+				'total_harga' => $this->input->post('total_harga'),
+				'tanggal_order' => date('Y-m-d'),
+				'sumber_order' => $this->input->post('sumber_order'),
+				'status_order' => "upcoming"
+			);
+			$insertStatus = $this->Default_model->insert_order($data);
+			echo $insertStatus;
+		}else{
+			echo "access denied";
+		}
+	}
 	
 
 	//UPDATE
