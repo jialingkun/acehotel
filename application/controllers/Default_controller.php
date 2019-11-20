@@ -657,6 +657,77 @@ class Default_controller extends CI_Controller {
 
 	//DELETE
 
+	//Delete admin
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function delete_admin($id){
+		if ($this->checkcookieadmin()) {
+			$deleteStatus = $this->Default_model->delete_admin($id);
+			echo $deleteStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//Delete owner
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function delete_owner($id){
+		if ($this->checkcookieadmin()) {
+			$deleteStatus = $this->Default_model->delete_owner($id);
+			echo $deleteStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//Delete hotel
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function delete_hotel($id){
+		if ($this->checkcookieadmin()) {
+			$deleteStatus = $this->Default_model->delete_hotel($id);
+			echo $deleteStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//Delete receptionist
+	//note: API hanya bisa diakses saat ada cookie admin atau owner
+	//output: success/failed/access denied
+	public function delete_receptionist($id){
+		if ($this->checkcookieadmin() || $this->checkcookieowner()) {
+			$deleteStatus = $this->Default_model->delete_receptionist($id);
+			echo $deleteStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//Delete kamar
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function delete_kamar($id){
+		if ($this->checkcookieadmin()) {
+			$deleteStatus = $this->Default_model->delete_kamar($id);
+			echo $deleteStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//Delete order
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function delete_order($id){
+		if ($this->checkcookieadmin()) {
+			$deleteStatus = $this->Default_model->delete_order($id);
+			echo $deleteStatus;
+		}else{
+			echo "access denied";
+		}
+	}
 
 
 	//OTHER
