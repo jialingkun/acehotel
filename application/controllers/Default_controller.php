@@ -137,7 +137,7 @@ class Default_controller extends CI_Controller {
 	}
 
 	public function get_all_order($return_var = NULL){
-		$data = $this->Default_model->get_data_order();
+		$data = $this->Default_model->get_data_order(NULL,'id_order');
 		if (empty($data)){
 			$data = [];
 		}
@@ -305,8 +305,56 @@ class Default_controller extends CI_Controller {
 	//parameter: id hotel
 	//note: ambil data order berdasarkan hotel
 	public function get_order_by_hotel($id, $return_var = NULL){
-		$filter = array('order.id_hotel'=> $id);
-		$data = $this->Default_model->get_data_order($filter);
+		$filter = array('orders.id_hotel'=> $id);
+		$data = $this->Default_model->get_data_order($filter,'id_order');
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	//get order hotel upcoming
+	//parameter: id hotel
+	//note: ambil data order upcoming berdasarkan hotel
+	public function get_order_by_hotel_upcoming($id, $return_var = NULL){
+		$filter = array('orders.id_hotel'=> $id, 'orders.status_order'=> 'upcoming');
+		$data = $this->Default_model->get_data_order($filter, 'tanggal_check_in');
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	//get order hotel inhouse
+	//parameter: id hotel
+	//note: ambil data order inhouse berdasarkan hotel
+	public function get_order_by_hotel_inhouse($id, $return_var = NULL){
+		$filter = array('orders.id_hotel'=> $id, 'orders.status_order'=> 'inhouse');
+		$data = $this->Default_model->get_data_order($filter, 'tanggal_check_out');
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	//get order hotel completed
+	//parameter: id hotel
+	//note: ambil data order completed berdasarkan hotel
+	public function get_order_by_hotel_completed($id, $return_var = NULL){
+		$filter = array('orders.id_hotel'=> $id, 'orders.status_order'=> 'completed');
+		$data = $this->Default_model->get_data_order($filter, 'tanggal_check_out');
 		if (empty($data)){
 			$data = [];
 		}
@@ -646,6 +694,38 @@ class Default_controller extends CI_Controller {
 				// 'tanggal_order' => date('Y-m-d'),
 				'sumber_order' => $this->input->post('sumber_order')
 				// 'status_order' => "upcoming"
+			);
+			$updateStatus = $this->Default_model->update_order($id,$data);
+			echo $updateStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//check in order ke inhouse
+	//parameter: id order
+	//note: API hanya bisa diakses saat ada cookie admin atau owner atau receptionist
+	//output: success/failed/access denied
+	public function update_order_check_in($id){
+		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
+			$data = array(
+				'status_order' => "inhouse"
+			);
+			$updateStatus = $this->Default_model->update_order($id,$data);
+			echo $updateStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//check out order ke completed
+	//parameter: id order
+	//note: API hanya bisa diakses saat ada cookie admin atau owner atau receptionist
+	//output: success/failed/access denied
+	public function update_order_check_out($id){
+		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
+			$data = array(
+				'status_order' => "completed"
 			);
 			$updateStatus = $this->Default_model->update_order($id,$data);
 			echo $updateStatus;
