@@ -9,82 +9,67 @@ class Default_model extends CI_Model {
 	public function get_data_admin($filter = NULL){
 		$this->db->select('*');
 		$this->db->from('admin');
-		if ($filter == NULL){
-			$query = $this->db->get();
-			return $query->result_array();
-		}else{
+		if ($filter != NULL){
 			$this->db->where($filter);
-			$query = $this->db->get();
-			return $query->result_array();
 		}
+		$query = $this->db->get();
+		return $query->result_array();
 	}
 
 	public function get_data_owner($filter = NULL){
 		$this->db->select('*');
 		$this->db->from('owner');
-		if ($filter == NULL){
-			$query = $this->db->get();
-			return $query->result_array();
-		}else{
+		if ($filter != NULL){
 			$this->db->where($filter);
-			$query = $this->db->get();
-			return $query->result_array();
 		}
+		$query = $this->db->get();
+		return $query->result_array();
 	}
 
 	public function get_data_hotel($filter = NULL){
 		$this->db->select('*');
 		$this->db->from('hotel');
 		$this->db->join('owner', 'hotel.username_owner = owner.username_owner', 'left');
-		if ($filter == NULL){
-			$query = $this->db->get();
-			return $query->result_array();
-		}else{
+		if ($filter != NULL){
 			$this->db->where($filter);
-			$query = $this->db->get();
-			return $query->result_array();
 		}
+		$query = $this->db->get();
+		return $query->result_array();
 	}
 
 	public function get_data_receptionist($filter = NULL){
 		$this->db->select('*');
 		$this->db->from('receptionist');
 		$this->db->join('hotel', 'receptionist.id_hotel = hotel.id_hotel', 'left');
-		if ($filter == NULL){
-			$query = $this->db->get();
-			return $query->result_array();
-		}else{
+		if ($filter != NULL){
 			$this->db->where($filter);
-			$query = $this->db->get();
-			return $query->result_array();
 		}
+		$query = $this->db->get();
+		return $query->result_array();
 	}
 
 	public function get_data_kamar($filter = NULL){
 		$this->db->select('*');
 		$this->db->from('kamar');
 		$this->db->join('hotel', 'kamar.id_hotel = hotel.id_hotel', 'left');
-		if ($filter == NULL){
-			$query = $this->db->get();
-			return $query->result_array();
-		}else{
+		if ($filter != NULL){
 			$this->db->where($filter);
-			$query = $this->db->get();
-			return $query->result_array();
 		}
+		$query = $this->db->get();
+		return $query->result_array();
 	}
 
-	public function get_data_order($filter = NULL){
+	public function get_data_order($filter = NULL, $orderby = NULL, $sort = "desc"){
 		$this->db->select('*');
-		$this->db->from('order');
-		if ($filter == NULL){
-			$query = $this->db->get();
-			return $query->result_array();
-		}else{
+		$this->db->from('orders');
+		if ($filter != NULL){
 			$this->db->where($filter);
-			$query = $this->db->get();
-			return $query->result_array();
 		}
+		if ($orderby != NULL) {
+			$this->db->order_by($orderby, $sort);
+		}
+		$query = $this->db->get();
+		return $query->result_array();
 	}
 
 
@@ -140,7 +125,7 @@ class Default_model extends CI_Model {
 	}
 
 	public function insert_order($data){
-		$this->db->insert('order', $data);
+		$this->db->insert('orders', $data);
 		if ($this->db->affected_rows() > 0 ) {
 			$return_message = 'success';
 		}else{
@@ -210,7 +195,7 @@ class Default_model extends CI_Model {
 
 	public function update_order($id, $data){
 		$this->db->where('id_order', $id);
-		$this->db->update('order', $data);
+		$this->db->update('orders', $data);
 		if ($this->db->affected_rows() > 0 ) {
 			$return_message = 'success';
 		}else{
@@ -278,7 +263,7 @@ class Default_model extends CI_Model {
 
 	public function delete_order($id){
 		$this->db->where('id_order', $id);
-		$this->db->delete('order');
+		$this->db->delete('orders');
 		if ($this->db->affected_rows() > 0 ) {
 			$return_message = 'success';
 		}else{

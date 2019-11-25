@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 14, 2019 at 06:45 AM
+-- Generation Time: Nov 24, 2019 at 09:24 AM
 -- Server version: 10.1.36-MariaDB
 -- PHP Version: 5.6.38
 
@@ -91,11 +91,11 @@ INSERT INTO `kamar` (`id_kamar`, `id_hotel`, `nama_kamar`, `jumlah_kamar`, `max_
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order`
+-- Table structure for table `orders`
 --
 
-CREATE TABLE `order` (
-  `id_order` varchar(255) NOT NULL,
+CREATE TABLE `orders` (
+  `id_order` int(11) NOT NULL,
   `id_hotel` varchar(255) DEFAULT NULL,
   `id_kamar` varchar(255) DEFAULT NULL,
   `nama_pemesan` varchar(255) DEFAULT NULL,
@@ -122,11 +122,12 @@ CREATE TABLE `order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `order`
+-- Dumping data for table `orders`
 --
 
-INSERT INTO `order` (`id_order`, `id_hotel`, `id_kamar`, `nama_pemesan`, `telepon_pemesan`, `email_pemesan`, `no_ktp_pemesan`, `tanggal_check_in`, `tanggal_check_out`, `jumlah_guest`, `jumlah_room`, `max_guest`, `nama_kamar`, `nama_hotel`, `alamat_hotel`, `telepon_hotel`, `request_jam_check_in_awal`, `request_jam_check_in_akhir`, `request_breakfast`, `request_rent_car`, `total_harga`, `tanggal_order`, `sumber_order`, `status_order`) VALUES
-('araya001_20190101_1', 'araya001', 'araya001_001', 'Benny Hartono', '09834092834', 'email@gmail.com', '923748503450345', '2019-11-14', '2019-11-15', 2, 1, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 199999, '2019-11-12', 'OYO', 'upcoming');
+INSERT INTO `orders` (`id_order`, `id_hotel`, `id_kamar`, `nama_pemesan`, `telepon_pemesan`, `email_pemesan`, `no_ktp_pemesan`, `tanggal_check_in`, `tanggal_check_out`, `jumlah_guest`, `jumlah_room`, `max_guest`, `nama_kamar`, `nama_hotel`, `alamat_hotel`, `telepon_hotel`, `request_jam_check_in_awal`, `request_jam_check_in_akhir`, `request_breakfast`, `request_rent_car`, `total_harga`, `tanggal_order`, `sumber_order`, `status_order`) VALUES
+(1, 'araya001', 'araya001_001', 'Benny Hartono', '09834092834', 'email@gmail.com', '923748503450345', '2019-11-14', '2019-11-17', 2, 1, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 199999, '2019-11-12', 'OYO', 'upcoming'),
+(2, 'araya001', 'araya001_001', 'Yoko', NULL, NULL, NULL, '2019-11-15', '2019-11-16', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'upcoming');
 
 -- --------------------------------------------------------
 
@@ -197,9 +198,9 @@ ALTER TABLE `kamar`
   ADD KEY `kamar_ibfk_1` (`id_hotel`);
 
 --
--- Indexes for table `order`
+-- Indexes for table `orders`
 --
-ALTER TABLE `order`
+ALTER TABLE `orders`
   ADD PRIMARY KEY (`id_order`),
   ADD KEY `id_hotel` (`id_hotel`),
   ADD KEY `id_kamar` (`id_kamar`);
@@ -218,6 +219,16 @@ ALTER TABLE `receptionist`
   ADD KEY `receptionist_ibfk_1` (`id_hotel`);
 
 --
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `id_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- Constraints for dumped tables
 --
 
@@ -234,11 +245,11 @@ ALTER TABLE `kamar`
   ADD CONSTRAINT `kamar_ibfk_1` FOREIGN KEY (`id_hotel`) REFERENCES `hotel` (`id_hotel`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `order`
+-- Constraints for table `orders`
 --
-ALTER TABLE `order`
-  ADD CONSTRAINT `order_ibfk_1` FOREIGN KEY (`id_hotel`) REFERENCES `hotel` (`id_hotel`),
-  ADD CONSTRAINT `order_ibfk_2` FOREIGN KEY (`id_kamar`) REFERENCES `kamar` (`id_kamar`);
+ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`id_hotel`) REFERENCES `hotel` (`id_hotel`),
+  ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`id_kamar`) REFERENCES `kamar` (`id_kamar`);
 
 --
 -- Constraints for table `receptionist`
