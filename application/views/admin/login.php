@@ -73,7 +73,7 @@
 		border-radius: 50px;
 		text-align: center;
 		box-shadow: 2px 2px 3px #999;
-		z-index:1;
+		z-index:100;
 	}
 
 	.my-float {
@@ -432,7 +432,7 @@
 	<!-- 
 		MANAGE KAMAR
 	 -->
-	<a class="float" data-toggle="modal" data-target="#editKamar">
+	<!-- <a class="float" data-toggle="modal" data-target="#editKamar">
 		<i class="fa fa-plus my-float text-white"></i>
 	</a>
 
@@ -556,7 +556,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 
 	<!-- <div class="row" style="margin-top:20%; margin-left:1%; margin-right:1%;">
 		<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mgn-list" data-toggle="modal" data-target="#editReceptionist">

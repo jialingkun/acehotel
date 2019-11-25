@@ -59,7 +59,7 @@ class Default_model extends CI_Model {
 		return $query->result_array();
 	}
 
-	public function get_data_order($filter = NULL, $orderby = NULL, $sort = "desc"){
+	public function get_data_order($filter = NULL, $orderby = NULL, $sort = "asc"){
 		$this->db->select('*');
 		$this->db->from('orders');
 		if ($filter != NULL){
