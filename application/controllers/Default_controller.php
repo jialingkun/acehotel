@@ -827,13 +827,11 @@ class Default_controller extends CI_Controller {
 				break;
 			}
 		}
-
 		if ($is_login) {
 			echo "berhasil login";
 		}else{
 			echo "gagal login";
 		}
-
 	}
 
 	public function cekloginowner(){
@@ -950,7 +948,7 @@ class Default_controller extends CI_Controller {
 			'expire' => $expire
 		);
 		$this->input->set_cookie($cookie);
-		echo "cookie created";
+		// echo "cookie created";
 	}
 
 	//untuk mengambil cookie
@@ -985,7 +983,7 @@ class Default_controller extends CI_Controller {
 			'expire' => $expire
 		);
 		$this->input->set_cookie($cookie);
-		echo "cookie created";
+		// echo "cookie created";
 	}
 
 	//untuk mengambil cookie yang di decrypt dari fungsi create_cookie_encrypt
