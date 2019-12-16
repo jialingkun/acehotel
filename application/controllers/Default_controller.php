@@ -4,6 +4,7 @@ class Default_controller extends CI_Controller {
 		parent::__construct();
 		$this->load->model('Default_model');
 		$this->load->helper('url_helper');
+		date_default_timezone_set('Asia/Jakarta');
 	}
 
 	//LOAD VIEW
@@ -364,6 +365,92 @@ class Default_controller extends CI_Controller {
 			echo json_encode($data);
 		}
 	}
+
+
+	//get summary check in hari ini untuk dashboard
+	//parameter: id hotel
+	//note: output adalah check in yang sudah diselesaikan dan jumlah check in yang diperlukan
+	public function get_info_checkin_today($id, $return_var = NULL){
+		$filter = array('orders.id_hotel'=> $id, 'orders.status_order'=> 'upcoming', 'tanggal_check_in <='=>date('Y-m-d'));
+		$notcheckin = $this->Default_model->get_count_order($filter);
+
+		$filter = array('orders.id_hotel'=> $id, 'orders.status_order'=> 'inhouse', 'tanggal_check_in_real'=>date('Y-m-d'));
+		$finishcheckin = $this->Default_model->get_count_order($filter);
+
+		$requiredcheckin = $finishcheckin+$notcheckin;
+		$data['finished_checkin'] = $finishcheckin;
+		$data['required_checkin'] = $requiredcheckin;
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+
+	//get summary inhouse hari ini untuk dashboard
+	//parameter: id hotel
+	//note: output adalah jumlah inhouse dan jumlah total kamar
+	public function get_info_inhouse_today($id, $return_var = NULL){
+		$filter = array('orders.id_hotel'=> $id, 'orders.status_order'=> 'inhouse');
+		$inhouse = $this->Default_model->get_count_order($filter);
+
+		$datakamar = $this->get_kamar_by_hotel($id,true);
+		$totalkamar = 0;
+		foreach ($datakamar as $row){
+			$totalkamar = $totalkamar + $row['jumlah_kamar'];
+		}
+
+		$data['finished_inhouse'] = $inhouse;
+		$data['required_inhouse'] = $totalkamar;
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	//get summary check out hari ini untuk dashboard
+	//parameter: id hotel
+	//note: output adalah check out yang sudah diselesaikan dan jumlah check out yang diperlukan
+	public function get_info_checkout_today($id, $return_var = NULL){
+		$filter = array('orders.id_hotel'=> $id, 'orders.status_order'=> 'inhouse', 'tanggal_check_out <='=>date('Y-m-d'));
+		$notcheckout = $this->Default_model->get_count_order($filter);
+
+		$filter = array('orders.id_hotel'=> $id, 'orders.status_order'=> 'completed', 'tanggal_check_out_real'=>date('Y-m-d'));
+		$finishcheckout = $this->Default_model->get_count_order($filter);
+
+		$requiredcheckout = $finishcheckout+$notcheckout;
+		$data['finished_checkout'] = $finishcheckout;
+		$data['required_checkout'] = $requiredcheckout;
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	//get summary dashboard
+	//parameter: id hotel
+	//note: output adalah detil check in, inhouse, dan check out
+	public function get_info_dashboard_today($id, $return_var = NULL){
+		$checkin = $this->get_info_checkin_today($id, true);
+		$inhouse = $this->get_info_inhouse_today($id, true);
+		$checkout = $this->get_info_checkout_today($id, true);
+		$data = array_merge($checkin,$inhouse,$checkout);
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+
+
+
+
+
+
 	
 
 	//INSERT
@@ -464,7 +551,6 @@ class Default_controller extends CI_Controller {
 	//output: success/failed/access denied
 	public function insert_order(){
 		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
-			date_default_timezone_set('Asia/Jakarta');
 			$data = array(
 				'id_hotel' => $this->input->post('id_hotel'),
 				'id_kamar' => $this->input->post('id_kamar'),
@@ -709,6 +795,7 @@ class Default_controller extends CI_Controller {
 	public function update_order_check_in($id){
 		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
 			$data = array(
+				'tanggal_check_in_real' => date('Y-m-d'),
 				'status_order' => "inhouse"
 			);
 			$updateStatus = $this->Default_model->update_order($id,$data);
@@ -725,6 +812,7 @@ class Default_controller extends CI_Controller {
 	public function update_order_check_out($id){
 		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
 			$data = array(
+				'tanggal_check_out_real' => date('Y-m-d'),
 				'status_order' => "completed"
 			);
 			$updateStatus = $this->Default_model->update_order($id,$data);
