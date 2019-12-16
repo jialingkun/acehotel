@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 24, 2019 at 09:24 AM
+-- Generation Time: Dec 16, 2019 at 11:35 AM
 -- Server version: 10.1.36-MariaDB
 -- PHP Version: 5.6.38
 
@@ -104,6 +104,8 @@ CREATE TABLE `orders` (
   `no_ktp_pemesan` varchar(255) DEFAULT NULL,
   `tanggal_check_in` date DEFAULT NULL,
   `tanggal_check_out` date DEFAULT NULL,
+  `tanggal_check_in_real` date DEFAULT NULL,
+  `tanggal_check_out_real` date DEFAULT NULL,
   `jumlah_guest` int(11) DEFAULT NULL,
   `jumlah_room` int(11) DEFAULT NULL,
   `max_guest` int(11) DEFAULT NULL,
@@ -125,9 +127,10 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id_order`, `id_hotel`, `id_kamar`, `nama_pemesan`, `telepon_pemesan`, `email_pemesan`, `no_ktp_pemesan`, `tanggal_check_in`, `tanggal_check_out`, `jumlah_guest`, `jumlah_room`, `max_guest`, `nama_kamar`, `nama_hotel`, `alamat_hotel`, `telepon_hotel`, `request_jam_check_in_awal`, `request_jam_check_in_akhir`, `request_breakfast`, `request_rent_car`, `total_harga`, `tanggal_order`, `sumber_order`, `status_order`) VALUES
-(1, 'araya001', 'araya001_001', 'Benny Hartono', '09834092834', 'email@gmail.com', '923748503450345', '2019-11-14', '2019-11-17', 2, 1, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 199999, '2019-11-12', 'OYO', 'upcoming'),
-(2, 'araya001', 'araya001_001', 'Yoko', NULL, NULL, NULL, '2019-11-15', '2019-11-16', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'upcoming');
+INSERT INTO `orders` (`id_order`, `id_hotel`, `id_kamar`, `nama_pemesan`, `telepon_pemesan`, `email_pemesan`, `no_ktp_pemesan`, `tanggal_check_in`, `tanggal_check_out`, `tanggal_check_in_real`, `tanggal_check_out_real`, `jumlah_guest`, `jumlah_room`, `max_guest`, `nama_kamar`, `nama_hotel`, `alamat_hotel`, `telepon_hotel`, `request_jam_check_in_awal`, `request_jam_check_in_akhir`, `request_breakfast`, `request_rent_car`, `total_harga`, `tanggal_order`, `sumber_order`, `status_order`) VALUES
+(1, 'araya001', 'araya001_001', 'Benny Hartono', '09834092834', 'email@gmail.com', '923748503450345', '2019-12-15', '2019-12-18', '0000-00-00', '0000-00-00', 2, 1, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 199999, '2019-11-12', 'OYO', 'upcoming'),
+(2, 'araya001', 'araya001_001', 'Yoko', NULL, NULL, NULL, '2019-12-12', '2019-12-15', '2019-12-16', '2019-12-16', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'completed'),
+(3, 'araya001', 'araya001_001', 'Andreas', NULL, NULL, NULL, '2019-12-16', '2019-12-18', '2019-12-16', NULL, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 30000, '2019-12-17', NULL, 'inhouse');
 
 -- --------------------------------------------------------
 
@@ -226,7 +229,7 @@ ALTER TABLE `receptionist`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables

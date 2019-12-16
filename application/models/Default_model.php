@@ -72,6 +72,15 @@ class Default_model extends CI_Model {
 		return $query->result_array();
 	}
 
+	public function get_count_order($filter = NULL){
+		$this->db->from('orders');
+		if ($filter != NULL){
+			$this->db->where($filter);
+		}
+		$count = $this->db->count_all_results();
+		return $count;
+	}
+
 
 	//INSERT DATABASE
 	public function insert_admin($data){
