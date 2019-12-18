@@ -47,13 +47,89 @@ class Default_controller extends CI_Controller {
 	}
 
 	public function dashboardreceptionist(){
-		if ($this->checkcookieowner()) {
+		if ($this->checkcookiereceptionist()) {
 			$this->load->view('receptionist/dashboard');
 		}else{
 			header("Location: ".base_url()."index.php/loginreceptionist");
 			die();
 		}
 	}
+	
+	//Bookings
+	public function bookingadmin(){
+		if ($this->checkcookieadmin()) {
+			$this->load->view('admin/booking');
+		}else{
+			header("Location: ".base_url()."index.php/loginadmin");
+			die();
+		}
+	}
+
+	public function bookingowner(){
+		if ($this->checkcookieowner()) {
+			$this->load->view('owner/booking');
+		}else{
+			header("Location: ".base_url()."index.php/loginowner");
+			die();
+		}
+	}
+
+	public function bookingreceptionist(){
+		if ($this->checkcookiereceptionist()) {
+			$this->load->view('receptionist/booking');
+		}else{
+			header("Location: ".base_url()."index.php/loginreceptionist");
+			die();
+		}
+	}
+
+	//Report
+	public function reportadmin(){
+		if ($this->checkcookieadmin()) {
+			$this->load->view('admin/report');
+		}else{
+			header("Location: ".base_url()."index.php/loginadmin");
+			die();
+		}
+	}
+
+	public function reportowner(){
+		if ($this->checkcookieowner()) {
+			$this->load->view('owner/report');
+		}else{
+			header("Location: ".base_url()."index.php/loginowner");
+			die();
+		}
+	}
+
+	public function reportreceptionist(){
+		if ($this->checkcookiereceptionist()) {
+			$this->load->view('receptionist/report');
+		}else{
+			header("Location: ".base_url()."index.php/loginreceptionist");
+			die();
+		}
+	}
+
+	//Management
+	public function managementadmin(){
+		if ($this->checkcookieadmin()) {
+			$this->load->view('admin/management');
+		}else{
+			header("Location: ".base_url()."index.php/loginadmin");
+			die();
+		}
+	}
+
+	public function managementowner(){
+		if ($this->checkcookieowner()) {
+			$this->load->view('owner/management');
+		}else{
+			header("Location: ".base_url()."index.php/loginowner");
+			die();
+		}
+	}
+
 
 	
 	//GET DATA
