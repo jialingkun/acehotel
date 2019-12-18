@@ -288,7 +288,7 @@
     <script src="<?=base_url("dist/js/jquery.min.js");?>"></script>
     <script src="<?=base_url("dist/js/popper.min.js");?>"></script>
     <script src="<?=base_url("dist/js/bootstrap.min.js");?>"></script>
-    <script src="<?=base_url("dist/js/fontawesome.min.js");?>"></script>
+    
     <!-- <script src="https://use.fontawesome.com/450c9ae375.js"></script> -->
 
     <script>

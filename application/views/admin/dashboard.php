@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="<?=base_url("dist/css/bootstrap.min.css");?>">
         <link rel="stylesheet" href="<?=base_url("dist/css/bootstrap-grid.min.css");?>">
         <link rel="stylesheet" href="<?=base_url("dist/css/style.css");?>">
-		<link rel="stylesheet" href="<?=base_url("dist/css/font-awesome.min.css");?>">
+        <link rel="stylesheet" href="<?=base_url("dist/css/font-awesome.min.css");?>">
 
         <title>DASHBOARD ADMIN</title>
     </head>
@@ -79,19 +79,25 @@
 
         .my-float {
             margin-top: 22px;
-		}
-		
-		#nama_hotel{
-			display: block;
-  white-space: nowrap;
-  width: 7em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-		}
+        }
+
+        #nama_hotel {
+            display: block;
+            white-space: nowrap;
+            width: 7em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 
     <body>
         <?php $this->load->view("admin/header");?>
+        <div class="lds-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
         <div class="container">
             <div class="row" style="margin-top:20%; margin-left:1%; margin-right:1%;">
                 <div class="col-6 text-center">
@@ -164,30 +170,48 @@
     <script src="<?=base_url("dist/js/jquery.min.js");?>"></script>
     <script src="<?=base_url("dist/js/popper.min.js");?>"></script>
     <script src="<?=base_url("dist/js/bootstrap.min.js");?>"></script>
-    
 
     <script id="hotel_option" type="text/HTML">
         <a class="dropdown-item" href="#">test</a>
     </script>
 
     <script>
+        function getData(idHotel) {
+            $.ajax({
+                url: "<?php echo base_url() ?>index.php/get_info_checkout_today/" + idHotel,
+                type: 'get',
+                dataType: "json",
+                beforeSend: function () {
+                    $('.lds-ring').show();
+                    $('.container').hide();
+                },
+                success: function (response) {
+                    console.log(response);
+
+                },
+                complete: function () {
+                    $('.lds-ring').hide();
+                    $('.container').show();
+                }
+            });
+        }
         $(document).ready(function () {
             $("#dashboard_footer").addClass('is-active');
             $("#header_title").text('Dashboard');
         });
 
-        var today = new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-        var yyyy = today.getFullYear();
-
-        today = mm + '-' + dd + '-' + yyyy;
-        console.log(today);
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus');
+        });
 
         $.ajax({
             url: "<?php echo base_url() ?>index.php/get_all_hotel",
             type: 'get',
             dataType: "json",
+            beforeSend: function () {
+                $('.lds-ring').show();
+                $('.container').hide();
+            },
             success: function (response) {
                 $('#nama_hotel').text(response[0].nama_hotel);
                 for (i = 0; i < response.length; i++) {
@@ -197,14 +221,15 @@
                     $(tmp).data('id', response[i].id_hotel);
                     $(tmp).data('nama', response[i].nama_hotel);
                     $(tmp).appendTo('#list_hotel');
-                    console.log(tmp);
                 }
                 $('.dropdown-toggle').dropdown();
+            },
+            complete: function () {
+                $('.lds-ring').hide();
+                $('.container').show();
+                let idHotel = $('.dropdown-item:first').data('id');
+                getData(idHotel);
             }
-        });
-
-        $('#myModal').on('shown.bs.modal', function () {
-            $('#myInput').trigger('focus');
         });
 
         $(document).on('click', '.dropdown-item', function () {
@@ -212,15 +237,7 @@
             var idHotel = $(this).data('id');
 
             $('#nama_hotel').text(namaHotel);
-            $.ajax({
-                url: "<?php echo base_url() ?>index.php/get_order_by_hotel/" + idHotel,
-                type: 'get',
-                dataType: "json",
-                success: function (response) {
-                    console.log(response[0].nama_hotel);
-
-                }
-            });
+            getData(idHotel);
         });
     </script>
 
