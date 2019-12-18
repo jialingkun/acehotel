@@ -1,244 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="<?=base_url("dist/css/bootstrap.min.css");?>">
-        <link rel="stylesheet" href="<?=base_url("dist/css/bootstrap-grid.min.css");?>">
-        <link rel="stylesheet" href="<?=base_url("dist/css/style.css");?>">
-        <link rel="stylesheet" href="<?=base_url("dist/css/font-awesome.min.css");?>">
+	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap.min.css");?>">
+	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap-grid.min.css");?>">
+	<link rel="stylesheet" href="<?=base_url("dist/css/style.css");?>">
+	<link rel="stylesheet" href="<?=base_url("dist/css/font-awesome.min.css");?>">
 
-        <title>DASHBOARD ADMIN</title>
-    </head>
-    <style>
-        .is-active {
-            background-color: #1C7CD5;
-            color: white !important;
+	<title>DASHBOARD ADMIN</title>
+</head>
+<style>
+	.is-active {
+		background-color: #1C7CD5;
+		color: white !important;
 
-        }
+	}
 
-        .square-box {
-            float: left;
-            position: relative;
-            width: 50%;
-            overflow: hidden;
-            border: solid 1px #ddd;
-        }
+	.square-box {
+		float: left;
+		position: relative;
+		width: 50%;
+		overflow: hidden;
+		border: solid 1px #ddd;
+	}
 
-        .square-box:before {
-            content: "";
-            display: block;
-            padding-top: 100%;
-        }
+	.square-box:before {
+		content: "";
+		display: block;
+		padding-top: 100%;
+	}
 
-        .square-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            padding: 15% 0;
+	.square-content {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		padding: 15% 0;
 
-        }
+	}
 
-        .square-content div {
-            display: table;
-            width: 100%;
-            height: 100%;
+	.square-content div {
+		display: table;
+		width: 100%;
+		height: 100%;
 
-        }
+	}
 
-        .sm-font {
-            font-size: 0.9rem;
-            color: grey;
-        }
+	.sm-font {
+		font-size: 0.9rem;
+		color: grey;
+	}
 
-        .mgn-list {
-            margin-top: 3%;
-        }
+	.mgn-list {
+		margin-top: 3%;
+	}
 
-        .dashboard-big-font {
-            font-size: 2rem;
-        }
+	.dashboard-big-font {
+		font-size: 2rem;
+	}
 
-        .float {
-            position: fixed;
-            width: 60px;
-            height: 60px;
-            bottom: 10%;
-            right: 10%;
-            background-color: #1C7CD5;
-            color: #FFF;
-            border-radius: 50px;
-            text-align: center;
-            box-shadow: 2px 2px 3px #999;
-            z-index: 100;
-        }
+	.float {
+		position: fixed;
+		width: 60px;
+		height: 60px;
+		bottom: 10%;
+		right: 10%;
+		background-color: #1C7CD5;
+		color: #FFF;
+		border-radius: 50px;
+		text-align: center;
+		box-shadow: 2px 2px 3px #999;
+		z-index: 100;
+	}
 
-        .my-float {
-            margin-top: 22px;
-        }
+	.my-float {
+		margin-top: 22px;
+	}
 
-        #nama_hotel {
-            display: block;
-            white-space: nowrap;
-            width: 7em;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    </style>
+	#nama_hotel {
+		display: block;
+		white-space: nowrap;
+		width: 7em;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 
-    <body>
-        <?php $this->load->view("admin/header");?>
-        <div class="lds-ring">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-        <div class="container">
-            <div class="row" style="margin-top:20%; margin-left:1%; margin-right:1%;">
-                <div class="col-6 text-center">
-                    <p>Today Report</p>
-                </div>
-                <div class="col-6 text-center">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-primary" id="nama_hotel">Loading</button>
-                        <button
-                            type="button"
-                            class="btn btn-primary dropdown-toggle dropdown-toggle-split"
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false">
-                            <span class="sr-only"></span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" id="list_hotel"></div>
-                    </div>
-                </div>
+</style>
 
-                <div class="col-12" style="margin-top:5%;">
-                    <div class="square-box">
-                        <div class="square-content">
-                            <div class="text-center">
-                                <h5 class="text-success">To Check In</h5>
-                                <span class="dashboard-big-font">01</span>
-                                <span class="text-secondary">/</span>
-                                <span class="text-secondary">04</span>
-                                <p>Bookings</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="square-box">
-                        <div class="square-content">
-                            <div class="text-center">
-                                <h5 class="text-danger">To Check Out</h5>
-                                <span class="dashboard-big-font">01</span>
-                                <span class="text-secondary">/</span>
-                                <span class="text-secondary">04</span>
-                                <p>Bookings</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="square-box">
-                        <div class="square-content">
-                            <div class="text-center">
-                                <h5 class="text-warning">In House</h5>
-                                <span class="dashboard-big-font">01</span>
-                                <span class="text-secondary">/</span>
-                                <span class="text-secondary">04</span>
-                                <p>Bookings</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="square-box">
-                        <div class="square-content">
-                            <div class="text-center">
-                                <h5 class="text-primary">EOD Occ.</h5>
-                                <span class="dashboard-big-font">4</span>
-                                <span class="text-secondary">%</span>
-                                <p>Bookings</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <?php $this->load->view("admin/footer");?>
-    </body>
-    <script src="<?=base_url("dist/js/jquery.min.js");?>"></script>
-    <script src="<?=base_url("dist/js/popper.min.js");?>"></script>
-    <script src="<?=base_url("dist/js/bootstrap.min.js");?>"></script>
+<body>
+	<?php $this->load->view("admin/header");?>
+	<div class="lds-ring">
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+	</div>
+	<div class="container">
+		<div class="row" style="margin-top:20%; margin-left:1%; margin-right:1%;">
+			<div class="col-6 text-center">
+				<p>Today Report</p>
+			</div>
+			<div class="col-6 text-center">
+				<div class="btn-group">
+					<button type="button" class="btn btn-sm btn-primary" id="nama_hotel">Loading</button>
+					<button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<span class="sr-only"></span>
+					</button>
+					<div class="dropdown-menu dropdown-menu-right" id="list_hotel"></div>
+				</div>
+			</div>
 
-    <script id="hotel_option" type="text/HTML">
-        <a class="dropdown-item" href="#">test</a>
+			<div class="col-12" style="margin-top:5%;">
+				<div class="square-box">
+					<div class="square-content">
+						<div class="text-center">
+							<h5 class="text-success">To Check In</h5>
+							<span class="dashboard-big-font">01</span>
+							<span class="text-secondary">/</span>
+							<span class="text-secondary">04</span>
+							<p>Bookings</p>
+						</div>
+					</div>
+				</div>
+				<div class="square-box">
+					<div class="square-content">
+						<div class="text-center">
+							<h5 class="text-danger">To Check Out</h5>
+							<span class="dashboard-big-font">01</span>
+							<span class="text-secondary">/</span>
+							<span class="text-secondary">04</span>
+							<p>Bookings</p>
+						</div>
+					</div>
+				</div>
+				<div class="square-box">
+					<div class="square-content">
+						<div class="text-center">
+							<h5 class="text-warning">In House</h5>
+							<span class="dashboard-big-font">01</span>
+							<span class="text-secondary">/</span>
+							<span class="text-secondary">04</span>
+							<p>Bookings</p>
+						</div>
+					</div>
+				</div>
+				<div class="square-box">
+					<div class="square-content">
+						<div class="text-center">
+							<h5 class="text-primary">EOD Occ.</h5>
+							<span class="dashboard-big-font">4</span>
+							<span class="text-secondary">%</span>
+							<p>Bookings</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<?php $this->load->view("admin/footer");?>
+</body>
+<script src="<?=base_url("dist/js/jquery.min.js");?>"></script>
+<script src="<?=base_url("dist/js/popper.min.js");?>"></script>
+<script src="<?=base_url("dist/js/bootstrap.min.js");?>"></script>
+
+<script id="hotel_option" type="text/HTML">
+	<a class="dropdown-item" href="#">test</a>
     </script>
 
-    <script>
-        function getData(idHotel) {
-            $.ajax({
-                url: "<?php echo base_url() ?>index.php/get_info_checkout_today/" + idHotel,
-                type: 'get',
-                dataType: "json",
-                beforeSend: function () {
-                    $('.lds-ring').show();
-                    $('.container').hide();
-                },
-                success: function (response) {
-                    console.log(response);
+<script>
+	function getData(idHotel, namaHotel) {
+        setCookie('id_hotel', idHotel);
+        setCookie('nama_hotel', namaHotel);
 
-                },
-                complete: function () {
-                    $('.lds-ring').hide();
-                    $('.container').show();
-                }
-            });
-        }
-        $(document).ready(function () {
-            $("#dashboard_footer").addClass('is-active');
-            $("#header_title").text('Dashboard');
-        });
+		$('.lds-ring').show();
+		$('.container').hide();
+		$.when(getCkInTd(idHotel), getCkOtTd(idHotel), getInHsTd(idHotel)).done(function (ckIn, ckOt, inHs) {
+			$('.lds-ring').hide();
+			$('.container').show();
 
-        $('#myModal').on('shown.bs.modal', function () {
-            $('#myInput').trigger('focus');
-        });
+			// Checkin
+			$('.square-box:eq(0) span:eq(0)').text(('0' + ckIn[0].finished_checkin).slice(-2));
+			$('.square-box:eq(0) span:eq(2)').text(('0' + ckIn[0].required_checkin).slice(-2));
 
-        $.ajax({
-            url: "<?php echo base_url() ?>index.php/get_all_hotel",
-            type: 'get',
-            dataType: "json",
-            beforeSend: function () {
-                $('.lds-ring').show();
-                $('.container').hide();
-            },
-            success: function (response) {
-                $('#nama_hotel').text(response[0].nama_hotel);
-                for (i = 0; i < response.length; i++) {
-                    var tmp = $('#hotel_option')[0].innerHTML;
-                    tmp = $.parseHTML(tmp);
-                    $(tmp).text(response[i].nama_hotel);
-                    $(tmp).data('id', response[i].id_hotel);
-                    $(tmp).data('nama', response[i].nama_hotel);
-                    $(tmp).appendTo('#list_hotel');
-                }
-                $('.dropdown-toggle').dropdown();
-            },
-            complete: function () {
-                $('.lds-ring').hide();
-                $('.container').show();
-                let idHotel = $('.dropdown-item:first').data('id');
-                getData(idHotel);
-            }
-        });
+			// CheckOut
+			$('.square-box:eq(1) span:eq(0)').text(('0' + ckOt[0].finished_checkout).slice(-2));
+			$('.square-box:eq(1) span:eq(2)').text(('0' + ckOt[0].required_checkout).slice(-2));
 
-        $(document).on('click', '.dropdown-item', function () {
-            var namaHotel = $(this).data('nama');
-            var idHotel = $(this).data('id');
+			// InHouse
+			$('.square-box:eq(2) span:eq(0)').text(('0' + inHs[0].finished_inhouse).slice(-2));
+			$('.square-box:eq(2) span:eq(2)').text(('0' + inHs[0].required_inhouse).slice(-2));
 
-            $('#nama_hotel').text(namaHotel);
-            getData(idHotel);
-        });
-    </script>
+			// EOD
+			var tmp = Math.round(inHs[0].finished_inhouse / inHs[0].required_inhouse * 100);
+			$('.square-box:eq(3) span:eq(0)').text((isNaN(tmp) ? 0 : tmp));
+		});
+	}
+
+	function getCkInTd(idHotel) {
+		return $.ajax(
+			"<?php echo base_url() ?>index.php/get_info_checkin_today/" + idHotel, {
+				dataType: 'json'
+			}
+		);
+	}
+
+	function getCkOtTd(idHotel) {
+		return $.ajax(
+			"<?php echo base_url() ?>index.php/get_info_checkout_today/" + idHotel, {
+				dataType: 'json'
+			}
+		);
+	}
+
+	function getInHsTd(idHotel) {
+		return $.ajax(
+			"<?php echo base_url() ?>index.php/get_info_inhouse_today/" + idHotel, {
+				dataType: 'json'
+			}
+		);
+	}
+
+	$(document).ready(function () {
+		$("#dashboard_footer").addClass('is-active');
+		$("#header_title").text('Dashboard');
+	});
+
+	$('#myModal').on('shown.bs.modal', function () {
+		$('#myInput').trigger('focus');
+	});
+
+	$.ajax({
+		url: "<?php echo base_url() ?>index.php/get_all_hotel",
+		type: 'get',
+		dataType: "json",
+		beforeSend: function () {
+			$('.lds-ring').show();
+			$('.container').hide();
+		},
+		success: function (response) {
+			$('#nama_hotel').text(response[0].nama_hotel);
+			for (i = 0; i < response.length; i++) {
+				var tmp = $('#hotel_option')[0].innerHTML;
+				tmp = $.parseHTML(tmp);
+				$(tmp).text(response[i].nama_hotel);
+				$(tmp).data('id', response[i].id_hotel);
+				$(tmp).data('nama', response[i].nama_hotel);
+				$(tmp).appendTo('#list_hotel');
+			}
+			console.log(response);
+			$('.dropdown-toggle').dropdown();
+		},
+		complete: function () {
+			$('.lds-ring').hide();
+			$('.container').show();
+			let idHotel = $('.dropdown-item:first').data('id');
+			let namaHotel = $('.dropdown-item:first').data('nama');
+			getData(idHotel, namaHotel);
+		}
+	});
+
+	$(document).on('click', '.dropdown-item', function () {
+		let namaHotel = $(this).data('nama');
+		let idHotel = $(this).data('id');
+
+		$('#nama_hotel').text(namaHotel);
+		getData(idHotel, namaHotel);
+	});
+
+	function setCookie(cname, cvalue) {
+		var d = new Date();
+		d.setTime(d.getTime() + (24 * 60 * 60 * 1000));
+		var expires = "expires=" + d.toUTCString();
+		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+
+	function getCookie(cname) {
+		var name = cname + "=";
+		var decodedCookie = decodeURIComponent(document.cookie);
+		var ca = decodedCookie.split(';');
+		for (var i = 0; i < ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
+
+</script>
 
 </html>
