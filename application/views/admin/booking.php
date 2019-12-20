@@ -80,147 +80,57 @@
 		margin-top: 22px;
 	}
 
+	#namaUser{
+		text-transform: uppercase;
+	}
 </style>
 
 <body>
 	<?php $this->load->view("admin/header");?>
+	<div class="lds-ring">
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
+	</div>
 	<div class="container">
 		<div class="row" style="margin-top:20%; margin-left:1%; margin-right:1%;">
 			<div class="col-sm-12 text-center">
 				<h3><span class="badge badge-white" id="nama_hotel"></span></h3>
 			</div>
-			<div>
-				<ul class="nav nav-tabs">
-					<li class="nav-item">
-						<a class="nav-link active" data-toggle="tab" href="#upcoming">COMING</a>
+			<div style="margin:auto; width:100%; font-size:0.9em;" >
+				<ul class="nav nav-tabs text-center" >
+					<li class="nav-item" style="width:33.4%;">
+						<a class="nav-link active" data-toggle="tab" href="#upcoming" style="padding:8px 0;">UPCOMING</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#inhouse">INHOUSE</a>
+					<li class="nav-item" style="width:33.3%;">
+						<a class="nav-link" data-toggle="tab" href="#inhouse" style="padding:8px 0;">INHOUSE</a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#completed">COMPLETE</a>
+					<li class="nav-item" style="width:33.3%;">
+						<a class="nav-link" data-toggle="tab" href="#completed" style="padding:8px 0;">COMPLETE</a>
 					</li>
 				</ul>
 			</div>
 		</div>
 		<div class="col-sm-12">
 			<span>Today :</span>
-			<span class="sm-font">7 bookings</span>
+			<span class="sm-font" ><span id="jmlBooking"></span> Booking</span> 
 			<span class="sm-font">.</span>
-			<span class="sm-font">7 rooms</span>
+			<span class="sm-font" ><span id="jmlRoom"></span> Room</span>
 		</div>
 		<div class="col-sm-12" style="padding:2%;">
 
 			<div class="tab-content">
 				<div id="upcoming" class="tab-pane active"><br>
 					<div class="list-group">
-						<a href="#"
-							class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
-							<div class="d-flex w-100 ">
-								<h5 class="mb-1">Benny Hartono</h5>
-							</div>
-							<div class="mgn-list">
-								<span class="mb-1">1 Room</span>
-								.
-								<span class="mb-1">1 Night</span>
-								.
-								<span class="mb-1">#HFGDJLS</span>
-							</div>
-							<div class="mgn-list">
-								<button type="button" class="btn btn-danger btn-sm">12:00 PM-03:00 PM</button>
-								<span class="sm-font">Rp 110.000</span>
-							</div>
-						</a>
 					</div>
 				</div>
 				<div id="inhouse" class="tab-pane fade"><br>
 					<div class="list-group">
-						<a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-							<div class="d-flex w-100 ">
-								<h5 class="mb-1">Benny Hartono</h5>
-							</div>
-							<div class="mgn-list">
-								<span class="mb-1">1 Room</span>
-								.
-								<span class="mb-1">1 Night</span>
-								.
-								<span class="mb-1">#HFGDJLS</span>
-							</div>
-							<div class="mgn-list">
-								<button type="button" class="btn btn-success btn-sm">Paid</button>
-							</div>
-						</a>
-						<a href="#"
-							class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
-							<div class="d-flex w-100 ">
-								<h5 class="mb-1">Benny Hartono</h5>
-							</div>
-							<div class="mgn-list">
-								<span class="mb-1">1 Room</span>
-								.
-								<span class="mb-1">1 Night</span>
-								.
-								<span class="mb-1">#HFGDJLS</span>
-							</div>
-							<div class="mgn-list">
-								<button type="button" class="btn btn-danger btn-sm">12:00 PM-03:00 PM</button>
-								<span class="sm-font">Rp 110.000</span>
-							</div>
-						</a>
-						<a href="#"
-							class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
-							<div class="d-flex w-100 ">
-								<h5 class="mb-1">Benny Hartono</h5>
-							</div>
-							<div class="mgn-list">
-								<span class="mb-1">1 Room</span>
-								.
-								<span class="mb-1">1 Night</span>
-								.
-								<span class="mb-1">#HFGDJLS</span>
-							</div>
-							<div class="mgn-list">
-								<button type="button" class="btn btn-success btn-sm">Paid</button>
-							</div>
-						</a>
-						<a href="#"
-							class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
-							<div class="d-flex w-100 ">
-								<h5 class="mb-1">Benny Hartono</h5>
-							</div>
-							<div class="mgn-list">
-								<span class="mb-1">1 Room</span>
-								.
-								<span class="mb-1">1 Night</span>
-								.
-								<span class="mb-1">#HFGDJLS</span>
-							</div>
-							<div class="mgn-list">
-								<button type="button" class="btn btn-success btn-sm">Paid</button>
-							</div>
-						</a>
 					</div>
 				</div>
 				<div id="completed" class="tab-pane fade"><br>
 					<div class="list-group">
-						<a href="#"
-							class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
-							<div class="d-flex w-100 ">
-								<h5 class="mb-1">Benny Hartono</h5>
-							</div>
-							<div class="mgn-list">
-								<span class="mb-1">1 Room</span>
-								.
-								<span class="mb-1">1 Night</span>
-								.
-								<span class="mb-1">#HFGDJLS</span>
-							</div>
-							<div class="mgn-list">
-								<span class="sm-font">Rp 110.000</span>
-								<span class="sm-font">
-									earned</span>
-							</div>
-						</a>
 					</div>
 				</div>
 			</div>
@@ -228,7 +138,6 @@
 		<a class="float" data-toggle="modal" data-target="#inputTransaksi">
 			<i class="fa fa-plus my-float text-white" aria-hidden="true"></i>
 		</a>
-
 		<div class="modal fade" id="inputTransaksi" tabindex="-1" role="dialog" aria-labelledby="inputTransaksiLabel"
 			aria-hidden="true">
 			<div class="modal-dialog" role="document">
@@ -277,31 +186,146 @@
 <script src="<?=base_url("dist/js/jquery.min.js");?>"></script>
 <script src="<?=base_url("dist/js/popper.min.js");?>"></script>
 <script src="<?=base_url("dist/js/bootstrap.min.js");?>"></script>
+<script src="<?=base_url("dist/js/function.js");?>"></script>
 
-<!-- <script src="https://use.fontawesome.com/450c9ae375.js"></script> -->
+<script id="list_booking" type="text/HTML">
+	<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
+		<div class="w-100 ">
+			<h5 class="mb-1" id="namaUser"></h5>
+			<h6 class="mb-1" id="namaKamar"></h6>
+		</div>
+		<div class="mgn-list">
+			<span id="jmlRoom"></span> Room
+			.
+			<span id="jmlMalam"></span> Night
+			.
+			<span id="jmlGuest"></span> Guest
+		</div>
+		<div class="mgn-list">
+			<span class="badge badge-pill badge-danger"><span id="reqInAwal"></span> - <span id="reqInAkhir"></span></span>
+			<span class="sm-font" id="totHarga"></span>
+		</div>
+	</a>
+</script>
 
 <script>
+	var namaHotel = getCookie('nama_hotel');
+	var idHotel = getCookie('id_hotel');
+
+
 	$(document).ready(function () {
 		$("#booking_footer").addClass('is-active');
 		$("#header_title").text('Bookings');
-
-		$('#nama_hotel').text(getCookie('nama_hotel'));
+		$('#nama_hotel').text(namaHotel);
 	});
 
-	function getCookie(cname) {
-		var name = cname + "=";
-		var decodedCookie = decodeURIComponent(document.cookie);
-		var ca = decodedCookie.split(';');
-		for (var i = 0; i < ca.length; i++) {
-			var c = ca[i];
-			while (c.charAt(0) == ' ') {
-				c = c.substring(1);
+		$('.lds-ring').show();
+		$('.container').hide();
+	$.when(getUpcoming(idHotel), getInhouse(idHotel), getComplete(idHotel)).done(function (upcoming, inhouse, complete) {
+		$('.lds-ring').hide();
+		$('.container').show();
+		var dataUpcoming = upcoming[0];
+		var dataInhouse = inhouse[0];
+		var dataComplete = complete[0];
+		var jmlRoom = 0;
+
+		$('#jmlBooking').text(dataUpcoming.length);
+
+		for(var i = 0 ; i < dataUpcoming.length ; i++){
+			var ckInDate = new Date(dataUpcoming[i].tanggal_check_in);
+			var ckOtDate = new Date(dataUpcoming[i].tanggal_check_out);
+			var selisihDate = Math.ceil((ckOtDate-ckInDate) / (1000 * 60 * 60 * 24));
+			var tmp = $('#list_booking')[0].innerHTML;
+			tmp = $.parseHTML(tmp);
+			jmlRoom += parseInt(dataUpcoming[i].jumlah_room);
+			
+			$(tmp).find('#namaUser').text(dataUpcoming[i].nama_pemesan);
+			$(tmp).find('#namaKamar').text(dataUpcoming[i].nama_kamar);
+			$(tmp).find('#jmlRoom').text(dataUpcoming[i].jumlah_room);
+			$(tmp).find('#jmlMalam').text(selisihDate);
+			$(tmp).find('#jmlGuest').text(dataUpcoming[i].jumlah_guest);
+			if(dataUpcoming[i].request_jam_check_in_awal != null){
+				$(tmp).find('#reqInAwal').text(dataUpcoming[i].request_jam_check_in_awal);
+				$(tmp).find('#reqInAkhir').text(dataUpcoming[i].request_jam_check_in_akhir);
+			}else{
+				$(tmp).find('#reqInAkhir').parent('.badge').hide();
 			}
-			if (c.indexOf(name) == 0) {
-				return c.substring(name.length, c.length);
-			}
+			$(tmp).find('#totHarga').text(currency.format(dataUpcoming[i].total_harga));
+			$(tmp).appendTo('#upcoming');
 		}
-		return "";
+
+		for(var i = 0 ; i < dataInhouse.length ; i++){
+			var ckInDate = new Date(dataInhouse[i].tanggal_check_in);
+			var ckOtDate = new Date(dataInhouse[i].tanggal_check_out);
+			var selisihDate = Math.ceil((ckOtDate-ckInDate) / (1000 * 60 * 60 * 24));
+			var tmp = $('#list_booking')[0].innerHTML;
+			tmp = $.parseHTML(tmp);
+			jmlRoom += parseInt(dataInhouse[i].jumlah_room);
+			
+			$(tmp).find('#namaUser').text(dataInhouse[i].nama_pemesan);
+			$(tmp).find('#namaKamar').text(dataInhouse[i].nama_kamar);
+			$(tmp).find('#jmlRoom').text(dataInhouse[i].jumlah_room);
+			$(tmp).find('#jmlMalam').text(selisihDate);
+			$(tmp).find('#jmlGuest').text(dataInhouse[i].jumlah_guest);
+			if(dataInhouse[i].request_jam_check_in_awal != null){
+				$(tmp).find('#reqInAwal').text(dataInhouse[i].request_jam_check_in_awal);
+				$(tmp).find('#reqInAkhir').text(dataInhouse[i].request_jam_check_in_akhir);
+			}else{
+				$(tmp).find('#reqInAkhir').parent('.badge').hide();
+			}
+			$(tmp).find('#totHarga').text(currency.format(dataInhouse[i].total_harga));
+			$(tmp).appendTo('#inhouse');
+		}
+
+		for(var i = 0 ; i < dataComplete.length ; i++){
+			var ckInDate = new Date(dataComplete[i].tanggal_check_in);
+			var ckOtDate = new Date(dataComplete[i].tanggal_check_out);
+			var selisihDate = Math.ceil((ckOtDate-ckInDate) / (1000 * 60 * 60 * 24));
+			var tmp = $('#list_booking')[0].innerHTML;
+			tmp = $.parseHTML(tmp);
+			jmlRoom += parseInt(dataComplete[i].jumlah_room);
+			
+			$(tmp).find('#namaUser').text(dataComplete[i].nama_pemesan);
+			$(tmp).find('#namaKamar').text(dataComplete[i].nama_kamar);
+			$(tmp).find('#jmlRoom').text(dataComplete[i].jumlah_room);
+			$(tmp).find('#jmlMalam').text(selisihDate);
+			$(tmp).find('#jmlGuest').text(dataComplete[i].jumlah_guest);
+			if(dataComplete[i].request_jam_check_in_awal != null){
+				$(tmp).find('#reqInAwal').text(dataComplete[i].request_jam_check_in_awal);
+				$(tmp).find('#reqInAkhir').text(dataComplete[i].request_jam_check_in_akhir);
+			}else{
+				$(tmp).find('#reqInAkhir').parent('.badge').hide();
+			}
+			$(tmp).find('#totHarga').text(currency.format(dataComplete[i].total_harga));
+			$(tmp).appendTo('#completed');
+		}
+
+		$('#jmlRoom').text(jmlRoom);
+	});
+	
+
+	function getUpcoming(idHotel) {
+		return $.ajax(
+			"<?php echo base_url() ?>index.php/get_order_by_hotel_upcoming/" + idHotel, {
+				dataType: 'json'
+			}
+		);
+	}
+
+	function getInhouse(idHotel) {
+		return $.ajax(
+			"<?php echo base_url() ?>index.php/get_order_by_hotel_inhouse/" + idHotel, {
+				dataType: 'json'
+			}
+		);
+	}
+
+	function getComplete(idHotel) {
+		return $.ajax(
+			"<?php echo base_url() ?>index.php/get_order_by_hotel_completed/" + idHotel, {
+				dataType: 'json'
+			}
+		);
 	}
 
 </script>
