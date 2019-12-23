@@ -170,7 +170,7 @@
 <script src="<?=base_url("dist/js/function.js");?>"></script>
 
 <script id="hotel_option" type="text/HTML">
-	<a class="dropdown-item" href="#">test</a>
+	<a class="dropdown-item" href="#"></a>
     </script>
 
 <script>

@@ -212,6 +212,8 @@
 	var namaHotel = getCookie('nama_hotel');
 	var idHotel = getCookie('id_hotel');
 
+	$('.lds-ring').show();
+		$('.container').hide();
 
 	$(document).ready(function () {
 		$("#booking_footer").addClass('is-active');
@@ -219,8 +221,6 @@
 		$('#nama_hotel').text(namaHotel);
 	});
 
-		$('.lds-ring').show();
-		$('.container').hide();
 	$.when(getUpcoming(idHotel), getInhouse(idHotel), getComplete(idHotel)).done(function (upcoming, inhouse, complete) {
 		$('.lds-ring').hide();
 		$('.container').show();
