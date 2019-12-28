@@ -231,6 +231,18 @@ class Default_controller extends CI_Controller {
 		}
 	}
 
+	public function get_all_nokamar($return_var = NULL){
+		$data = $this->Default_model->get_data_nokamar();
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
 	public function get_all_order($return_var = NULL){
 		$data = $this->Default_model->get_data_order(NULL,'id_order');
 		if (empty($data)){
@@ -327,6 +339,19 @@ class Default_controller extends CI_Controller {
 		}
 	}
 
+	public function get_nokamar_by_id($idkamar, $nokamar, $return_var = NULL){
+		$filter = array('nokamar.id_kamar'=> $idkamar, 'no_kamar'=> $nokamar);
+		$data = $this->Default_model->get_data_nokamar($filter);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
 	public function get_order_by_id($id, $return_var = NULL){
 		$filter = array('id_order'=> $id);
 		$data = $this->Default_model->get_data_order($filter);
@@ -366,6 +391,22 @@ class Default_controller extends CI_Controller {
 	public function get_kamar_by_hotel($id, $return_var = NULL){
 		$filter = array('kamar.id_hotel'=> $id);
 		$data = $this->Default_model->get_data_kamar($filter);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	//get nokamar by kamar
+	//parameter: id kamar
+	//note: ambil data nomer kamar berdasarkan jenis kamar
+	public function get_nokamar_by_kamar($id, $return_var = NULL){
+		$filter = array('nokamar.id_kamar'=> $id);
+		$data = $this->Default_model->get_data_nokamar($filter);
 		if (empty($data)){
 			$data = [];
 		}
@@ -630,10 +671,26 @@ class Default_controller extends CI_Controller {
 				'id_kamar' => $this->input->post('id_kamar'),
 				'id_hotel' => $this->input->post('id_hotel'),
 				'nama_kamar' => $this->input->post('nama'),
-				'jumlah_kamar' => $this->input->post('jumlah'),
 				'max_guest' => $this->input->post('max_guest')
 			);
 			$insertStatus = $this->Default_model->insert_kamar($data);
+			echo $insertStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//Tambah data nomer kamar
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function insert_nokamar(){
+		if ($this->checkcookieadmin()) {
+			$data = array(
+				'no_kamar' => $this->input->post('no_kamar'),
+				'id_kamar' => $this->input->post('id_kamar'),
+				'lantai' => $this->input->post('lantai')
+			);
+			$insertStatus = $this->Default_model->insert_nokamar($data);
 			echo $insertStatus;
 		}else{
 			echo "access denied";
@@ -826,7 +883,7 @@ class Default_controller extends CI_Controller {
 	}
 
 	//edit profil kamar
-	//parameter: id kamae
+	//parameter: id kamar
 	//note: API hanya bisa diakses saat ada cookie admin
 	//output: success/failed/access denied
 	public function update_kamar($id){
@@ -834,10 +891,28 @@ class Default_controller extends CI_Controller {
 			$data = array(
 				// 'id_hotel' => $this->input->post('id_hotel'),
 				'nama_kamar' => $this->input->post('nama'),
-				'jumlah_kamar' => $this->input->post('jumlah'),
 				'max_guest' => $this->input->post('max_guest')
 			);
 			$updateStatus = $this->Default_model->update_kamar($id,$data);
+			echo $updateStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+
+	//edit profil nomer kamar
+	//parameter: id kamar, nomer kamar
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function update_nokamar($idkamar, $nokamar){
+		if ($this->checkcookieadmin()) {
+			$data = array(
+				// 'no_kamar' => $this->input->post('no_kamar'),
+				// 'id_kamar' => $this->input->post('id_kamar'),
+				'lantai' => $this->input->post('lantai')
+			);
+			$updateStatus = $this->Default_model->update_nokamar($idkamar,$nokamar,$data);
 			echo $updateStatus;
 		}else{
 			echo "access denied";
@@ -853,6 +928,7 @@ class Default_controller extends CI_Controller {
 			$data = array(
 				// 'id_hotel' => $this->input->post('id_hotel'),
 				'id_kamar' => $this->input->post('id_kamar'),
+				'no_kamar' => $this->input->post('no_kamar'),				
 				'nama_pemesan' => $this->input->post('nama_pemesan'),
 				'telepon_pemesan' => $this->input->post('telepon_pemesan'),
 				'email_pemesan' => $this->input->post('email_pemesan'),
@@ -889,6 +965,7 @@ class Default_controller extends CI_Controller {
 	public function update_order_check_in($id){
 		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
 			$data = array(
+				'no_kamar' => $this->input->post('no_kamar'),
 				'tanggal_check_in_real' => date('Y-m-d'),
 				'status_order' => "inhouse"
 			);
@@ -973,6 +1050,18 @@ class Default_controller extends CI_Controller {
 	public function delete_kamar($id){
 		if ($this->checkcookieadmin()) {
 			$deleteStatus = $this->Default_model->delete_kamar($id);
+			echo $deleteStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//Delete nomer kamar
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function delete_nokamar($idkamar, $nokamar){
+		if ($this->checkcookieadmin()) {
+			$deleteStatus = $this->Default_model->delete_nokamar($idkamar, $nokamar);
 			echo $deleteStatus;
 		}else{
 			echo "access denied";
