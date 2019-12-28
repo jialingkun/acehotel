@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 16, 2019 at 11:35 AM
+-- Generation Time: Dec 28, 2019 at 07:56 AM
 -- Server version: 10.1.36-MariaDB
 -- PHP Version: 5.6.38
 
@@ -74,7 +74,6 @@ CREATE TABLE `kamar` (
   `id_kamar` varchar(255) NOT NULL,
   `id_hotel` varchar(255) DEFAULT NULL,
   `nama_kamar` varchar(255) DEFAULT NULL,
-  `jumlah_kamar` int(11) DEFAULT NULL,
   `max_guest` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -82,11 +81,41 @@ CREATE TABLE `kamar` (
 -- Dumping data for table `kamar`
 --
 
-INSERT INTO `kamar` (`id_kamar`, `id_hotel`, `nama_kamar`, `jumlah_kamar`, `max_guest`) VALUES
-('araya001_001', 'araya001', 'Double Bed standar', 10, 2),
-('araya001_002', 'araya001', 'Double Bed Premium', 3, 2),
-('araya002_001', 'araya002', 'Double Bed', 5, 2),
-('araya002_002', 'araya002', 'Family Room', 2, 4);
+INSERT INTO `kamar` (`id_kamar`, `id_hotel`, `nama_kamar`, `max_guest`) VALUES
+('araya001_001', 'araya001', 'Double Bed standar', 2),
+('araya001_002', 'araya001', 'Double Bed Premium', 2),
+('araya002_001', 'araya002', 'Double Bed', 2),
+('araya002_002', 'araya002', 'Family Room', 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `nokamar`
+--
+
+CREATE TABLE `nokamar` (
+  `no_kamar` varchar(255) NOT NULL,
+  `id_kamar` varchar(255) NOT NULL,
+  `lantai` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `nokamar`
+--
+
+INSERT INTO `nokamar` (`no_kamar`, `id_kamar`, `lantai`) VALUES
+('101', 'araya001_001', '1F'),
+('101', 'araya002_001', '1'),
+('102', 'araya001_001', '1F'),
+('102', 'araya002_001', '1'),
+('103', 'araya001_001', '1F'),
+('103', 'araya002_002', '1'),
+('104', 'araya001_001', '1D'),
+('105', 'araya001_001', '1D'),
+('106', 'araya001_001', '1D'),
+('201', 'araya001_002', '2F'),
+('202', 'araya001_002', '2F'),
+('203', 'araya001_002', '2F');
 
 -- --------------------------------------------------------
 
@@ -98,6 +127,7 @@ CREATE TABLE `orders` (
   `id_order` int(11) NOT NULL,
   `id_hotel` varchar(255) DEFAULT NULL,
   `id_kamar` varchar(255) DEFAULT NULL,
+  `no_kamar` varchar(255) DEFAULT NULL,
   `nama_pemesan` varchar(255) DEFAULT NULL,
   `telepon_pemesan` varchar(255) DEFAULT NULL,
   `email_pemesan` varchar(255) DEFAULT NULL,
@@ -127,10 +157,10 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id_order`, `id_hotel`, `id_kamar`, `nama_pemesan`, `telepon_pemesan`, `email_pemesan`, `no_ktp_pemesan`, `tanggal_check_in`, `tanggal_check_out`, `tanggal_check_in_real`, `tanggal_check_out_real`, `jumlah_guest`, `jumlah_room`, `max_guest`, `nama_kamar`, `nama_hotel`, `alamat_hotel`, `telepon_hotel`, `request_jam_check_in_awal`, `request_jam_check_in_akhir`, `request_breakfast`, `request_rent_car`, `total_harga`, `tanggal_order`, `sumber_order`, `status_order`) VALUES
-(1, 'araya001', 'araya001_001', 'Benny Hartono', '09834092834', 'email@gmail.com', '923748503450345', '2019-12-15', '2019-12-18', '0000-00-00', '0000-00-00', 2, 1, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 199999, '2019-11-12', 'OYO', 'upcoming'),
-(2, 'araya001', 'araya001_001', 'Yoko', NULL, NULL, NULL, '2019-12-12', '2019-12-15', '2019-12-16', '2019-12-16', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'completed'),
-(3, 'araya001', 'araya001_001', 'Andreas', NULL, NULL, NULL, '2019-12-16', '2019-12-18', '2019-12-16', NULL, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 30000, '2019-12-17', NULL, 'inhouse');
+INSERT INTO `orders` (`id_order`, `id_hotel`, `id_kamar`, `no_kamar`, `nama_pemesan`, `telepon_pemesan`, `email_pemesan`, `no_ktp_pemesan`, `tanggal_check_in`, `tanggal_check_out`, `tanggal_check_in_real`, `tanggal_check_out_real`, `jumlah_guest`, `jumlah_room`, `max_guest`, `nama_kamar`, `nama_hotel`, `alamat_hotel`, `telepon_hotel`, `request_jam_check_in_awal`, `request_jam_check_in_akhir`, `request_breakfast`, `request_rent_car`, `total_harga`, `tanggal_order`, `sumber_order`, `status_order`) VALUES
+(1, 'araya001', 'araya001_001', NULL, 'Benny Hartono', '09834092834', 'email@gmail.com', '923748503450345', '2019-12-15', '2019-12-18', '0000-00-00', '0000-00-00', 2, 1, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 199999, '2019-11-12', 'OYO', 'upcoming'),
+(2, 'araya001', 'araya001_001', NULL, 'Yoko', NULL, NULL, NULL, '2019-12-12', '2019-12-15', '2019-12-16', '2019-12-16', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'completed'),
+(3, 'araya001', 'araya001_001', NULL, 'Andreas', NULL, NULL, NULL, '2019-12-16', '2019-12-18', '2019-12-16', NULL, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 30000, '2019-12-17', NULL, 'inhouse');
 
 -- --------------------------------------------------------
 
@@ -201,6 +231,13 @@ ALTER TABLE `kamar`
   ADD KEY `kamar_ibfk_1` (`id_hotel`);
 
 --
+-- Indexes for table `nokamar`
+--
+ALTER TABLE `nokamar`
+  ADD PRIMARY KEY (`no_kamar`,`id_kamar`),
+  ADD KEY `id_kamar` (`id_kamar`);
+
+--
 -- Indexes for table `orders`
 --
 ALTER TABLE `orders`
@@ -246,6 +283,12 @@ ALTER TABLE `hotel`
 --
 ALTER TABLE `kamar`
   ADD CONSTRAINT `kamar_ibfk_1` FOREIGN KEY (`id_hotel`) REFERENCES `hotel` (`id_hotel`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `nokamar`
+--
+ALTER TABLE `nokamar`
+  ADD CONSTRAINT `nokamar_ibfk_1` FOREIGN KEY (`id_kamar`) REFERENCES `kamar` (`id_kamar`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `orders`

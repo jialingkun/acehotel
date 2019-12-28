@@ -49,9 +49,22 @@ class Default_model extends CI_Model {
 	}
 
 	public function get_data_kamar($filter = NULL){
-		$this->db->select('*');
+		$this->db->select('kamar.*, hotel.*, count(nokamar.no_kamar) as jumlah_kamar');
 		$this->db->from('kamar');
 		$this->db->join('hotel', 'kamar.id_hotel = hotel.id_hotel', 'left');
+		$this->db->join('nokamar', 'kamar.id_kamar = nokamar.id_kamar', 'left');
+		$this->db->group_by('kamar.id_kamar');
+		if ($filter != NULL){
+			$this->db->where($filter);
+		}
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	public function get_data_nokamar($filter = NULL){
+		$this->db->select('*');
+		$this->db->from('nokamar');
+		$this->db->join('kamar', 'nokamar.id_kamar = kamar.id_kamar', 'left');
 		if ($filter != NULL){
 			$this->db->where($filter);
 		}
@@ -133,6 +146,16 @@ class Default_model extends CI_Model {
 		return $return_message;
 	}
 
+	public function insert_nokamar($data){
+		$this->db->insert('nokamar', $data);
+		if ($this->db->affected_rows() > 0 ) {
+			$return_message = 'success';
+		}else{
+			$return_message = 'failed';
+		}
+		return $return_message;
+	}
+
 	public function insert_order($data){
 		$this->db->insert('orders', $data);
 		if ($this->db->affected_rows() > 0 ) {
@@ -202,6 +225,18 @@ class Default_model extends CI_Model {
 		return $return_message;
 	}
 
+	public function update_nokamar($idkamar, $nokamar, $data){
+		$this->db->where('id_kamar', $idkamar);
+		$this->db->where('no_kamar', $nokamar);
+		$this->db->update('nokamar', $data);
+		if ($this->db->affected_rows() > 0 ) {
+			$return_message = 'success';
+		}else{
+			$return_message = 'failed';
+		}
+		return $return_message;
+	}
+
 	public function update_order($id, $data){
 		$this->db->where('id_order', $id);
 		$this->db->update('orders', $data);
@@ -262,6 +297,18 @@ class Default_model extends CI_Model {
 	public function delete_kamar($id){
 		$this->db->where('id_kamar', $id);
 		$this->db->delete('kamar');
+		if ($this->db->affected_rows() > 0 ) {
+			$return_message = 'success';
+		}else{
+			$return_message = 'failed';
+		}
+		return $return_message;
+	}
+
+	public function delete_nokamar($idkamar, $nokamar){
+		$this->db->where('id_kamar', $idkamar);
+		$this->db->where('no_kamar', $nokamar);
+		$this->db->delete('nokamar');
 		if ($this->db->affected_rows() > 0 ) {
 			$return_message = 'success';
 		}else{
