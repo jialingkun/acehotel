@@ -167,15 +167,16 @@
 <script src="<?=base_url("dist/js/jquery.min.js");?>"></script>
 <script src="<?=base_url("dist/js/popper.min.js");?>"></script>
 <script src="<?=base_url("dist/js/bootstrap.min.js");?>"></script>
+<script src="<?=base_url("dist/js/function.js");?>"></script>
 
 <script id="hotel_option" type="text/HTML">
-	<a class="dropdown-item" href="#">test</a>
+	<a class="dropdown-item" href="#"></a>
     </script>
 
 <script>
 	function getData(idHotel, namaHotel) {
-        setCookie('id_hotel', idHotel);
-        setCookie('nama_hotel', namaHotel);
+		setCookie('id_hotel', idHotel);
+		setCookie('nama_hotel', namaHotel);
 
 		$('.lds-ring').show();
 		$('.container').hide();
@@ -243,7 +244,6 @@
 			$('.container').hide();
 		},
 		success: function (response) {
-			$('#nama_hotel').text(response[0].nama_hotel);
 			for (i = 0; i < response.length; i++) {
 				var tmp = $('#hotel_option')[0].innerHTML;
 				tmp = $.parseHTML(tmp);
@@ -258,9 +258,15 @@
 		complete: function () {
 			$('.lds-ring').hide();
 			$('.container').show();
-			let idHotel = $('.dropdown-item:first').data('id');
-			let namaHotel = $('.dropdown-item:first').data('nama');
-			getData(idHotel, namaHotel);
+			if (getCookie('id_hotel') != "") {
+				getData(getCookie('id_hotel'), getCookie('nama_hotel'));
+				$('#nama_hotel').text(getCookie('nama_hotel'));
+			} else {
+				let idHotel = $('.dropdown-item:first').data('id');
+				let namaHotel = $('.dropdown-item:first').data('nama');
+				$('#nama_hotel').text(namaHotel);
+				getData(idHotel, namaHotel);
+			}
 		}
 	});
 
@@ -271,29 +277,6 @@
 		$('#nama_hotel').text(namaHotel);
 		getData(idHotel, namaHotel);
 	});
-
-	function setCookie(cname, cvalue) {
-		var d = new Date();
-		d.setTime(d.getTime() + (24 * 60 * 60 * 1000));
-		var expires = "expires=" + d.toUTCString();
-		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-	}
-
-	function getCookie(cname) {
-		var name = cname + "=";
-		var decodedCookie = decodeURIComponent(document.cookie);
-		var ca = decodedCookie.split(';');
-		for (var i = 0; i < ca.length; i++) {
-			var c = ca[i];
-			while (c.charAt(0) == ' ') {
-				c = c.substring(1);
-			}
-			if (c.indexOf(name) == 0) {
-				return c.substring(name.length, c.length);
-			}
-		}
-		return "";
-	}
 
 </script>
 

@@ -121,9 +121,27 @@ class Default_controller extends CI_Controller {
 		}
 	}
 
+	public function managementhotel(){
+		if ($this->checkcookieadmin()) {
+			$this->load->view('admin/management_hotel');
+		}else{
+			header("Location: ".base_url()."index.php/loginadmin");
+			die();
+		}
+	}
+
+	public function managementhoteldetail(){
+		if ($this->checkcookieadmin()) {
+			$this->load->view('admin/management_hotel_detail');
+		}else{
+			header("Location: ".base_url()."index.php/loginadmin");
+			die();
+		}
+	}
+
 	public function managementowner(){
-		if ($this->checkcookieowner()) {
-			$this->load->view('owner/management');
+		if ($this->checkcookieadmin()) {
+			$this->load->view('admin/management_owner');
 		}else{
 			header("Location: ".base_url()."index.php/loginowner");
 			die();
