@@ -582,6 +582,35 @@ class Default_controller extends CI_Controller {
 
 
 
+	//get ketersediaan nokamar by kamar
+	//parameter: id kamar, tgl check out (ex:2019-12-17)
+	//note: ambil data nomer kamar berdasarkan jenis kamar dengan detail ketersediaannya di tanggal check out tertentu
+	public function get_ketersediaan_nokamar($id, $tglcheckout, $return_var = NULL){
+		$data = $this->get_nokamar_by_kamar($id, true);
+		foreach ($data as &$row){
+			$filter = array(
+				'orders.id_kamar'=> $id,
+				'orders.no_kamar'=> $row['no_kamar'], 
+				'orders.status_order !='=> 'completed', 
+				'orders.tanggal_check_in <=' =>date("Y-m-d", strtotime($tglcheckout))
+			);
+			$dataorder = $this->Default_model->get_data_order($filter);
+			if (empty($dataorder)){
+				$row['ketersediaan'] = 'tersedia';
+			}else{
+				$row['ketersediaan'] = 'tidak tersedia';
+			}
+		}
+
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+
+
 
 
 
