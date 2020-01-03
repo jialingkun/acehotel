@@ -121,7 +121,8 @@
 							<form id="insert_owner" onsubmit="insertmember(event)">
 								<div class="form-group">
 									<label for="usr">Username Owner</label>
-									<input type="text" name="username" class="form-control" pattern="^[A-Za-z0-9-_]+$" required>
+									<input type="text" name="username" class="form-control" pattern="^[A-Za-z0-9-_]+$"
+										required>
 								</div>
 								<div class="form-group">
 									<label for="alamat">Password</label>
@@ -129,12 +130,13 @@
 								</div>
 								<div class="form-group">
 									<label for="alamat">Nama Owner</label>
-									<input type="text"  name="nama" class="form-control" pattern="^[A-Za-z ,.'-]+$" required>
+									<input type="text" name="nama" class="form-control" pattern="^[A-Za-z ,.'-]+$"
+										required>
 								</div>
 								<div class="form-group">
 									<label for="alamat">Telepon Owner</label>
-									<input type="text" name="telepon" class="form-control" placeholder="format: 081333777999"
-										pattern="^[0-9]+$" required>
+									<input type="text" name="telepon" class="form-control"
+										placeholder="format: 081333777999" pattern="^[0-9]+$" required>
 								</div>
 								<div class="form-group">
 									<button type="submit" id="submitButton" class="btn btn-primary btn-md float-right">
