@@ -697,7 +697,7 @@ class Default_controller extends CI_Controller {
 	public function insert_kamar(){
 		if ($this->checkcookieadmin()) {
 			$data = array(
-				'id_kamar' => $this->input->post('id_kamar'),
+				// 'id_kamar' => $this->input->post('id_kamar'),
 				'id_hotel' => $this->input->post('id_hotel'),
 				'nama_kamar' => $this->input->post('nama'),
 				'max_guest' => $this->input->post('max_guest')
