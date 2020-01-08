@@ -118,36 +118,35 @@
 					</div>
 					<div class="modal-body">
 						<div class="col-12 no-padding">
-							<div class="form-group">
-								<label for="usr">Nama Hotel</label>
-								<input type="text" class="form-control">
-							</div>
-							<div class="form-group">
-								<label for="alamat">Alamat</label>
-								<input type="text" class="form-control">
-							</div>
-							<div class="form-group">
-								<label for="alamat">Telepon</label>
-								<input type="text" class="form-control">
-							</div>
-							<div class="input-group">
-								<p for="jk">Owner</p>
-							</div>
-							<div class="input-group">
-								<input type="text" class="form-control">
-								<div class="input-group-append">
-									<button class="btn btn-outline-secondary dropdown-toggle" type="button"
-										data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-									<div class="dropdown-menu">
-										<a class="dropdown-item" href="#">Action</a>
-									</div>
+							<form id="insert_owner" onsubmit="insertmember(event)">
+								<div class="form-group">
+									<label for="usr">Username Owner</label>
+									<input type="text" name="username" class="form-control" pattern="^[A-Za-z0-9-_]+$"
+										required>
 								</div>
-							</div>
+								<div class="form-group">
+									<label for="alamat">Password</label>
+									<input type="password" name="password" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="alamat">Nama Owner</label>
+									<input type="text" name="nama" class="form-control" pattern="^[A-Za-z ,.'-]+$"
+										required>
+								</div>
+								<div class="form-group">
+									<label for="alamat">Telepon Owner</label>
+									<input type="text" name="telepon" class="form-control"
+										placeholder="format: 081333777999" pattern="^[0-9]+$" required>
+								</div>
+								<div class="form-group">
+									<button type="submit" id="submitButton" class="btn btn-primary btn-md float-right">
+										<span id="submit">Submit</span></button>
+								</div>
 						</div>
+						</form>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-success">Add</button>
 					</div>
 				</div>
 			</div>
@@ -203,8 +202,6 @@
 
 	$(document).on('click', '.owner-data', function () {
 		var usernameOwner = $(this).data('id');
-		
-		
 	});
 
 	function getAllOwner() {
@@ -213,6 +210,36 @@
 				dataType: 'json'
 			}
 		);
+	}
+
+	function insertmember(e) {
+		if (confirm("Apakah anda yakin ?")) {
+			e.preventDefault();
+			urls = "insert_owner";
+			var dataString = $("#insert_owner").serialize();
+
+			$("#submit").html("tunggu..");
+			$("#submitButton").prop("disabled", true);
+
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls,
+				type: 'POST',
+				data: dataString,
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						location.reload();
+					} else {
+						alert(response);
+						$("#submit").html("Submit");
+						$("#submitButton").prop("disabled", false);
+					}
+				},
+				error: function () {
+					alert(response);
+					$("#submitButton").prop("disabled", false);
+				}
+			});
+		} else {}
 	}
 
 </script>
