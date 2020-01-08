@@ -125,11 +125,6 @@
 										required>
 								</div>
 								<div class="form-group">
-									<label for="usr">ID kamar</label>
-									<input type="text" name="id_kamar" class="form-control" pattern="^[A-Za-z0-9-_]+$"
-										required>
-								</div>
-								<div class="form-group">
 									<label for="username_owner">Nama Kamar</label>
 									<input type="text" name="nama" class="form-control" 
 										required>
