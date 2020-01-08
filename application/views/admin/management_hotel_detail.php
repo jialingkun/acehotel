@@ -103,45 +103,52 @@
 					</div>
 				</div>
 			</div>
-		</div>
-        <div class="modal fade" id="inputTransaksi" tabindex="-1" role="dialog" aria-labelledby="inputTransaksiLabel"
+		 </div>
+		<a class="float" data-toggle="modal" data-target="#inputTransaksi">
+			<i class="fa fa-plus my-float text-white" aria-hidden="true"></i>
+		</a>
+		<div class="modal fade" id="inputTransaksi" tabindex="-1" role="dialog" aria-labelledby="inputTransaksiLabel"
 			aria-hidden="true">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="inputTransaksiLabel">Add Booking</h5>
+						<h5 class="modal-title" id="inputTransaksiLabel">Tambah Hotel</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 					<div class="modal-body">
 						<div class="col-12 no-padding">
+							<form id="insert_kamar" onsubmit="insertKamar(event)">
 							<div class="form-group">
-								<label for="usr">Nama</label>
-								<input type="text" class="form-control">
-							</div>
-							<div class="form-group">
-								<label for="tlp">Telepon</label>
-								<input type="text" class="form-control">
-							</div>
-							<div class="input-group">
-								<p for="jk">Jenis Kamar</p>
-							</div>
-							<div class="input-group">
-								<input type="text" class="form-control">
-								<div class="input-group-append">
-									<button class="btn btn-outline-secondary dropdown-toggle" type="button"
-										data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-									<div class="dropdown-menu">
-										<a class="dropdown-item" href="#">Action</a>
-									</div>
+									<input type="hidden" id="id_hotel" name="id_hotel" class="form-control" pattern="^[A-Za-z0-9-_]+$"
+										required>
 								</div>
-							</div>
+								<div class="form-group">
+									<label for="usr">ID kamar</label>
+									<input type="text" name="id_kamar" class="form-control" pattern="^[A-Za-z0-9-_]+$"
+										required>
+								</div>
+								<div class="form-group">
+									<label for="username_owner">Nama Kamar</label>
+									<input type="text" name="nama" class="form-control" 
+										required>
+								</div>
+
+								<div class="form-group">
+									<label for="nama">Max Guest</label>
+									<input type="text"  name="max_guest" class="form-control" pattern="^[0-9]+$"	
+										required>
+								</div>
+								<div class="form-group">
+									<button type="submit" id="submitButton" class="btn btn-primary btn-md float-right">
+										<span id="submit">Submit</span></button>
+								</div>
+							</form>
 						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-success">Add</button>
 					</div>
 				</div>
 			</div>
@@ -155,7 +162,7 @@
 <script src="<?=base_url("dist/js/function.js");?>"></script>
 
 <script id="list_kamar" type="text/HTML">
-	<a href="#" class="list-group-item list-group-item-action mgn-list data-kamar" data-toggle="modal" data-target="#inputTransaksi">
+	<a href="#" class="list-group-item list-group-item-action mgn-list data-kamar">
 	<div class="row">
 		<div class="col-9">
             <div class="d-block">
@@ -191,8 +198,8 @@
 	$.when(getAllKamar(idHotel)).done(function (getKamar) {
 		$('.lds-ring').hide();
 		$('.container').show();
-
-		console.log(getKamar[0]);
+		$('#id_hotel').val(idHotel);
+		
 		for (var i = 0; i < getKamar.length; i++) {
 			var tmp = $('#list_kamar')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
@@ -200,23 +207,53 @@
 			console.log(getKamar[i]);
 			$(tmp).find('#namaKamar').text(getKamar[i].nama_kamar);
 			$(tmp).find('#jmlKamar').text(getKamar[i].jumlah_kamar);
-            $(tmp).find('#maxGuest').text(getKamar[i].max_guest);
+			$(tmp).find('#maxGuest').text(getKamar[i].max_guest);
 			$(tmp).data('id', getKamar[i].id_kamar);
 			$(tmp).appendTo('#all_kamar');
 		}
 	});
 
-    $(document).on('click', '.data-kamar', function () {
+	$(document).on('click', '.data-kamar', function () {
 		var idKamar = $(this).data('id');
 		setCookie('id_kamar', idKamar);
-    });
-    
+	});
+
 	function getAllKamar(idHotel) {
 		return $.ajax(
 			"<?php echo base_url() ?>index.php/get_kamar_by_hotel/" + idHotel, {
 				dataType: 'json'
 			}
 		);
+	}
+	
+	function insertKamar(e) {
+		if (confirm("Apakah anda yakin ?")) {
+			e.preventDefault();
+			urls = "insert_kamar";
+			var dataString = $("#insert_kamar").serialize();
+
+			$("#submit").html("tunggu..");
+			$("#submitButton").prop("disabled", true);
+
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls,
+				type: 'POST',
+				data: dataString,
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						location.reload();
+					} else {
+						alert(response);
+						$("#submit").html("Submit");
+						$("#submitButton").prop("disabled", false);
+					}
+				},
+				error: function () {
+					alert(response);
+					$("#submitButton").prop("disabled", false);
+				}
+			});
+		} else {}
 	}
 
 </script>
