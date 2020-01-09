@@ -590,7 +590,7 @@ class Default_controller extends CI_Controller {
 		foreach ($data as &$row){
 			$filter = array(
 				'orders.id_kamar'=> $id,
-				'orders.no_kamar'=> $row['no_kamar'], 
+				'orders.no_kamar REGEXP '=> "(^|,)".$row['no_kamar']."($|,)", 
 				'orders.status_order !='=> 'completed', 
 				'orders.tanggal_check_in <=' =>date("Y-m-d", strtotime($tglcheckout))
 			);
@@ -994,7 +994,7 @@ class Default_controller extends CI_Controller {
 	public function update_order_check_in($id){
 		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
 			$data = array(
-				'no_kamar' => $this->input->post('no_kamar'),
+				'no_kamar' => $this->input->post('no_kamar'), //banyak kamar dipisah dengan koma tanpa spasi misal:101,102F,103
 				'tanggal_check_in_real' => date('Y-m-d'),
 				'status_order' => "inhouse"
 			);
