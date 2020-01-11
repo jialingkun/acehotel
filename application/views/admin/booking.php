@@ -101,13 +101,13 @@
 			<div style="margin:auto; width:100%; font-size:0.9em;" >
 				<ul class="nav nav-tabs text-center" >
 					<li class="nav-item" style="width:33.4%;">
-						<a class="nav-link active" data-toggle="tab" href="#upcoming" style="padding:8px 0;">UPCOMING</a>
+						<a class="nav-link active" id="up" data-toggle="tab" href="#upcoming" style="padding:8px 0;" onclick="detail('upcoming')">UPCOMING</a>
 					</li>
 					<li class="nav-item" style="width:33.3%;">
-						<a class="nav-link" data-toggle="tab" href="#inhouse" style="padding:8px 0;">INHOUSE</a>
+						<a class="nav-link" id="in" data-toggle="tab" href="#inhouse" style="padding:8px 0;" onclick="detail('inhouse')">INHOUSE</a>
 					</li>
 					<li class="nav-item" style="width:33.3%;">
-						<a class="nav-link" data-toggle="tab" href="#completed" style="padding:8px 0;">COMPLETE</a>
+						<a class="nav-link" id="comp" data-toggle="tab" href="#completed" style="padding:8px 0;" onclick="detail('complete')">COMPLETE</a>
 					</li>
 				</ul>
 			</div>
@@ -211,6 +211,16 @@
 <script>
 	var namaHotel = getCookie('nama_hotel');
 	var idHotel = getCookie('id_hotel');
+	var active = getCookie('booking_section');
+
+	if(active == "upcoming"){
+		// $("#upcoming").tab('dispose');
+		$("#up").tab('show');	
+	}else if(active == "inhouse"){
+		$("#in").tab('show');	
+	}else{
+		$("#comp").tab('show');	
+	}
 
 	$('.lds-ring').show();
 		$('.container').hide();
@@ -326,6 +336,10 @@
 				dataType: 'json'
 			}
 		);
+	}
+
+	function detail(active){
+		setCookie('booking_section', active);
 	}
 
 </script>

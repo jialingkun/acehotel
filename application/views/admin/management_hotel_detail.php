@@ -88,13 +88,13 @@
 	<div class="container">
 		<div class="row" style="margin-top:20%;">
 			<div class="col-sm-12 m-2">
-				<h5 class="mb-1">Hotel Araya</h5>
+				<h5 class="mb-1" id="nama_hotel">...</h5>
 				<span>Alamat : </span>
-				<span>Jl. Bunga Mawar 29B</span>
+				<span id="alamat_hotel"></span>
 				<br>
 				<span class="sm-font">Tlep : </span>
-				<span class="sm-font">081333111222</span>
-				<button type="button" class="btn btn-primary d-block pl-3 pr-3 mt-2">Edit</button>
+				<span class="sm-font" id="tlp_hotel">...</span>
+				<button type="button" class="btn btn-primary d-block pl-3 pr-3 mt-2" data-toggle="modal" data-target="#editHotel">Edit</button>
 				<div class="tab-content">
 					<div id="all_kamar" class="tab-pane active"><br>
 						<div class="list-group">
@@ -148,6 +148,89 @@
 				</div>
 			</div>
 		</div>
+
+		<div class="modal fade" id="editTransaksi" tabindex="-1" role="dialog" aria-labelledby="editTransaksiLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="editTransaksiLabel">Edit Owner</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="col-12 no-padding">
+							<form id="edit_kamar" onsubmit="editKamar(event)">
+								<div class="form-group">
+									<label for="alamat">Nama Kamar</label>
+									<input type="text" id="eNama" name="nama" class="form-control"
+										pattern="^[A-Za-z ,.'-]+$" required>
+								</div>
+								<div class="form-group">
+									<label for="alamat">Max Guest</label>
+									<input type="text" id="eGuest" name="max_guest" class="form-control"
+										 pattern="^[0-9]+$" required>
+								</div>
+								<div class="form-group">
+									<button id="eDelete" class="btn btn-danger btn-md float-left">
+										<span onclick="deleteKamar(getCookie('edit_kamar'))">Delete Kamar</span></button>
+									<button type="submit" id="eButton" class="btn btn-primary btn-md float-right">
+										<span id="submit">Submit</span></button>
+								</div>
+						</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="editHotel" tabindex="-1" role="dialog" aria-labelledby="editHotelLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="editHotelLabel">Edit Owner</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="col-12 no-padding">
+							<form id="edit_hotel" onsubmit="editHotel(event)">
+								<div class="form-group">
+									<label for="alamat">Nama Hotel</label>
+									<input type="text" id="eNamaHotel" name="nama" class="form-control"
+										pattern="^[A-Za-z ,.'-]+$" required>
+								</div>
+								<div class="form-group">
+									<label for="alamat">Alamat Hotel</label>
+									<input type="text" id="eAlamatHotel" name="alamat" class="form-control" required>
+								</div>
+								<div class="form-group">
+									<label for="alamat">Telepon</label>
+									<input type="text" id="eTeleponHotel" name="telepon" class="form-control"
+										 pattern="^[0-9]+$" required>
+								</div>
+								<div class="form-group">
+									<button id="eDelete" class="btn btn-danger btn-md float-left">
+										<span onclick="deleteHotel(getCookie('manajemen_id_hotel'))">Delete Hotel</span></button>
+									<button type="submit" id="eButton" class="btn btn-primary btn-md float-right">
+										<span id="submit">Submit</span></button>
+								</div>
+						</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 	</div>
 	<?php $this->load->view("admin/footer");?>
 </body>
@@ -159,7 +242,8 @@
 <script id="list_kamar" type="text/HTML">
 	<a href="#" class="list-group-item list-group-item-action mgn-list data-kamar">
 	<div class="row">
-		<div class="col-9">
+		<div class="col-9" data-toggle="modal" data-target="#editTransaksi" id="listKamar">
+		<input type="hidden" id="id_kamar">
             <div class="d-block">
                 <h6 class="mb-1" id="namaKamar"></h6>
             </div>
@@ -186,24 +270,33 @@
 	});
 
 	var idHotel = getCookie("manajemen_id_hotel");
-	console.log(idHotel);
+	// console.log(idHotel);
 	$('.lds-ring').show();
 	$('.container').hide();
 
-	$.when(getAllKamar(idHotel)).done(function (getKamar) {
+	$.when(getAllKamar(idHotel),getHotel(idHotel)).done(function (getKamar,getHotel) {
+		
+		$('#nama_hotel').text(getHotel[0][0].nama_hotel);
+		$('#alamat_hotel').text(getHotel[0][0].alamat_hotel);
+		$('#tlp_hotel').text(getHotel[0][0].telepon_hotel);
+
+		$('#eNamaHotel').val(getHotel[0][0].nama_hotel);
+		$('#eAlamatHotel').val(getHotel[0][0].alamat_hotel);
+		$('#eTeleponHotel').val(getHotel[0][0].telepon_hotel);
+		
 		$('.lds-ring').hide();
 		$('.container').show();
 		$('#id_hotel').val(idHotel);
 		
-		for (var i = 0; i < getKamar.length; i++) {
+		for (var i = 0; i < getKamar[0].length; i++) {
 			var tmp = $('#list_kamar')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
 
-			console.log(getKamar[i]);
-			$(tmp).find('#namaKamar').text(getKamar[i].nama_kamar);
-			$(tmp).find('#jmlKamar').text(getKamar[i].jumlah_kamar);
-			$(tmp).find('#maxGuest').text(getKamar[i].max_guest);
-			$(tmp).data('id', getKamar[i].id_kamar);
+			$(tmp).find('#id_kamar').text(getKamar[0][i].id_kamar);
+			$(tmp).find('#namaKamar').text(getKamar[0][i].nama_kamar);
+			$(tmp).find('#jmlKamar').text(getKamar[0][i].jumlah_kamar);
+			$(tmp).find('#maxGuest').text(getKamar[0][i].max_guest);
+			$(tmp).data('id', getKamar[0][i].id_kamar);
 			$(tmp).appendTo('#all_kamar');
 		}
 	});
@@ -216,6 +309,14 @@
 	function getAllKamar(idHotel) {
 		return $.ajax(
 			"<?php echo base_url() ?>index.php/get_kamar_by_hotel/" + idHotel, {
+				dataType: 'json'
+			}
+		);
+	}
+
+	function getHotel(idHotel) {
+		return $.ajax(
+			"<?php echo base_url() ?>index.php/get_hotel_by_id/" + idHotel, {
 				dataType: 'json'
 			}
 		);
@@ -250,5 +351,99 @@
 			});
 		} else {}
 	}
+
+	function editKamar(e) {
+		if (confirm("Apakah anda yakin ?")) {
+			e.preventDefault();
+			urls = "update_kamar/";
+			var dataString = $("#edit_kamar").serialize();
+			var id = getCookie('edit_kamar');
+
+			$("#submit").html("tunggu..");
+			$("#eButton").prop("disabled", true);
+
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls + id,
+				type: 'POST',
+				data: dataString,
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						location.reload();
+					} else {
+						$("#submit").html("Submit");
+						$("#eButton").prop("disabled", false);
+					}
+				},
+				error: function () {
+					alert(response);
+					$("#eButton").prop("disabled", false);
+				}
+			});
+		} else {}
+	}
+
+	function deleteKamar(id) {
+		$.ajax({
+				url: "<?php echo base_url() ?>index.php/delete_kamar/" + id,
+				success: function (response) {
+					if (response==="success") {
+						location.reload();
+					}
+				}
+			});
+	}
+
+	function editHotel(e) {
+		if (confirm("Apakah anda yakin ?")) {
+			e.preventDefault();
+			urls = "update_hotel/";
+			var dataString = $("#edit_hotel").serialize();
+			var id = getCookie('manajemen_id_hotel');
+
+			$("#submit").html("tunggu..");
+			$("#eButton").prop("disabled", true);
+
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls + id,
+				type: 'POST',
+				data: dataString,
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						location.reload();
+					} else {
+						$("#submit").html("Submit");
+						$("#eButton").prop("disabled", false);
+					}
+				},
+				error: function () {
+					alert(response);
+					$("#eButton").prop("disabled", false);
+				}
+			});
+		} else {}
+	}
+
+	function deleteHotel(id) {
+		$.ajax({
+				url: "<?php echo base_url() ?>index.php/delete_hotel/" + id,
+				success: function (response) {
+					if (response==="success") {
+						window.location = "<?php echo base_url() ?>index.php/managementhotel/"
+					}
+				}
+			});
+	}
+
+	$(document).on('click', '#listKamar', function () {
+		let id_kamar = $(this).find('#id_kamar').text();
+		let nama = $(this).find('#namaKamar').text();
+		let guest = $(this).find('#maxGuest').text();
+
+		$('#eNama').val(nama);
+		$('#eGuest').val(guest);
+
+		setCookie('edit_kamar', id_kamar);
+
+	});
 
 </script>

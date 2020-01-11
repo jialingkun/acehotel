@@ -151,6 +151,51 @@
 				</div>
 			</div>
 		</div>
+		<div class="modal fade" id="editTransaksi" tabindex="-1" role="dialog" aria-labelledby="editTransaksiLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="editTransaksiLabel">Edit Owner</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="col-12 no-padding">
+							<form id="edit_owner" onsubmit="editUser(event)">
+								<div class="form-group">
+									<label for="usr">Username Owner</label>
+									<h5 id="eUsername"> </h5>
+								</div>
+								<div class="form-group">
+									<button id="ePassword" class="btn btn-warning btn-md">Reset Password</button>
+								</div>
+								<div class="form-group">
+									<label for="alamat">Nama Owner</label>
+									<input type="text" id="eNama" name="nama" class="form-control"
+										pattern="^[A-Za-z ,.'-]+$" required>
+								</div>
+								<div class="form-group">
+									<label for="alamat">Telepon Owner</label>
+									<input type="text" id="eTelepon" name="telepon" class="form-control"
+										placeholder="format: 081333777999" pattern="^[0-9]+$" required>
+								</div>
+								<div class="form-group">
+									<button id="eDelete" class="btn btn-danger btn-md float-left">
+										<span onclick="deleteOwner(getCookie('edit_owner'))">Delete Owner</span></button>
+									<button type="submit" id="eButton" class="btn btn-primary btn-md float-right">
+										<span id="submit">Submit</span></button>
+								</div>
+						</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 	<?php $this->load->view("admin/footer");?>
 </body>
@@ -161,13 +206,13 @@
 
 <script id="list_owner" type="text/HTML">
 	<a href="#" class="list-group-item list-group-item-action mgn-list owner-data">
-	<div class="row">
-		<div class="col-9">
+	<div class="row"  data-toggle="modal" data-target="#editTransaksi" id="listOwner">
+		<div class="col-9" >
         	<h5 class="mb-1" id="usernameOwner"></h5>
 			<span class="d-block" id="namaOwner"></span>
 			<span class="sm-font" id="tlpOwner"></span>
 		</div>
-		<div class="col-3" style="margin:auto; color:#1C7CD5">
+		<div class="col-3" style="margin:auto; color:#1C7CD5" >
 			<span>Edit</span>
 		</div>
 	</div>
@@ -191,7 +236,6 @@
 			var tmp = $('#list_owner')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
 
-			console.log(getOwner[i]);
 			$(tmp).find('#usernameOwner').text(getOwner[i].username_owner);
 			$(tmp).find('#namaOwner').text(getOwner[i].nama_owner);
 			$(tmp).find('#tlpOwner').text(getOwner[i].telepon_owner);
@@ -241,5 +285,60 @@
 			});
 		} else {}
 	}
+
+	function editUser(e) {
+		if (confirm("Apakah anda yakin ?")) {
+			e.preventDefault();
+			urls = "update_owner/";
+			var dataString = $("#edit_owner").serialize();
+			var id = getCookie('edit_owner');
+
+			$("#submit").html("tunggu..");
+			$("#eButton").prop("disabled", true);
+
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls + id,
+				type: 'POST',
+				data: dataString,
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						location.reload();
+					} else {
+						alert(response);
+						$("#submit").html("Submit");
+						$("#eButton").prop("disabled", false);
+					}
+				},
+				error: function () {
+					alert(response);
+					$("#eButton").prop("disabled", false);
+				}
+			});
+		} else {}
+	}
+
+	function deleteOwner(id) {
+		$.ajax({
+				url: "<?php echo base_url() ?>index.php/delete_owner/" + id,
+				success: function (response) {
+					if (response==="success") {
+						location.reload();
+					}
+				}
+			});
+	}
+
+	$(document).on('click', '#listOwner', function () {
+		let username = $(this).find('#usernameOwner').text();
+		let nama = $(this).find('#namaOwner').text();
+		let telepon = $(this).find('#tlpOwner').text();
+
+		$('#eUsername').text(username);
+		$('#eNama').val(nama);
+		$('#eTelepon').val(telepon);
+
+		setCookie('edit_owner', username);
+
+	});
 
 </script>
