@@ -116,7 +116,7 @@
 			</div>
 
 			<div class="col-12" style="margin-top:5%;">
-				<div class="square-box">
+				<div class="square-box" onclick="detail('upcoming')">
 					<div class="square-content">
 						<div class="text-center">
 							<h5 class="text-success">To Check In</h5>
@@ -127,7 +127,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="square-box">
+				<div class="square-box" onclick="detail('inhouse')">
 					<div class="square-content">
 						<div class="text-center">
 							<h5 class="text-danger">To Check Out</h5>
@@ -138,7 +138,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="square-box">
+				<div class="square-box" onclick="detail('inhouse')">
 					<div class="square-content">
 						<div class="text-center">
 							<h5 class="text-warning">In House</h5>
@@ -277,6 +277,11 @@
 		$('#nama_hotel').text(namaHotel);
 		getData(idHotel, namaHotel);
 	});
+
+	function detail(active){
+		setCookie('booking_section', active);
+		window.location = "<?=base_url("/index.php/bookingadmin");?>";
+	}
 
 </script>
 
