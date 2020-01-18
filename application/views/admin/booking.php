@@ -10,6 +10,9 @@
 	<link rel="stylesheet" href="<?=base_url("dist/css/style.css");?>">
 	<link rel="stylesheet" href="<?=base_url("dist/css/font-awesome.min.css");?>">
 
+
+
+
 	<title>DASHBOARD ADMIN</title>
 </head>
 <style>
@@ -80,9 +83,10 @@
 		margin-top: 22px;
 	}
 
-	#namaUser{
+	#namaUser {
 		text-transform: uppercase;
 	}
+
 </style>
 
 <body>
@@ -98,25 +102,28 @@
 			<div class="col-sm-12 text-center">
 				<h3><span class="badge badge-white" id="nama_hotel"></span></h3>
 			</div>
-			<div style="margin:auto; width:100%; font-size:0.9em;" >
-				<ul class="nav nav-tabs text-center" >
+			<div style="margin:auto; width:100%; font-size:0.9em;">
+				<ul class="nav nav-tabs text-center">
 					<li class="nav-item" style="width:33.4%;">
-						<a class="nav-link active" id="up" data-toggle="tab" href="#upcoming" style="padding:8px 0;" onclick="detail('upcoming')">UPCOMING</a>
+						<a class="nav-link active" id="up" data-toggle="tab" href="#upcoming" style="padding:8px 0;"
+							onclick="detail('upcoming')">UPCOMING</a>
 					</li>
 					<li class="nav-item" style="width:33.3%;">
-						<a class="nav-link" id="in" data-toggle="tab" href="#inhouse" style="padding:8px 0;" onclick="detail('inhouse')">INHOUSE</a>
+						<a class="nav-link" id="in" data-toggle="tab" href="#inhouse" style="padding:8px 0;"
+							onclick="detail('inhouse')">INHOUSE</a>
 					</li>
 					<li class="nav-item" style="width:33.3%;">
-						<a class="nav-link" id="comp" data-toggle="tab" href="#completed" style="padding:8px 0;" onclick="detail('complete')">COMPLETE</a>
+						<a class="nav-link" id="comp" data-toggle="tab" href="#completed" style="padding:8px 0;"
+							onclick="detail('complete')">COMPLETE</a>
 					</li>
 				</ul>
 			</div>
 		</div>
 		<div class="col-sm-12">
 			<span>Today :</span>
-			<span class="sm-font" ><span id="jmlBooking"></span> Booking</span> 
+			<span class="sm-font"><span id="jmlBooking"></span> Booking</span>
 			<span class="sm-font">.</span>
-			<span class="sm-font" ><span id="jmlRoom"></span> Room</span>
+			<span class="sm-font"><span id="jmlRoom"></span> Room</span>
 		</div>
 		<div class="col-sm-12" style="padding:2%;">
 
@@ -142,41 +149,99 @@
 			aria-hidden="true">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="inputTransaksiLabel">Add Booking</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<div class="col-12 no-padding">
-							<div class="form-group">
-								<label for="usr">Nama</label>
-								<input type="text" class="form-control">
-							</div>
-							<div class="form-group">
-								<label for="tlp">Telepon</label>
-								<input type="text" class="form-control">
-							</div>
-							<div class="input-group">
-								<p for="jk">Jenis Kamar</p>
-							</div>
-							<div class="input-group">
-								<input type="text" class="form-control">
-								<div class="input-group-append">
-									<button class="btn btn-outline-secondary dropdown-toggle" type="button"
-										data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-									<div class="dropdown-menu">
-										<a class="dropdown-item" href="#">Action</a>
-									</div>
+					<form id="insert_owner" onsubmit="insertmember(event)">
+						<div class="modal-header">
+							<h5 class="modal-title" id="inputTransaksiLabel">Add Booking</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div class="col-12 no-padding">
+
+								<h5 class="text-center">Informasi Pemesan</h5>
+								<hr>
+								<div class="form-group">
+									<label for="usr">Nama Pemesan</label>
+									<input type="text" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="tlp">Telepon</label>
+									<input type="tel" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="tlp">Email</label>
+									<input type="text" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="tlp">No KTP</label>
+									<input type="text" class="form-control">
+								</div>
+								<h5 class="text-center">Informasi Pesanan</h5>
+								<hr>
+								<div class="form-group">
+									<label for="usr">Nama Hotel</label>
+									<input type="text" class="form-control" disabled>
+								</div>
+								<div class="form-group">
+									<label for="usr">Tanggal Order</label>
+									<input type="text" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="tlp">Jumlah Kamar</label>
+									<input type="text" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="tlp">Jumlah Tamu</label>
+									<input type="text" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="tlp">Tanggal Check In</label>
+									<input type="date" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="tlp">Tanggal Check Out</label>
+									<input type="date" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="tlp">Request Jam Checkin Awal</label>
+									<input type="time" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="tlp">Request Jam Checkin Akhir</label>
+									<input type="time" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="tlp">Sumber Order</label>
+									<input type="text" class="form-control">
+								</div>
+								<div class="form-group">
+									<label for="tlp">Total Harga</label>
+									<input type="text" class="form-control">
+								</div>
+								<h5 class="text-center">Lain - Lain</h5>
+								<hr>
+								<div class="custom-control custom-checkbox custom-control-inline">
+									<input type="checkbox" class="custom-control-input" id="customCheck"
+										name="example1">
+									<label class="custom-control-label" for="customCheck">Breakfast</label>
+								</div>
+								<div class="custom-control custom-checkbox custom-control-inline">
+									<input type="checkbox" class="custom-control-input" id="customCheck"
+										name="example1">
+									<label class="custom-control-label" for="customCheck">Rent Car</label>
+								</div>
+								<div class="form-group">
+
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-success">Add</button>
-					</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+							<button type="submit" id="eButton" class="btn btn-primary">
+								<span id="submit">Tambah Order</span></button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -187,6 +252,9 @@
 <script src="<?=base_url("dist/js/popper.min.js");?>"></script>
 <script src="<?=base_url("dist/js/bootstrap.min.js");?>"></script>
 <script src="<?=base_url("dist/js/function.js");?>"></script>
+
+
+
 
 <script id="list_booking" type="text/HTML">
 	<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
@@ -213,22 +281,23 @@
 	var idHotel = getCookie('id_hotel');
 	var active = getCookie('booking_section');
 
-	if(active == "upcoming"){
+	if (active == "upcoming") {
 		// $("#upcoming").tab('dispose');
-		$("#up").tab('show');	
-	}else if(active == "inhouse"){
-		$("#in").tab('show');	
-	}else{
-		$("#comp").tab('show');	
+		$("#up").tab('show');
+	} else if (active == "inhouse") {
+		$("#in").tab('show');
+	} else {
+		$("#comp").tab('show');
 	}
 
 	$('.lds-ring').show();
-		$('.container').hide();
+	$('.container').hide();
 
 	$(document).ready(function () {
 		$("#booking_footer").addClass('is-active');
 		$("#header_title").text('Bookings');
 		$('#nama_hotel').text(namaHotel);
+
 	});
 
 	$.when(getUpcoming(idHotel), getInhouse(idHotel), getComplete(idHotel)).done(function (upcoming, inhouse, complete) {
@@ -241,69 +310,69 @@
 
 		$('#jmlBooking').text(dataUpcoming.length);
 
-		for(var i = 0 ; i < dataUpcoming.length ; i++){
+		for (var i = 0; i < dataUpcoming.length; i++) {
 			var ckInDate = new Date(dataUpcoming[i].tanggal_check_in);
 			var ckOtDate = new Date(dataUpcoming[i].tanggal_check_out);
-			var selisihDate = Math.ceil((ckOtDate-ckInDate) / (1000 * 60 * 60 * 24));
+			var selisihDate = Math.ceil((ckOtDate - ckInDate) / (1000 * 60 * 60 * 24));
 			var tmp = $('#list_booking')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
 			jmlRoom += parseInt(dataUpcoming[i].jumlah_room);
-			
+
 			$(tmp).find('#namaUser').text(dataUpcoming[i].nama_pemesan);
 			$(tmp).find('#namaKamar').text(dataUpcoming[i].nama_kamar);
 			$(tmp).find('#jmlRoom').text(dataUpcoming[i].jumlah_room);
 			$(tmp).find('#jmlMalam').text(selisihDate);
 			$(tmp).find('#jmlGuest').text(dataUpcoming[i].jumlah_guest);
-			if(dataUpcoming[i].request_jam_check_in_awal != null){
+			if (dataUpcoming[i].request_jam_check_in_awal != null) {
 				$(tmp).find('#reqInAwal').text(dataUpcoming[i].request_jam_check_in_awal);
 				$(tmp).find('#reqInAkhir').text(dataUpcoming[i].request_jam_check_in_akhir);
-			}else{
+			} else {
 				$(tmp).find('#reqInAkhir').parent('.badge').hide();
 			}
 			$(tmp).find('#totHarga').text(currency.format(dataUpcoming[i].total_harga));
 			$(tmp).appendTo('#upcoming');
 		}
 
-		for(var i = 0 ; i < dataInhouse.length ; i++){
+		for (var i = 0; i < dataInhouse.length; i++) {
 			var ckInDate = new Date(dataInhouse[i].tanggal_check_in);
 			var ckOtDate = new Date(dataInhouse[i].tanggal_check_out);
-			var selisihDate = Math.ceil((ckOtDate-ckInDate) / (1000 * 60 * 60 * 24));
+			var selisihDate = Math.ceil((ckOtDate - ckInDate) / (1000 * 60 * 60 * 24));
 			var tmp = $('#list_booking')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
 			jmlRoom += parseInt(dataInhouse[i].jumlah_room);
-			
+
 			$(tmp).find('#namaUser').text(dataInhouse[i].nama_pemesan);
 			$(tmp).find('#namaKamar').text(dataInhouse[i].nama_kamar);
 			$(tmp).find('#jmlRoom').text(dataInhouse[i].jumlah_room);
 			$(tmp).find('#jmlMalam').text(selisihDate);
 			$(tmp).find('#jmlGuest').text(dataInhouse[i].jumlah_guest);
-			if(dataInhouse[i].request_jam_check_in_awal != null){
+			if (dataInhouse[i].request_jam_check_in_awal != null) {
 				$(tmp).find('#reqInAwal').text(dataInhouse[i].request_jam_check_in_awal);
 				$(tmp).find('#reqInAkhir').text(dataInhouse[i].request_jam_check_in_akhir);
-			}else{
+			} else {
 				$(tmp).find('#reqInAkhir').parent('.badge').hide();
 			}
 			$(tmp).find('#totHarga').text(currency.format(dataInhouse[i].total_harga));
 			$(tmp).appendTo('#inhouse');
 		}
 
-		for(var i = 0 ; i < dataComplete.length ; i++){
+		for (var i = 0; i < dataComplete.length; i++) {
 			var ckInDate = new Date(dataComplete[i].tanggal_check_in);
 			var ckOtDate = new Date(dataComplete[i].tanggal_check_out);
-			var selisihDate = Math.ceil((ckOtDate-ckInDate) / (1000 * 60 * 60 * 24));
+			var selisihDate = Math.ceil((ckOtDate - ckInDate) / (1000 * 60 * 60 * 24));
 			var tmp = $('#list_booking')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
 			jmlRoom += parseInt(dataComplete[i].jumlah_room);
-			
+
 			$(tmp).find('#namaUser').text(dataComplete[i].nama_pemesan);
 			$(tmp).find('#namaKamar').text(dataComplete[i].nama_kamar);
 			$(tmp).find('#jmlRoom').text(dataComplete[i].jumlah_room);
 			$(tmp).find('#jmlMalam').text(selisihDate);
 			$(tmp).find('#jmlGuest').text(dataComplete[i].jumlah_guest);
-			if(dataComplete[i].request_jam_check_in_awal != null){
+			if (dataComplete[i].request_jam_check_in_awal != null) {
 				$(tmp).find('#reqInAwal').text(dataComplete[i].request_jam_check_in_awal);
 				$(tmp).find('#reqInAkhir').text(dataComplete[i].request_jam_check_in_akhir);
-			}else{
+			} else {
 				$(tmp).find('#reqInAkhir').parent('.badge').hide();
 			}
 			$(tmp).find('#totHarga').text(currency.format(dataComplete[i].total_harga));
@@ -312,7 +381,7 @@
 
 		$('#jmlRoom').text(jmlRoom);
 	});
-	
+
 
 	function getUpcoming(idHotel) {
 		return $.ajax(
@@ -338,7 +407,7 @@
 		);
 	}
 
-	function detail(active){
+	function detail(active) {
 		setCookie('booking_section', active);
 	}
 
