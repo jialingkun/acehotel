@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 08, 2020 at 05:58 PM
+-- Generation Time: Jan 16, 2020 at 11:07 AM
 -- Server version: 10.1.36-MariaDB
 -- PHP Version: 5.6.38
 
@@ -61,8 +61,7 @@ CREATE TABLE `hotel` (
 
 INSERT INTO `hotel` (`id_hotel`, `username_owner`, `nama_hotel`, `alamat_hotel`, `telepon_hotel`) VALUES
 ('araya001', 'agung001', 'Hotel Araya', 'Jl araya no 3', '08123456789'),
-('araya002', 'agung001', 'Hotel Citra Araya', 'Jl araya no 99F', '088459345775'),
-('melati001', 'andreas002', 'Melati utara Guest House', 'Jl Melati utara no 9', '043835948598');
+('araya002', 'agung001', 'Hotel Citra Araya', 'Jl araya no 99F', '088459345775');
 
 -- --------------------------------------------------------
 
@@ -85,7 +84,8 @@ INSERT INTO `kamar` (`id_kamar`, `id_hotel`, `nama_kamar`, `max_guest`) VALUES
 (1, 'araya001', 'Double Bed standar', 2),
 (2, 'araya001', 'Double Bed Premium', 2),
 (3, 'araya002', 'Double Bed', 2),
-(4, 'araya002', 'Family Room', 4);
+(4, 'araya002', 'Family Room', 4),
+(5, 'araya001', 'KingSize', 3);
 
 -- --------------------------------------------------------
 
@@ -158,9 +158,14 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id_order`, `id_hotel`, `id_kamar`, `no_kamar`, `nama_pemesan`, `telepon_pemesan`, `email_pemesan`, `no_ktp_pemesan`, `tanggal_check_in`, `tanggal_check_out`, `tanggal_check_in_real`, `tanggal_check_out_real`, `jumlah_guest`, `jumlah_room`, `max_guest`, `nama_kamar`, `nama_hotel`, `alamat_hotel`, `telepon_hotel`, `request_jam_check_in_awal`, `request_jam_check_in_akhir`, `request_breakfast`, `request_rent_car`, `total_harga`, `tanggal_order`, `sumber_order`, `status_order`) VALUES
-(1, 'araya001', 1, '101', 'Benny Hartono', '09834092834', 'email@gmail.com', '923748503450345', '2019-12-15', '2019-12-18', '0000-00-00', '0000-00-00', 2, 1, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 199999, '2019-11-12', 'OYO', 'upcoming'),
-(2, 'araya001', 1, '102', 'Yoko', NULL, NULL, NULL, '2019-12-12', '2019-12-15', '2019-12-16', '2019-12-16', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'completed'),
-(3, 'araya001', 1, '103', 'Andreas', NULL, NULL, NULL, '2019-12-16', '2019-12-18', '2019-12-16', NULL, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 30000, '2019-12-17', NULL, 'inhouse');
+(1, 'araya001', 1, '105,106', 'Benny Hartono', '09834092834', 'email@gmail.com', '923748503450345', '2020-01-13', '2020-01-15', '2020-01-13', '2020-01-14', 2, 2, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 180000, '2020-01-12', 'OYO', 'completed'),
+(2, 'araya001', 1, '103', 'Yoko', '0749853948545', 'email@gmail.com', '40953045803450345', '2020-01-14', '2020-01-15', '2020-01-14', '2020-01-15', 1, 1, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 120000, '2020-01-13', 'TRAVELOKA', 'completed'),
+(3, 'araya001', 1, '101', 'Andreas', '093459845934', 'email@gmail.com', '9385798357954', '2020-01-15', '2020-01-18', '2020-01-15', NULL, 2, 1, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 100000, '2020-01-14', 'OTHER', 'inhouse'),
+(4, 'araya001', 1, '101,102', 'Benny Hartono', '09834092834', 'email@gmail.com', '923748503450345', '2020-01-13', '2020-01-14', '2020-01-13', '2020-01-14', 2, 2, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 180000, '2020-01-12', 'OYO', 'completed'),
+(5, 'araya001', 1, '104', 'Yoko', '0749853948545', 'email@gmail.com', '40953045803450345', '2020-01-14', '2020-01-16', '2020-01-14', '2020-01-16', 1, 1, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 120000, '2020-01-13', 'TRAVELOKA', 'completed'),
+(6, 'araya001', 1, '102', 'Andreas', '093459845934', 'email@gmail.com', '9385798357954', '2020-01-16', '2020-01-18', '2020-01-16', NULL, 2, 1, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 100000, '2020-01-15', 'OTHER', 'inhouse'),
+(7, 'araya001', 1, '103,104', 'Benny Hartono', '09834092834', 'email@gmail.com', '923748503450345', '2020-01-16', '2020-01-20', '2020-01-16', NULL, 2, 2, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 180000, '2020-01-15', 'OYO', 'inhouse'),
+(8, 'araya001', 1, '105', 'Yoko', '0749853948545', 'email@gmail.com', '40953045803450345', '2020-01-17', '2020-01-18', NULL, NULL, 1, 1, 2, 'double Bed standar', 'Hotel Araya', 'Jl Araya no 3', '08984759834759', NULL, NULL, NULL, NULL, 120000, '2020-01-13', 'TRAVELOKA', 'upcoming');
 
 -- --------------------------------------------------------
 
@@ -203,8 +208,7 @@ CREATE TABLE `receptionist` (
 
 INSERT INTO `receptionist` (`username_receptionist`, `password_receptionist`, `id_hotel`, `nama_receptionist`, `telepon_receptionist`) VALUES
 ('araya001', 'd01393436e02c4c5078bd5d4a9808182', 'araya001', 'Resepsionis araya', '0878345934855'),
-('citra002', 'd01393436e02c4c5078bd5d4a9808182', 'araya002', 'Bunga Citra Lestari', '0485034580348'),
-('melati001', 'd01393436e02c4c5078bd5d4a9808182', 'melati001', 'Resepsionis Melati', '0385093458034');
+('citra002', 'd01393436e02c4c5078bd5d4a9808182', 'araya002', 'Bunga Citra Lestari', '0485034580348');
 
 --
 -- Indexes for dumped tables
@@ -266,13 +270,13 @@ ALTER TABLE `receptionist`
 -- AUTO_INCREMENT for table `kamar`
 --
 ALTER TABLE `kamar`
-  MODIFY `id_kamar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_kamar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables

@@ -72,14 +72,21 @@ class Default_model extends CI_Model {
 		return $query->result_array();
 	}
 
-	public function get_data_order($filter = NULL, $orderby = NULL, $sort = "asc"){
-		$this->db->select('*');
+	public function get_data_order($filter = NULL, $orderby = NULL, $sort = "asc", $groupby = NULL, $select = NULL){
+		if ($select != NULL){
+			$this->db->select($select);
+		}else{
+			$this->db->select('*'); //default select
+		}
 		$this->db->from('orders');
 		if ($filter != NULL){
 			$this->db->where($filter);
 		}
 		if ($orderby != NULL) {
 			$this->db->order_by($orderby, $sort);
+		}
+		if ($groupby != NULL) {
+			$this->db->group_by($groupby);
 		}
 		$query = $this->db->get();
 		return $query->result_array();
