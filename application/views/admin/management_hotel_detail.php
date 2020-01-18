@@ -94,7 +94,8 @@
 				<br>
 				<span class="sm-font">Tlep : </span>
 				<span class="sm-font" id="tlp_hotel">...</span>
-				<button type="button" class="btn btn-primary d-block pl-3 pr-3 mt-2" data-toggle="modal" data-target="#editHotel">Edit</button>
+				<button type="button" class="btn btn-primary d-block pl-3 pr-3 mt-2" data-toggle="modal"
+					data-target="#editHotel">Edit</button>
 				<div class="tab-content">
 					<div id="all_kamar" class="tab-pane active"><br>
 						<div class="list-group">
@@ -103,7 +104,7 @@
 					</div>
 				</div>
 			</div>
-		 </div>
+		</div>
 		<a class="float" data-toggle="modal" data-target="#inputTransaksi">
 			<i class="fa fa-plus my-float text-white" aria-hidden="true"></i>
 		</a>
@@ -120,19 +121,18 @@
 					<div class="modal-body">
 						<div class="col-12 no-padding">
 							<form id="insert_kamar" onsubmit="insertKamar(event)">
-							<div class="form-group">
-									<input type="hidden" id="id_hotel" name="id_hotel" class="form-control" pattern="^[A-Za-z0-9-_]+$"
-										required>
+								<div class="form-group">
+									<input type="hidden" id="id_hotel" name="id_hotel" class="form-control"
+										pattern="^[A-Za-z0-9-_]+$" required>
 								</div>
 								<div class="form-group">
 									<label for="username_owner">Nama Kamar</label>
-									<input type="text" name="nama" class="form-control" 
-										required>
+									<input type="text" name="nama" class="form-control" required>
 								</div>
 
 								<div class="form-group">
 									<label for="nama">Max Guest</label>
-									<input type="text"  name="max_guest" class="form-control" pattern="^[0-9]+$"	
+									<input type="text" name="max_guest" class="form-control" pattern="^[0-9]+$"
 										required>
 								</div>
 								<div class="form-group">
@@ -170,16 +170,31 @@
 								<div class="form-group">
 									<label for="alamat">Max Guest</label>
 									<input type="text" id="eGuest" name="max_guest" class="form-control"
-										 pattern="^[0-9]+$" required>
+										pattern="^[0-9]+$" required>
 								</div>
+								<div>
+									<h5>Nomor Kamar</h5>
+
+									<div id="ListNoKamar mb-1">
+
+									</div>
+									<input type="text" class="form-control w-50 float-left mt-3"
+										placeholder="Nomor Kamar">
+									<input type="text" class="form-control w-50 float-left mt-3"
+										placeholder="Lantai Kamar">
+								</div>
+
 								<div class="form-group">
 									<button id="eDelete" class="btn btn-danger btn-md float-left">
-										<span onclick="deleteKamar(getCookie('edit_kamar'))">Delete Kamar</span></button>
+										<span onclick="deleteKamar(getCookie('edit_kamar'))">Delete
+											Kamar</span></button>
 									<button type="submit" id="eButton" class="btn btn-primary btn-md float-right">
 										<span id="submit">Submit</span></button>
 								</div>
+							</form>
 						</div>
-						</form>
+
+
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
@@ -213,11 +228,12 @@
 								<div class="form-group">
 									<label for="alamat">Telepon</label>
 									<input type="text" id="eTeleponHotel" name="telepon" class="form-control"
-										 pattern="^[0-9]+$" required>
+										pattern="^[0-9]+$" required>
 								</div>
 								<div class="form-group">
 									<button id="eDelete" class="btn btn-danger btn-md float-left">
-										<span onclick="deleteHotel(getCookie('manajemen_id_hotel'))">Delete Hotel</span></button>
+										<span onclick="deleteHotel(getCookie('manajemen_id_hotel'))">Delete
+											Hotel</span></button>
 									<button type="submit" id="eButton" class="btn btn-primary btn-md float-right">
 										<span id="submit">Submit</span></button>
 								</div>
@@ -241,9 +257,9 @@
 
 <script id="list_kamar" type="text/HTML">
 	<a href="#" class="list-group-item list-group-item-action mgn-list data-kamar">
-	<div class="row">
-		<div class="col-9" data-toggle="modal" data-target="#editTransaksi" id="listKamar">
-		<input type="hidden" id="id_kamar">
+    <div class="row" data-toggle="modal" data-target="#editTransaksi" id="listKamar">
+        <div class="col-9" >
+        <input type="hidden" id="id_kamar">
             <div class="d-block">
                 <h6 class="mb-1" id="namaKamar"></h6>
             </div>
@@ -251,15 +267,32 @@
                 <span class="sm-font">Jumlah : </span>
                 <span id="jmlKamar"></span>    
             </div>
-        	<div class="d-block">
+            <div class="d-block">
                 <span class="sm-font">MaxGuest :</span>
                 <span id="maxGuest"></span>    
             </div>
-		</div>
-		<div class="col-3" style="margin:auto; color:#1C7CD5">
-			<span>Edit</span>
-		</div>
-	</div>
+        </div>
+        <div class="col-3" style="margin:auto; color:#1C7CD5">
+            <span>Edit</span>
+        </div>
+    </div>
+    </a>
+</script>
+
+<script id="list_noKamar" type="text/HTML">
+	<a href="#" class="list-group-item list-group-item-action mgn-list data-kamar">
+        <div class="row">
+            <div class="col-6">
+                <div class="d-block">
+                    <span class="mb-1" >Nomor : 110</span> 	
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="d-block">
+                    <span class="sm-font">Lantai : 11F </span>
+                </div>
+            </div>
+        </div>
     </a>
 </script>
 
@@ -274,8 +307,8 @@
 	$('.lds-ring').show();
 	$('.container').hide();
 
-	$.when(getAllKamar(idHotel),getHotel(idHotel)).done(function (getKamar,getHotel) {
-		
+	$.when(getAllKamar(idHotel), getHotel(idHotel)).done(function (getKamar, getHotel) {
+
 		$('#nama_hotel').text(getHotel[0][0].nama_hotel);
 		$('#alamat_hotel').text(getHotel[0][0].alamat_hotel);
 		$('#tlp_hotel').text(getHotel[0][0].telepon_hotel);
@@ -283,11 +316,11 @@
 		$('#eNamaHotel').val(getHotel[0][0].nama_hotel);
 		$('#eAlamatHotel').val(getHotel[0][0].alamat_hotel);
 		$('#eTeleponHotel').val(getHotel[0][0].telepon_hotel);
-		
+
 		$('.lds-ring').hide();
 		$('.container').show();
 		$('#id_hotel').val(idHotel);
-		
+
 		for (var i = 0; i < getKamar[0].length; i++) {
 			var tmp = $('#list_kamar')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
@@ -321,7 +354,15 @@
 			}
 		);
 	}
-	
+
+	function getNokamarByKamar(idKamar) {
+		return $.ajax(
+			"<?php echo base_url() ?>index.php/get_nokamar_by_kamar/" + idKamar, {
+				dataType: 'json'
+			}
+		);
+	}
+
 	function insertKamar(e) {
 		if (confirm("Apakah anda yakin ?")) {
 			e.preventDefault();
@@ -384,13 +425,13 @@
 
 	function deleteKamar(id) {
 		$.ajax({
-				url: "<?php echo base_url() ?>index.php/delete_kamar/" + id,
-				success: function (response) {
-					if (response==="success") {
-						location.reload();
-					}
+			url: "<?php echo base_url() ?>index.php/delete_kamar/" + id,
+			success: function (response) {
+				if (response === "success") {
+					location.reload();
 				}
-			});
+			}
+		});
 	}
 
 	function editHotel(e) {
@@ -425,13 +466,13 @@
 
 	function deleteHotel(id) {
 		$.ajax({
-				url: "<?php echo base_url() ?>index.php/delete_hotel/" + id,
-				success: function (response) {
-					if (response==="success") {
-						window.location = "<?php echo base_url() ?>index.php/managementhotel/"
-					}
+			url: "<?php echo base_url() ?>index.php/delete_hotel/" + id,
+			success: function (response) {
+				if (response === "success") {
+					window.location = "<?php echo base_url() ?>index.php/managementhotel/";
 				}
-			});
+			}
+		});
 	}
 
 	$(document).on('click', '#listKamar', function () {
