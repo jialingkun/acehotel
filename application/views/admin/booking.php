@@ -149,7 +149,7 @@
 			aria-hidden="true">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
-					<form id="insert_owner" onsubmit="insertmember(event)">
+					<form id="insert_booking" onsubmit="insertOrder(event)">
 						<div class="modal-header">
 							<h5 class="modal-title" id="inputTransaksiLabel">Add Booking</h5>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -162,84 +162,87 @@
 								<h5 class="text-center">Informasi Pemesan</h5>
 								<hr>
 								<div class="form-group">
-									<label for="usr">Nama Pemesan</label>
-									<input type="text" class="form-control">
+									<label>Nama Pemesan</label>
+									<input type="text" name="nama_pemesan" class="form-control"
+										pattern="^[A-Za-z ,.'-]+$" required>
 								</div>
 								<div class="form-group">
-									<label for="tlp">Telepon</label>
-									<input type="tel" class="form-control">
+									<label>Telepon</label>
+									<input type="tel" name="telepon_pemesan" class="form-control" required>
 								</div>
 								<div class="form-group">
-									<label for="tlp">Email</label>
-									<input type="text" class="form-control">
+									<label>Email</label>
+									<input type="email" name="email_pemesan" class="form-control" required>
 								</div>
 								<div class="form-group">
-									<label for="tlp">No KTP</label>
-									<input type="text" class="form-control">
+									<label>No KTP</label>
+									<input type="text" name="no_ktp_pemesan" class="form-control" pattern="^[0-9]+$">
 								</div>
 								<h5 class="text-center">Informasi Pesanan</h5>
 								<hr>
 								<div class="form-group">
-									<label for="usr">Nama Hotel</label>
-									<input type="text" class="form-control" disabled>
+									<h5 class="text-center" id="namaHotel"></h5>
+									<input type="text" id="id_hotel" name="id_hotel">
 								</div>
 								<div class="form-group">
-									<label for="usr">Tanggal Order</label>
-									<input type="text" class="form-control">
+									<label>Nama Kamar</label>
+									<select class="form-control" id="id_kamar" name="id_kamar" required>
+									</select>
 								</div>
 								<div class="form-group">
-									<label for="tlp">Jumlah Kamar</label>
-									<input type="text" class="form-control">
+									<label>Jumlah Kamar</label>
+									<input type="number" name="jumlah_room" class="form-control" required>
 								</div>
 								<div class="form-group">
-									<label for="tlp">Jumlah Tamu</label>
-									<input type="text" class="form-control">
+									<label>Jumlah Tamu</label>
+									<input type="number" name="jumlah_guest" class="form-control" required>
 								</div>
 								<div class="form-group">
-									<label for="tlp">Tanggal Check In</label>
-									<input type="date" class="form-control">
+									<label>Tanggal Check In</label>
+									<input type="date" name="tanggal_check_in" class="form-control" required>
 								</div>
 								<div class="form-group">
-									<label for="tlp">Tanggal Check Out</label>
-									<input type="date" class="form-control">
+									<label>Tanggal Check Out</label>
+									<input type="date" name="tanggal_check_out" class="form-control" required>
 								</div>
 								<div class="form-group">
-									<label for="tlp">Request Jam Checkin Awal</label>
-									<input type="time" class="form-control">
+									<label>Request Jam Checkin Awal</label>
+									<input type="time" name="request_jam_check_in_awal" class="form-control" required>
 								</div>
 								<div class="form-group">
-									<label for="tlp">Request Jam Checkin Akhir</label>
-									<input type="time" class="form-control">
+									<label>Request Jam Checkin Akhir</label>
+									<input type="time" name="request_jam_check_in_akhir" class="form-control">
 								</div>
 								<div class="form-group">
-									<label for="tlp">Sumber Order</label>
-									<input type="text" class="form-control">
+									<label>Sumber Order</label>
+									<select class="form-control" name="sumber_order" required>
+										<option value="traveloka">Traveloka</option>
+										<option value="oyo">OYO</option>
+										<option value="bookingcom">Booking</option>
+										<option value="tiketcom">Tiket</option>
+										<option value="manual">Manual</option>
+									</select>
 								</div>
 								<div class="form-group">
-									<label for="tlp">Total Harga</label>
-									<input type="text" class="form-control">
+									<label>Total Harga</label>
+									<input type="number" name="total_harga" class="form-control" required>
 								</div>
 								<h5 class="text-center">Lain - Lain</h5>
 								<hr>
 								<div class="custom-control custom-checkbox custom-control-inline">
-									<input type="checkbox" class="custom-control-input" id="customCheck"
-										name="example1">
-									<label class="custom-control-label" for="customCheck">Breakfast</label>
+									<input type="checkbox" class="custom-control-input" id="request_breakfast" name="request_breakfast" value="1">
+									<label class="custom-control-label" for="request_breakfast">Breakfast</label>
 								</div>
 								<div class="custom-control custom-checkbox custom-control-inline">
-									<input type="checkbox" class="custom-control-input" id="customCheck"
-										name="example1">
-									<label class="custom-control-label" for="customCheck">Rent Car</label>
-								</div>
-								<div class="form-group">
-
+									<input type="checkbox" class="custom-control-input" id="rent_car" name="request_car" value="1">
+									<label class="custom-control-label" for="rent_car">Rent Car</label>
 								</div>
 							</div>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-							<button type="submit" id="eButton" class="btn btn-primary">
-								<span id="submit">Tambah Order</span></button>
+							<button type="submit" id="submitButton" class="btn btn-primary btn-md float-right"><span
+									id="submit">Tambah Booking</span></button>
 						</div>
 					</form>
 				</div>
@@ -252,9 +255,6 @@
 <script src="<?=base_url("dist/js/popper.min.js");?>"></script>
 <script src="<?=base_url("dist/js/bootstrap.min.js");?>"></script>
 <script src="<?=base_url("dist/js/function.js");?>"></script>
-
-
-
 
 <script id="list_booking" type="text/HTML">
 	<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
@@ -297,18 +297,38 @@
 		$("#booking_footer").addClass('is-active');
 		$("#header_title").text('Bookings');
 		$('#nama_hotel').text(namaHotel);
+		$('#namaHotel').text(namaHotel);
+		$('#id_hotel').val(idHotel);
 
+		const formatUang = new Intl.NumberFormat('id-ID', {
+			style: 'currency',
+			currency: 'IDR',
+			minimumFractionDigits: 2
+		});
+
+		$('#total_harga').val(idHotel);
 	});
 
-	$.when(getUpcoming(idHotel), getInhouse(idHotel), getComplete(idHotel)).done(function (upcoming, inhouse, complete) {
-		$('.lds-ring').hide();
-		$('.container').show();
+	$.when(getUpcoming(idHotel), getInhouse(idHotel), getComplete(idHotel), getKamar(idHotel)).done(function (upcoming,
+		inhouse, complete, listKamar) {
 		var dataUpcoming = upcoming[0];
 		var dataInhouse = inhouse[0];
 		var dataComplete = complete[0];
+		var dataKamar = listKamar[0];
 		var jmlRoom = 0;
-
+		console.log(dataKamar[0]);
+		$('.lds-ring').hide();
+		$('.container').show();
 		$('#jmlBooking').text(dataUpcoming.length);
+
+		for (var i = 0; i < dataKamar.length; i++) {
+			$('#id_kamar').append(
+				$('<option>', {
+					value: dataKamar[i].id_kamar,
+					text: dataKamar[i].nama_kamar
+				})
+			)
+		}
 
 		for (var i = 0; i < dataUpcoming.length; i++) {
 			var ckInDate = new Date(dataUpcoming[i].tanggal_check_in);
@@ -382,6 +402,13 @@
 		$('#jmlRoom').text(jmlRoom);
 	});
 
+	function getKamar(idHotel) {
+		return $.ajax(
+			"<?php echo base_url() ?>index.php/get_kamar_by_hotel/" + idHotel, {
+				dataType: 'json'
+			}
+		);
+	}
 
 	function getUpcoming(idHotel) {
 		return $.ajax(
@@ -409,6 +436,38 @@
 
 	function detail(active) {
 		setCookie('booking_section', active);
+	}
+
+	function insertOrder(e) {
+		if (confirm("Apakah anda yakin ?")) {
+			e.preventDefault();
+			urls = "insert_order";
+			var dataString = $("#insert_booking").serialize();
+			console.log(dataString);
+			alert(dataString); 
+			$("#submit").html("tunggu..");
+			$("#submitButton").prop("disabled", true);
+
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls,
+				type: 'POST',
+				data: dataString,
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						alert("Data telah masuk");
+						location.reload();
+					} else {
+						alert(response);
+						$("#submit").html("Submit");
+						$("#submitButton").prop("disabled", false);
+					}
+				},
+				error: function () {
+					alert(response);
+					$("#submitButton").prop("disabled", false);
+				}
+			});
+		} else {}
 	}
 
 </script>
