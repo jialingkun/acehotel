@@ -57,36 +57,33 @@
 		}
 		var ctx = document.getElementById('myChart').getContext('2d');
 		var chart = new Chart(ctx, {
-    	// The type of chart we want to create
-    	type: 'line',
+			type: 'line',
 
-    	// The data for our dataset
-    	data: {
-    		labels: datalabels,
-    		datasets: [{
-    			label: 'Ribu Rupiah',
-    			backgroundColor: 'rgb(255, 99, 132)',
-    			borderColor: 'rgb(255, 99, 132)',
-    			data: datavalues
-    		}]
-    	},
+			data: {
+				labels: datalabels,
+				datasets: [{
+					label: 'Ribu Rupiah',
+					backgroundColor: 'rgb(255, 99, 132)',
+					borderColor: 'rgb(255, 99, 132)',
+					data: datavalues
+				}]
+			},
 
-    	// Configuration options go here
-    	options: {
-    		scales:{
-    			xAxes:[{
-    				ticks:{
-    					maxTicksLimit: 5
-    				}
-    			}],
-    			yAxes: [{
-    				ticks: {
-    					suggestedMin: 0
-    				}
-    			}]
-    		}
-    	}
-    });
+			options: {
+				scales:{
+					xAxes:[{
+						ticks:{
+							maxTicksLimit: 5
+						}
+					}],
+					yAxes: [{
+						ticks: {
+							suggestedMin: 0
+						}
+					}]
+				}
+			}
+		});
 	});
 </script>
 

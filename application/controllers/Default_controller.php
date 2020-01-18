@@ -155,6 +155,10 @@ class Default_controller extends CI_Controller {
 		$this->load->view('testpage/linechart');
 	}
 
+	public function test_function(){
+		$this->load->view('testpage/testfunction');
+	}
+
 
 	
 	//GET DATA
