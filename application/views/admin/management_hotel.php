@@ -130,7 +130,6 @@
 										pattern="^[A-Za-z0-9-_]+$" required>
 									</select>
 								</div>
-
 								<div class="form-group">
 									<label for="nama">Nama Hotel</label>
 									<input type="text" name="nama" class="form-control" pattern="^[A-Za-z ,.'-]+$"
