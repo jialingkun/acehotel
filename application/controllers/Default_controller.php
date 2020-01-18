@@ -334,7 +334,7 @@ class Default_controller extends CI_Controller {
 	}
 
 	public function get_kamar_by_id($id, $return_var = NULL){
-		$filter = array('id_kamar'=> $id);
+		$filter = array('kamar.id_kamar'=> $id);
 		$data = $this->Default_model->get_data_kamar($filter);
 		if (empty($data)){
 			$data = [];
@@ -779,6 +779,7 @@ class Default_controller extends CI_Controller {
 	//output: success/failed/access denied
 	public function insert_order(){
 		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
+			$datakamar = $this->get_kamar_by_id($this->input->post('id_kamar'),true);
 			$data = array(
 				'id_hotel' => $this->input->post('id_hotel'),
 				'id_kamar' => $this->input->post('id_kamar'),
@@ -790,11 +791,11 @@ class Default_controller extends CI_Controller {
 				'tanggal_check_out' => date("Y-m-d", strtotime($this->input->post('tanggal_check_out'))),
 				'jumlah_guest' => $this->input->post('jumlah_guest'),
 				'jumlah_room' => $this->input->post('jumlah_room'),
-				'max_guest' => $this->input->post('max_guest'),
-				'nama_kamar' => $this->input->post('nama_kamar'),
-				'nama_hotel' => $this->input->post('nama_hotel'),
-				'alamat_hotel' => $this->input->post('alamat_hotel'),
-				'telepon_hotel' => $this->input->post('telepon_hotel'),
+				'max_guest' => $datakamar[0]['max_guest'],
+				'nama_kamar' => $datakamar[0]['nama_kamar'],
+				'nama_hotel' => $datakamar[0]['nama_hotel'],
+				'alamat_hotel' => $datakamar[0]['alamat_hotel'],
+				'telepon_hotel' => $datakamar[0]['telepon_hotel'],
 				'request_jam_check_in_awal' => $this->input->post('request_jam_check_in_awal'),
 				'request_jam_check_in_akhir' => $this->input->post('request_jam_check_in_akhir'),
 				'request_breakfast' => $this->input->post('request_breakfast'),
