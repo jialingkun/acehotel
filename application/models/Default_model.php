@@ -61,12 +61,15 @@ class Default_model extends CI_Model {
 		return $query->result_array();
 	}
 
-	public function get_data_nokamar($filter = NULL){
+	public function get_data_nokamar($filter = NULL, $orderby = NULL, $sort = "asc"){
 		$this->db->select('*');
 		$this->db->from('nokamar');
 		$this->db->join('kamar', 'nokamar.id_kamar = kamar.id_kamar', 'left');
 		if ($filter != NULL){
 			$this->db->where($filter);
+		}
+		if ($orderby != NULL) {
+			$this->db->order_by($orderby, $sort);
 		}
 		$query = $this->db->get();
 		return $query->result_array();

@@ -417,7 +417,7 @@ class Default_controller extends CI_Controller {
 	//note: ambil data nomer kamar berdasarkan jenis kamar
 	public function get_nokamar_by_kamar($id, $return_var = NULL){
 		$filter = array('nokamar.id_kamar'=> $id);
-		$data = $this->Default_model->get_data_nokamar($filter);
+		$data = $this->Default_model->get_data_nokamar($filter, 'lantai');
 		if (empty($data)){
 			$data = [];
 		}
