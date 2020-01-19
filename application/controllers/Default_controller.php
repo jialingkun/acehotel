@@ -1006,11 +1006,11 @@ class Default_controller extends CI_Controller {
 	//note: API hanya bisa diakses saat ada cookie admin atau owner
 	//output: success/failed/access denied
 	public function update_order($id){
-		if ($this->checkcookieadmin() || $this->checkcookieowner()) {
+		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
+			$datakamar = $this->get_kamar_by_id($this->input->post('id_kamar'),true);
 			$data = array(
 				// 'id_hotel' => $this->input->post('id_hotel'),
 				'id_kamar' => $this->input->post('id_kamar'),
-				'no_kamar' => $this->input->post('no_kamar'),				
 				'nama_pemesan' => $this->input->post('nama_pemesan'),
 				'telepon_pemesan' => $this->input->post('telepon_pemesan'),
 				'email_pemesan' => $this->input->post('email_pemesan'),
@@ -1019,18 +1019,18 @@ class Default_controller extends CI_Controller {
 				'tanggal_check_out' => date("Y-m-d", strtotime($this->input->post('tanggal_check_out'))),
 				'jumlah_guest' => $this->input->post('jumlah_guest'),
 				'jumlah_room' => $this->input->post('jumlah_room'),
-				'max_guest' => $this->input->post('max_guest'),
-				'nama_kamar' => $this->input->post('nama_kamar'),
-				'nama_hotel' => $this->input->post('nama_hotel'),
-				'alamat_hotel' => $this->input->post('alamat_hotel'),
-				'telepon_hotel' => $this->input->post('telepon_hotel'),
+				'max_guest' => $datakamar[0]['max_guest'],
+				'nama_kamar' => $datakamar[0]['nama_kamar'],
+				'nama_hotel' => $datakamar[0]['nama_hotel'],
+				'alamat_hotel' => $datakamar[0]['alamat_hotel'],
+				'telepon_hotel' => $datakamar[0]['telepon_hotel'],
 				'request_jam_check_in_awal' => $this->input->post('request_jam_check_in_awal'),
 				'request_jam_check_in_akhir' => $this->input->post('request_jam_check_in_akhir'),
 				'request_breakfast' => $this->input->post('request_breakfast'),
 				'request_rent_car' => $this->input->post('request_rent_car'),
 				'total_harga' => $this->input->post('total_harga'),
 				// 'tanggal_order' => date('Y-m-d'),
-				'sumber_order' => $this->input->post('sumber_order')
+				'sumber_order' => $this->input->post('sumber_order'),
 				// 'status_order' => "upcoming"
 			);
 			$updateStatus = $this->Default_model->update_order($id,$data);
