@@ -58,7 +58,7 @@
 	}
 
 	.mgn-list {
-		margin-top: 3%;
+		margin-top: 5px;
 	}
 
 	.dashboard-big-font {
@@ -125,7 +125,7 @@
 			<span class="sm-font">.</span>
 			<span class="sm-font"><span id="jmlRoom"></span> Room</span>
 		</div>
-		<div class="col-sm-12" style="padding:2%;">
+		<div class="col-sm-12" style="padding:0 2%; margin-bottom:20%;">
 
 			<div class="tab-content">
 				<div id="upcoming" class="tab-pane active"><br>
@@ -151,7 +151,7 @@
 				<div class="modal-content">
 					<form id="insert_booking" onsubmit="insertOrder(event)">
 						<div class="modal-header">
-							<h5 class="modal-title" id="inputTransaksiLabel">Add Booking</h5>
+							<h5 class="modal-title" id="inputTransaksiLabel">Tambah Order</h5>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
@@ -182,7 +182,7 @@
 								<hr>
 								<div class="form-group">
 									<h5 class="text-center" id="namaHotel"></h5>
-									<input type="text" id="id_hotel" name="id_hotel">
+									<input type="hidden" id="id_hotel" name="id_hotel">
 								</div>
 								<div class="form-group">
 									<label>Nama Kamar</label>
@@ -230,11 +230,13 @@
 								<h5 class="text-center">Lain - Lain</h5>
 								<hr>
 								<div class="custom-control custom-checkbox custom-control-inline">
-									<input type="checkbox" class="custom-control-input" id="request_breakfast" name="request_breakfast" value="1">
+									<input type="checkbox" class="custom-control-input" id="request_breakfast"
+										name="request_breakfast" value="1">
 									<label class="custom-control-label" for="request_breakfast">Breakfast</label>
 								</div>
 								<div class="custom-control custom-checkbox custom-control-inline">
-									<input type="checkbox" class="custom-control-input" id="rent_car" name="request_car" value="1">
+									<input type="checkbox" class="custom-control-input" id="rent_car" name="request_car"
+										value="1">
 									<label class="custom-control-label" for="rent_car">Rent Car</label>
 								</div>
 							</div>
@@ -257,7 +259,7 @@
 <script src="<?=base_url("dist/js/function.js");?>"></script>
 
 <script id="list_booking" type="text/HTML">
-	<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
+	<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mgn-list" >
 		<div class="w-100 ">
 			<h5 class="mb-1" id="namaUser"></h5>
 			<h6 class="mb-1" id="namaKamar"></h6>
@@ -316,7 +318,7 @@
 		var dataComplete = complete[0];
 		var dataKamar = listKamar[0];
 		var jmlRoom = 0;
-		console.log(dataKamar[0]);
+
 		$('.lds-ring').hide();
 		$('.container').show();
 		$('#jmlBooking').text(dataUpcoming.length);
@@ -338,6 +340,8 @@
 			tmp = $.parseHTML(tmp);
 			jmlRoom += parseInt(dataUpcoming[i].jumlah_room);
 
+			$(tmp).attr('id', 'toinhouse');
+			$(tmp).data('id', dataUpcoming[i].id_order);
 			$(tmp).find('#namaUser').text(dataUpcoming[i].nama_pemesan);
 			$(tmp).find('#namaKamar').text(dataUpcoming[i].nama_kamar);
 			$(tmp).find('#jmlRoom').text(dataUpcoming[i].jumlah_room);
@@ -361,6 +365,8 @@
 			tmp = $.parseHTML(tmp);
 			jmlRoom += parseInt(dataInhouse[i].jumlah_room);
 
+			$(tmp).attr('id', 'tocomplete');
+			$(tmp).data('id', dataInhouse[i].id_order);
 			$(tmp).find('#namaUser').text(dataInhouse[i].nama_pemesan);
 			$(tmp).find('#namaKamar').text(dataInhouse[i].nama_kamar);
 			$(tmp).find('#jmlRoom').text(dataInhouse[i].jumlah_room);
@@ -444,7 +450,7 @@
 			urls = "insert_order";
 			var dataString = $("#insert_booking").serialize();
 			console.log(dataString);
-			alert(dataString); 
+			alert(dataString);
 			$("#submit").html("tunggu..");
 			$("#submitButton").prop("disabled", true);
 
@@ -469,5 +475,30 @@
 			});
 		} else {}
 	}
+
+	$(document).on('click', '#toinhouse', function () {
+		
+	});
+
+	$(document).on('click', '#tocomplete', function () {
+		if (confirm("CHECK OUT order ini?")) {
+			urls = "update_order_check_out/";
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls + $(this).data('id'),
+				type: 'POST',
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						alert("Data telah masuk");
+						location.reload();
+					} else {
+						alert(response);
+					}
+				},
+				error: function () {
+					alert(response);
+				}
+			});
+		}
+	});
 
 </script>
