@@ -661,6 +661,27 @@ class Default_controller extends CI_Controller {
 		}
 	}
 
+	//get sumber order hotel by range tanggal checkin
+	//parameter: id hotel, tgl check in awal (ex:2019-12-17), tgl check in akhir
+	//note: ambil data sumber order hotel berdasarkan range tanggal checkin, revenue dihitung dari saat check in
+	public function get_sumber_order_hotel_by_tanggalcheckin($id, $tglawal, $tglakhir, $return_var = NULL){
+		$filter = array(
+			'orders.id_hotel'=> $id,
+			'orders.status_order !='=> 'upcoming',
+			'orders.tanggal_check_in_real >=' =>date("Y-m-d", strtotime($tglawal)),
+			'orders.tanggal_check_in_real <=' =>date("Y-m-d", strtotime($tglakhir))
+		);
+
+		$data = $this->Default_model->get_data_order($filter, 'sumber_order','desc','sumber_order',
+			'orders.id_hotel, orders.sumber_order, COUNT(orders.sumber_order) as frekuensi');
+
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
 
 
 
