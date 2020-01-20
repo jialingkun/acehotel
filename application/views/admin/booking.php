@@ -142,7 +142,7 @@
 				</div>
 			</div>
 		</div>
-		<a class="float" data-toggle="modal" data-target="#inputTransaksi">
+		<a class="float" id="tambah_order" data-toggle="modal" data-target="#inputTransaksi">
 			<i class="fa fa-plus my-float text-white" aria-hidden="true"></i>
 		</a>
 		<div class="modal fade" id="inputTransaksi" tabindex="-1" role="dialog" aria-labelledby="inputTransaksiLabel"
@@ -157,28 +157,33 @@
 							</button>
 						</div>
 						<div class="modal-body">
-							<div class="col-12 no-padding">
-
+						<div class="col-12 no-padding" id="wait">
+						Please Wait
+						</div>
+							<div class="col-12 no-padding" id="input_data">
 								<h5 class="text-center">Informasi Pemesan</h5>
 								<hr>
 								<div class="form-group">
 									<label>Nama Pemesan</label>
-									<input type="text" name="nama_pemesan" class="form-control"
+									<input type="text" id="nama_pemesan" name="nama_pemesan" class="form-control"
 										pattern="^[A-Za-z ,.'-]+$" required>
 								</div>
 								<div class="form-group">
 									<label>Telepon</label>
-									<input type="tel" name="telepon_pemesan" class="form-control" required>
+									<input type="tel" id="telepon_pemesan" name="telepon_pemesan" class="form-control"
+										required>
 								</div>
 								<div class="form-group">
 									<label>Email</label>
-									<input type="email" name="email_pemesan" class="form-control" required>
+									<input type="email" id="email_pemesan" name="email_pemesan" class="form-control"
+										required>
 								</div>
 								<div class="form-group">
 									<label>No KTP</label>
-									<input type="text" name="no_ktp_pemesan" class="form-control" pattern="^[0-9]+$">
+									<input type="text" id="no_ktp_pemesan" name="no_ktp_pemesan" class="form-control"
+										pattern="^[0-9]+$">
 								</div>
-								<h5 class="text-center">Informasi Pesanan</h5>
+								<h5 class="text-center">Informasi Order</h5>
 								<hr>
 								<div class="form-group">
 									<h5 class="text-center" id="namaHotel"></h5>
@@ -191,31 +196,37 @@
 								</div>
 								<div class="form-group">
 									<label>Jumlah Kamar</label>
-									<input type="number" name="jumlah_room" class="form-control" required>
+									<input type="number" id="jumlah_room" name="jumlah_room" class="form-control"
+										required>
 								</div>
 								<div class="form-group">
 									<label>Jumlah Tamu</label>
-									<input type="number" name="jumlah_guest" class="form-control" required>
+									<input type="number" id="jumlah_guest" name="jumlah_guest" class="form-control"
+										required>
 								</div>
 								<div class="form-group">
 									<label>Tanggal Check In</label>
-									<input type="date" name="tanggal_check_in" class="form-control" required>
+									<input type="date" id="tanggal_check_in" name="tanggal_check_in"
+										class="form-control" required>
 								</div>
 								<div class="form-group">
 									<label>Tanggal Check Out</label>
-									<input type="date" name="tanggal_check_out" class="form-control" required>
+									<input type="date" id="tanggal_check_out" name="tanggal_check_out"
+										class="form-control">
 								</div>
 								<div class="form-group">
 									<label>Request Jam Checkin Awal</label>
-									<input type="time" name="request_jam_check_in_awal" class="form-control" required>
+									<input type="time" id="request_jam_check_in_awal" name="request_jam_check_in_awal"
+										class="form-control">
 								</div>
 								<div class="form-group">
 									<label>Request Jam Checkin Akhir</label>
-									<input type="time" name="request_jam_check_in_akhir" class="form-control">
+									<input type="time" id="request_jam_check_in_akhir" name="request_jam_check_in_akhir"
+										class="form-control">
 								</div>
 								<div class="form-group">
 									<label>Sumber Order</label>
-									<select class="form-control" name="sumber_order" required>
+									<select class="form-control" id="sumber_order" name="sumber_order" required>
 										<option value="traveloka">Traveloka</option>
 										<option value="oyo">OYO</option>
 										<option value="bookingcom">Booking</option>
@@ -225,7 +236,8 @@
 								</div>
 								<div class="form-group">
 									<label>Total Harga</label>
-									<input type="number" name="total_harga" class="form-control" required>
+									<input type="number" id="total_harga" name="total_harga" class="form-control"
+										required>
 								</div>
 								<h5 class="text-center">Lain - Lain</h5>
 								<hr>
@@ -235,10 +247,37 @@
 									<label class="custom-control-label" for="request_breakfast">Breakfast</label>
 								</div>
 								<div class="custom-control custom-checkbox custom-control-inline">
-									<input type="checkbox" class="custom-control-input" id="rent_car" name="request_car"
+									<input type="checkbox" class="custom-control-input" id="rent_car" name="request_rent_car"
 										value="1">
 									<label class="custom-control-label" for="rent_car">Rent Car</label>
 								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+							<button type="submit" id="submitButton" class="btn btn-primary btn-md float-right"><span
+									id="submit">Tambah Booking</span></button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="checkIn" tabindex="-1" role="dialog" aria-labelledby="checkInLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<form id="insert_booking" onsubmit="insertOrder(event)">
+						<div class="modal-header">
+							<h5 class="modal-title" id="inputTransaksiLabel">Tambah Order</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+						check in
+							<div class="col-12 no-padding" id="input_data">
+								
 							</div>
 						</div>
 						<div class="modal-footer">
@@ -282,6 +321,7 @@
 	var namaHotel = getCookie('nama_hotel');
 	var idHotel = getCookie('id_hotel');
 	var active = getCookie('booking_section');
+	var idOrder = "";
 
 	if (active == "upcoming") {
 		// $("#upcoming").tab('dispose');
@@ -341,6 +381,8 @@
 			jmlRoom += parseInt(dataUpcoming[i].jumlah_room);
 
 			$(tmp).attr('id', 'toinhouse');
+			$(tmp).attr('data-toggle', 'modal');
+			$(tmp).attr('data-target', '#inputTransaksi');
 			$(tmp).data('id', dataUpcoming[i].id_order);
 			$(tmp).find('#namaUser').text(dataUpcoming[i].nama_pemesan);
 			$(tmp).find('#namaKamar').text(dataUpcoming[i].nama_kamar);
@@ -476,8 +518,90 @@
 		} else {}
 	}
 
+	function editOrder(e) {
+		if (confirm("Apakah anda yakin ?")) {
+			e.preventDefault();
+			urls = "update_order/";
+			var dataString = $("#insert_booking").serialize();
+			console.log(idOrder);
+			
+			$("#submit").html("tunggu..");
+			$("#submitButton").prop("disabled", true);
+
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls + idOrder,
+				type: 'POST',
+				data: dataString,
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						alert("Data telah masuk");
+						$('#inputTransaksi').modal('hide');
+						$('#checkIn').modal('show');
+						$("#submit").html("Check In");
+						$("#submitButton").prop("disabled", false);
+					} else {
+						alert(response);
+						$("#submit").html("Check In");
+						$("#submitButton").prop("disabled", false);
+					}
+				},
+				error: function () {
+					alert(response);
+					$("#submitButton").prop("disabled", false);
+				}
+			});
+		} else {}
+	}
+
+	$(document).on('click', '#tambah_order', function () {
+		$('#insert_booking').attr('onsubmit', 'insertorder(event)');
+		$('#submitButton').text('Tambah Order');
+		$('#inputTransaksiLabel').text('Tambah Order');
+		$(':input').val('');
+		$('#request_breakfast').prop('checked', false);
+		$('#rent_car').prop('checked', false);
+	});
+
 	$(document).on('click', '#toinhouse', function () {
-		
+		$('#insert_booking').attr('onsubmit', 'editOrder(event)');
+		$('#submitButton').text('Check In');
+		$('#inputTransaksiLabel').text('Check In');
+		urls = "get_order_by_id/";
+		$.ajax({
+			url: "<?php echo base_url() ?>index.php/" + urls + $(this).data('id'),
+			type: 'GET',
+			dataType: 'json',
+			beforeSend: function() { $('#wait').show(); $('#input_data').hide(); },
+			success: function (response) {
+				console.log(response[0]);
+				idOrder = response[0].id_order;
+				$('#wait').hide(); $('#input_data').show(); 
+				$('#nama_pemesan').val(response[0].nama_pemesan);
+				$('#telepon_pemesan').val(response[0].telepon_pemesan);
+				$('#email_pemesan').val(response[0].email_pemesan);
+				$('#no_ktp_pemesan').val(response[0].no_ktp_pemesan);
+				$('#id_kamar').val(response[0].id_kamar);
+				$('#jumlah_room').val(response[0].jumlah_room);
+				$('#jumlah_guest').val(response[0].jumlah_guest);
+				$('#tanggal_check_in').val(response[0].tanggal_check_in);
+				$('#tanggal_check_out').val(response[0].tanggal_check_out);
+				$('#request_jam_check_in_awal').val(response[0].request_jam_check_in_awal);
+				$('#request_jam_check_in_akhir').val(response[0].request_jam_check_in_akhir);
+				$('#sumber_order').val(response[0].sumber_order);
+				$('#total_harga').val(response[0].total_harga);
+				if (response[0].request_breakfast === '1') {
+					$('#request_breakfast').prop('checked', true);
+				} else {
+					$('#request_breakfast').prop('checked', false);
+				}
+				if (response[0].request_rent_car === '1') {
+					$('#rent_car').prop('checked', true);
+				} else {
+					$('#rent_car').prop('checked', false);
+				}
+			}
+		});
+
 	});
 
 	$(document).on('click', '#tocomplete', function () {
