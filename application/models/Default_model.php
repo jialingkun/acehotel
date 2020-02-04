@@ -75,7 +75,7 @@ class Default_model extends CI_Model {
 		return $query->result_array();
 	}
 
-	public function get_data_order($filter = NULL, $orderby = NULL, $sort = "asc", $groupby = NULL, $select = NULL){
+	public function get_data_order($filter = NULL, $orderby = NULL, $sort = "asc", $groupby = NULL, $select = NULL, $limit = NULL){
 		if ($select != NULL){
 			$this->db->select($select);
 		}else{
@@ -90,6 +90,9 @@ class Default_model extends CI_Model {
 		}
 		if ($groupby != NULL) {
 			$this->db->group_by($groupby);
+		}
+		if ($limit != NULL) {
+			$this->db->limit($limit);
 		}
 		$query = $this->db->get();
 		return $query->result_array();
