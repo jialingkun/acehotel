@@ -86,7 +86,7 @@
 </style>
 
 <body>
-	<?php $this->load->view("admin/header");?>
+	<?php $this->load->view("owner/header");?>
 	<div class="lds-ring">
 		<div></div>
 		<div></div>
@@ -345,7 +345,7 @@
 			</div>
 		</div>
 	</div>
-	<?php $this->load->view("admin/footer");?>
+	<?php $this->load->view("owner/footer");?>
 	<?php $this->load->view("function");?>
 </body>
 <script src="<?=base_url("dist/js/jquery.min.js");?>"></script>

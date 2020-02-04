@@ -86,7 +86,7 @@
 <body>
 	<?php $this->load->view("admin/header");?>
 	<div class="container">
-		<div class="row" style="margin-top:20%;">
+		<div class="row" style="margin-top:20%; margin-bottom:20%;">
 			<div class="col-sm-12 m-2">
 				<h5 class="mb-1" id="nama_hotel">...</h5>
 				<span>Alamat : </span>
