@@ -683,6 +683,28 @@ class Default_controller extends CI_Controller {
 	}
 
 
+	//get revenue hotel by range tanggal checkin
+	//parameter: id hotel, tgl check in awal (ex:2019-12-17), tgl check in akhir
+	//note: ambil data revenue hotel berdasarkan range tanggal checkin, revenue dihitung dari saat check in
+	public function get_report_hotel_by_tanggalcheckin($id, $tglawal, $tglakhir, $return_var = NULL){
+		$filter = array(
+			'orders.id_hotel'=> $id,
+			'orders.status_order !='=> 'upcoming',
+			'orders.tanggal_check_in_real >=' =>date("Y-m-d", strtotime($tglawal)),
+			'orders.tanggal_check_in_real <=' =>date("Y-m-d", strtotime($tglakhir))
+		);
+
+		$data = $this->Default_model->get_data_order($filter, 'tanggal_check_in_real','asc',NULL,
+			'orders.id_order, orders.nama_pemesan, orders.sumber_order, orders.tanggal_check_in, orders.tanggal_check_out, orders.status_order, orders.jumlah_room, orders.jumlah_guest, orders.nama_kamar, orders.no_kamar, orders.total_harga');
+
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+
 
 
 
@@ -1369,6 +1391,34 @@ class Default_controller extends CI_Controller {
 		}else{
 			echo "no cookie";
 		}
+	}
+
+
+	// Export and download data in CSV format
+	//parameter: id hotel, tgl check in awal (ex:2019-12-17), tgl check in akhir
+	//note: API langsung memunculkan pop up download browser
+	public function exportCSV($id, $tglawal, $tglakhir){ 
+		$filename = 'report_'.$id.'_'.date('Ymd').'.csv'; 
+		header("Content-Description: File Transfer"); 
+		header("Content-Disposition: attachment; filename=$filename"); 
+		header("Content-Type: application/csv; ");
+
+
+		$reportData = $this->get_report_hotel_by_tanggalcheckin($id, $tglawal, $tglakhir, true);
+
+		$file = fopen('php://output', 'w');
+
+		$header = array(); 
+		foreach($reportData[0] as $key => $val){
+            $header[]= $key;
+        }
+
+		fputcsv($file, $header);
+		foreach ($reportData as $key=>$line){ 
+			fputcsv($file,$line); 
+		}
+		fclose($file); 
+		exit; 
 	}
 
 
