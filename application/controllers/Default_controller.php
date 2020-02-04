@@ -501,7 +501,7 @@ class Default_controller extends CI_Controller {
 	//note: ambil data order completed berdasarkan hotel
 	public function get_order_by_hotel_completed($id, $return_var = NULL){
 		$filter = array('orders.id_hotel'=> $id, 'orders.status_order'=> 'completed');
-		$data = $this->Default_model->get_data_order($filter, 'tanggal_check_out','desc');
+		$data = $this->Default_model->get_data_order($filter, 'tanggal_check_out','desc',NULL,NULL,50);
 		if (empty($data)){
 			$data = [];
 		}
