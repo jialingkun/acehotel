@@ -9,10 +9,6 @@
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap-grid.min.css");?>">
 	<link rel="stylesheet" href="<?=base_url("dist/css/style.css");?>">
 	<link rel="stylesheet" href="<?=base_url("dist/css/font-awesome.min.css");?>">
-
-
-
-
 	<title>DASHBOARD ADMIN</title>
 </head>
 <style>
@@ -142,9 +138,11 @@
 				</div>
 			</div>
 		</div>
-		<a class="float" data-toggle="modal" data-target="#inputTransaksi">
+
+		<a class="float" id="tambah_order" data-toggle="modal" data-target="#inputTransaksi">
 			<i class="fa fa-plus my-float text-white" aria-hidden="true"></i>
 		</a>
+
 		<div class="modal fade" id="inputTransaksi" tabindex="-1" role="dialog" aria-labelledby="inputTransaksiLabel"
 			aria-hidden="true">
 			<div class="modal-dialog" role="document">
@@ -157,28 +155,33 @@
 							</button>
 						</div>
 						<div class="modal-body">
-							<div class="col-12 no-padding">
-
+							<div class="col-12 no-padding" style="display:none;" id="wait">
+								Please Wait
+							</div>
+							<div class="col-12 no-padding" id="input_data">
 								<h5 class="text-center">Informasi Pemesan</h5>
 								<hr>
 								<div class="form-group">
 									<label>Nama Pemesan</label>
-									<input type="text" name="nama_pemesan" class="form-control"
+									<input type="text" id="nama_pemesan" name="nama_pemesan" class="form-control"
 										pattern="^[A-Za-z ,.'-]+$" required>
 								</div>
 								<div class="form-group">
 									<label>Telepon</label>
-									<input type="tel" name="telepon_pemesan" class="form-control" required>
+									<input type="tel" id="telepon_pemesan" name="telepon_pemesan" class="form-control"
+										required>
 								</div>
 								<div class="form-group">
 									<label>Email</label>
-									<input type="email" name="email_pemesan" class="form-control" required>
+									<input type="email" id="email_pemesan" name="email_pemesan" class="form-control"
+										required>
 								</div>
 								<div class="form-group">
 									<label>No KTP</label>
-									<input type="text" name="no_ktp_pemesan" class="form-control" pattern="^[0-9]+$">
+									<input type="text" id="no_ktp_pemesan" name="no_ktp_pemesan" class="form-control"
+										pattern="^[0-9]+$">
 								</div>
-								<h5 class="text-center">Informasi Pesanan</h5>
+								<h5 class="text-center">Informasi Order</h5>
 								<hr>
 								<div class="form-group">
 									<h5 class="text-center" id="namaHotel"></h5>
@@ -191,31 +194,37 @@
 								</div>
 								<div class="form-group">
 									<label>Jumlah Kamar</label>
-									<input type="number" name="jumlah_room" class="form-control" required>
+									<input type="number" id="jumlah_room" name="jumlah_room" class="form-control"
+										required>
 								</div>
 								<div class="form-group">
 									<label>Jumlah Tamu</label>
-									<input type="number" name="jumlah_guest" class="form-control" required>
+									<input type="number" id="jumlah_guest" name="jumlah_guest" class="form-control"
+										required>
 								</div>
 								<div class="form-group">
 									<label>Tanggal Check In</label>
-									<input type="date" name="tanggal_check_in" class="form-control" required>
+									<input type="date" id="tanggal_check_in" name="tanggal_check_in"
+										class="form-control" required>
 								</div>
 								<div class="form-group">
 									<label>Tanggal Check Out</label>
-									<input type="date" name="tanggal_check_out" class="form-control" required>
+									<input type="date" id="tanggal_check_out" name="tanggal_check_out"
+										class="form-control">
 								</div>
 								<div class="form-group">
 									<label>Request Jam Checkin Awal</label>
-									<input type="time" name="request_jam_check_in_awal" class="form-control" required>
+									<input type="time" id="request_jam_check_in_awal" name="request_jam_check_in_awal"
+										class="form-control">
 								</div>
 								<div class="form-group">
 									<label>Request Jam Checkin Akhir</label>
-									<input type="time" name="request_jam_check_in_akhir" class="form-control">
+									<input type="time" id="request_jam_check_in_akhir" name="request_jam_check_in_akhir"
+										class="form-control">
 								</div>
 								<div class="form-group">
 									<label>Sumber Order</label>
-									<select class="form-control" name="sumber_order" required>
+									<select class="form-control" id="sumber_order" name="sumber_order" required>
 										<option value="traveloka">Traveloka</option>
 										<option value="oyo">OYO</option>
 										<option value="bookingcom">Booking</option>
@@ -225,7 +234,8 @@
 								</div>
 								<div class="form-group">
 									<label>Total Harga</label>
-									<input type="number" name="total_harga" class="form-control" required>
+									<input type="number" id="total_harga" name="total_harga" class="form-control"
+										required>
 								</div>
 								<h5 class="text-center">Lain - Lain</h5>
 								<hr>
@@ -235,8 +245,8 @@
 									<label class="custom-control-label" for="request_breakfast">Breakfast</label>
 								</div>
 								<div class="custom-control custom-checkbox custom-control-inline">
-									<input type="checkbox" class="custom-control-input" id="rent_car" name="request_car"
-										value="1">
+									<input type="checkbox" class="custom-control-input" id="rent_car"
+										name="request_rent_car" value="1">
 									<label class="custom-control-label" for="rent_car">Rent Car</label>
 								</div>
 							</div>
@@ -250,8 +260,68 @@
 				</div>
 			</div>
 		</div>
+
+		<div class="modal fade" id="checkIn" tabindex="-1" role="dialog" aria-labelledby="checkInLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<form id="checkin_booking">
+						<div class="modal-header">
+							<h5 class="modal-title" id="inputTransaksiLabel">Tambah Order</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div class="col-12 text-center">
+								<h4>Hotel Araya</h4>
+								<span class="sm-font">Jumlah kamar yang dipesan :</span> <span class="sm-font"
+									id="jml_kmr_dipesan"></span>
+							</div>
+							<div class="col-12 no-padding" id="wait_kamar">
+								Please Wait
+							</div>
+							<div class="row mb-4" id="kamar">
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+								<button type="submit" id="checkinButton"
+									class="btn btn-primary btn-md float-right"><span id="submit">Tambah
+										Booking</span></button>
+							</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="completedModal" tabindex="-1" role="dialog" aria-labelledby="completedModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+
+					<div class="modal-header">
+						<h5 class="modal-title" id="completedModalLabel">Tambah Order</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="col-12 no-padding" id="wait_kamar">
+							Please Wait
+						</div>
+						<div class="row mb-4" id="notaCompleted">
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 	<?php $this->load->view("admin/footer");?>
+	<?php $this->load->view("function");?>
 </body>
 <script src="<?=base_url("dist/js/jquery.min.js");?>"></script>
 <script src="<?=base_url("dist/js/popper.min.js");?>"></script>
@@ -278,10 +348,31 @@
 	</a>
 </script>
 
+<script id="list_lantai_kamar" type="text/HTML">
+	<div class="col-12 text-center mt-4 " >
+		<span> Lantai : </span><span id="lantai_kamar"></span>
+		<hr>
+	</div>
+</script>
+
+<script id="list_kamar" type="text/HTML">
+	<div class="col-3" id="nomor_kamar">
+		<button type="button" class="btn btn-lg btn-light mt-2 mb-2"
+			style="box-shadow: -2px 1px 15px 2px rgba(224,224,224,1);">
+			<span id="no_kamar"></span>
+		</button>
+	</div>
+</script>
+
 <script>
 	var namaHotel = getCookie('nama_hotel');
 	var idHotel = getCookie('id_hotel');
 	var active = getCookie('booking_section');
+	var idOrder = "";
+	var tanggalCheckOut = "";
+	var jumlahRoom = "";
+	var selected_room = new Array();
+	var choosen_room = "";
 
 	if (active == "upcoming") {
 		// $("#upcoming").tab('dispose');
@@ -300,7 +391,6 @@
 		$("#header_title").text('Bookings');
 		$('#nama_hotel').text(namaHotel);
 		$('#namaHotel').text(namaHotel);
-		$('#id_hotel').val(idHotel);
 
 		const formatUang = new Intl.NumberFormat('id-ID', {
 			style: 'currency',
@@ -318,6 +408,7 @@
 		var dataComplete = complete[0];
 		var dataKamar = listKamar[0];
 		var jmlRoom = 0;
+
 
 		$('.lds-ring').hide();
 		$('.container').show();
@@ -341,6 +432,8 @@
 			jmlRoom += parseInt(dataUpcoming[i].jumlah_room);
 
 			$(tmp).attr('id', 'toinhouse');
+			$(tmp).attr('data-toggle', 'modal');
+			$(tmp).attr('data-target', '#inputTransaksi');
 			$(tmp).data('id', dataUpcoming[i].id_order);
 			$(tmp).find('#namaUser').text(dataUpcoming[i].nama_pemesan);
 			$(tmp).find('#namaKamar').text(dataUpcoming[i].nama_kamar);
@@ -389,7 +482,7 @@
 			var tmp = $('#list_booking')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
 			jmlRoom += parseInt(dataComplete[i].jumlah_room);
-
+			$(tmp).attr('id', 'complete');
 			$(tmp).find('#namaUser').text(dataComplete[i].nama_pemesan);
 			$(tmp).find('#namaKamar').text(dataComplete[i].nama_kamar);
 			$(tmp).find('#jmlRoom').text(dataComplete[i].jumlah_room);
@@ -445,7 +538,7 @@
 	}
 
 	function insertOrder(e) {
-		if (confirm("Apakah anda yakin ?")) {
+		if (confirm("Apakah anda yakin akan menambah data?")) {
 			e.preventDefault();
 			urls = "insert_order";
 			var dataString = $("#insert_booking").serialize();
@@ -468,6 +561,42 @@
 						$("#submitButton").prop("disabled", false);
 					}
 				},
+				error: function (e) {
+					console.log(e.responseText);
+					alert(response);
+					$("#submitButton").prop("disabled", false);
+				}
+			});
+		} else {}
+	}
+
+	function editOrder(e) {
+		if (confirm("Apakah anda yakin ?")) {
+			e.preventDefault();
+			urls = "update_order/";
+			var dataString = $("#insert_booking").serialize();
+			var dataJSON = $("#insert_booking").serializeArray();
+			$("#submit").html("tunggu..");
+			$("#submitButton").prop("disabled", true);
+
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls + idOrder,
+				type: 'POST',
+				data: dataString,
+				success: function (response) {
+					if (response != "access denied") {
+						alert("Data telah masuk");
+						console.log(dataJSON);
+						jumlahRoom = dataJSON[6].value;
+						listKamar(dataJSON[5].value);
+						$("#submit").html("Check In");
+						$("#submitButton").prop("disabled", false);
+					} else {
+						alert(response);
+						$("#submit").html("Check In");
+						$("#submitButton").prop("disabled", false);
+					}
+				},
 				error: function () {
 					alert(response);
 					$("#submitButton").prop("disabled", false);
@@ -476,8 +605,161 @@
 		} else {}
 	}
 
+	function listKamar(id_kamar) {
+		urls = "get_ketersediaan_nokamar/";
+		$('#kamar').empty();
+		$.ajax({
+			url: "<?php echo base_url() ?>index.php/" + urls + id_kamar + "/" + tanggalCheckOut,
+			type: 'GET',
+			dataType: 'json',
+			beforeSend: function () {
+				$('#wait_kamar').show();
+
+			},
+			success: function (response) {
+				var lantai_kamar = "0";
+				$('#wait_kamar').hide();
+				$('#inputTransaksi').modal('hide');
+				$('#checkIn').modal('show');
+				$('#jml_kmr_dipesan').text(jumlahRoom);
+				// console.log(response);
+
+				for (var i = 0; i < response.length; i++) {
+
+					if (lantai_kamar != response[i].lantai) {
+						lantai_kamar = response[i].lantai;
+						var tmp = $('#list_lantai_kamar')[0].innerHTML;
+						tmp = $.parseHTML(tmp);
+						$(tmp).find('#lantai_kamar').text(response[i].lantai);
+						$(tmp).appendTo('#kamar');
+					}
+					if (response[i].ketersediaan == "tidak tersedia") {
+						$(tmp).find('#nomor_kamar, button').css({
+							'box-shadow': '',
+							'background-color': 'red',
+							'color': 'white'
+						});
+						$(tmp).find('#nomor_kamar, button').prop('disabled', true);
+					}
+					var tmp = $('#list_kamar')[0].innerHTML;
+					tmp = $.parseHTML(tmp);
+					$(tmp).find('#no_kamar').text(response[i].no_kamar);
+					$(tmp).find('#nomor_kamar, button').data('no_kamar', response[i].no_kamar);
+
+					$(tmp).appendTo('#kamar');
+				}
+			}
+		});
+	}
+
+	$(document).on('click', '#nomor_kamar button', function () {
+		if ($(this).data('checked') == 'dipilih') {
+			$(this).css({
+				'background-color': '#f8f9fa',
+				'color': '#212529'
+			});
+			removeA(selected_room, $(this).data('no_kamar'));
+			$(this).removeData('checked');
+		} else if ($(this).data('checked') != 'dipilih' && selected_room.length < jumlahRoom) {
+			$(this).data('checked', 'dipilih');
+			$(this).css({
+				'background-color': '#007BFF',
+				'color': 'white'
+			});
+			selected_room.push($(this).data('no_kamar'));
+		} else {
+			alert('max');
+		}
+		choosen_room = selected_room.join();
+		console.log(choosen_room);
+	});
+
+	$(document).on('click', '#checkinButton', function () {
+		if (confirm("Apakah anda yakin ?")) {
+			urls = "update_order_check_in/";
+			$("#submit").html("tunggu..");
+			$("#checkinButton").prop("disabled", true);
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls + idOrder,
+				type: 'POST',
+				data: {
+					no_kamar: choosen_room
+				},
+				success: function (response) {
+					if (response != "access denied") {
+						alert("Data telah masuk");
+						location.reload();
+					} else {
+						alert(response);
+						$("#submit").html("Check In");
+						$("#checkinButton").prop("disabled", false);
+					}
+				},
+				error: function (e) {
+					console.log(e.responseText);
+					alert(response);
+					$("#checkinButton").prop("disabled", false);
+				}
+			});
+		}
+	});
+
+	$(document).on('click', '#tambah_order', function () {
+		$('#insert_booking').attr('onsubmit', 'insertOrder(event)');
+		$('#submitButton').text('Tambah Order');
+		$('#inputTransaksiLabel').text('Tambah Order');
+		$(':input').val('');
+		$('#request_breakfast').prop('checked', false);
+		$('#rent_car').prop('checked', false);
+		$('#id_hotel').val(idHotel);
+		console.log($('#id_order').val());
+	});
+
 	$(document).on('click', '#toinhouse', function () {
-		
+		$('#insert_booking').attr('onsubmit', 'editOrder(event)');
+		$('#submitButton').text('Check In');
+		$('#inputTransaksiLabel').text('Check In');
+		urls = "get_order_by_id/";
+		$.ajax({
+			url: "<?php echo base_url() ?>index.php/" + urls + $(this).data('id'),
+			type: 'GET',
+			dataType: 'json',
+			beforeSend: function () {
+				$('#wait').show();
+				$('#input_data').hide();
+			},
+			success: function (response) {
+				console.log(response[0]);
+				idOrder = response[0].id_order;
+				tanggalCheckOut = response[0].tanggal_check_out;
+				$('#wait').hide();
+				$('#input_data').show();
+				$('#nama_pemesan').val(response[0].nama_pemesan);
+				$('#telepon_pemesan').val(response[0].telepon_pemesan);
+				$('#email_pemesan').val(response[0].email_pemesan);
+				$('#no_ktp_pemesan').val(response[0].no_ktp_pemesan);
+				$('#id_kamar').val(response[0].id_kamar);
+				$('#jumlah_room').val(response[0].jumlah_room);
+				$('#jumlah_guest').val(response[0].jumlah_guest);
+				$('#tanggal_check_in').val(response[0].tanggal_check_in);
+				$('#tanggal_check_out').val(response[0].tanggal_check_out);
+				$('#request_jam_check_in_awal').val(response[0].request_jam_check_in_awal);
+				$('#request_jam_check_in_akhir').val(response[0].request_jam_check_in_akhir);
+				$('#sumber_order').val(response[0].sumber_order);
+				$('#total_harga').val(response[0].total_harga);
+				if (response[0].request_breakfast === '1') {
+					$('#request_breakfast').prop('checked', true);
+				} else {
+					$('#request_breakfast').prop('checked', false);
+				}
+				if (response[0].request_rent_car === '1') {
+					$('#rent_car').prop('checked', true);
+				} else {
+					$('#rent_car').prop('checked', false);
+				}
+			}
+		});
+
 	});
 
 	$(document).on('click', '#tocomplete', function () {
@@ -500,5 +782,18 @@
 			});
 		}
 	});
+
+	function removeA(arr) {
+		var what, a = arguments,
+			L = a.length,
+			ax;
+		while (L > 1 && arr.length) {
+			what = a[--L];
+			while ((ax = arr.indexOf(what)) !== -1) {
+				arr.splice(ax, 1);
+			}
+		}
+		return arr;
+	}
 
 </script>
