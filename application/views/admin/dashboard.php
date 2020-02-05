@@ -252,7 +252,6 @@
 				$(tmp).data('nama', response[i].nama_hotel);
 				$(tmp).appendTo('#list_hotel');
 			}
-			console.log(response);
 			$('.dropdown-toggle').dropdown();
 		},
 		complete: function () {

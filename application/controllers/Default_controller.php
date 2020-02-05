@@ -140,8 +140,8 @@ class Default_controller extends CI_Controller {
 	}
 
 	public function managementowner(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/management_owner');
+		if ($this->checkcookieowner()) {
+			$this->load->view('owner/management');
 		}else{
 			header("Location: ".base_url()."index.php/loginowner");
 			die();
