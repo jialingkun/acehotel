@@ -83,7 +83,9 @@
 	.my-float {
 		margin-top: 22px;
 	}
-	#nama_hotel, #nama_date{
+
+	#nama_hotel,
+	#nama_date {
 		display: block;
 		white-space: nowrap;
 		width: 7em;
@@ -94,7 +96,7 @@
 </style>
 
 <body>
-	<?php $this->load->view("admin/header");?>
+	<?php $this->load->view("owner/header");?>
 	<div class="lds-ring">
 		<div></div>
 		<div></div>
@@ -158,7 +160,8 @@
 		</div>
 	</div>
 
-	<?php $this->load->view("admin/footer");?>
+	<?php $this->load->view("owner/footer");?>
+	<?php $this->load->view("function");?>
 </body>
 <script src="<?=base_url("dist/js/jquery.min.js");?>"></script>
 <script src="<?=base_url("dist/js/popper.min.js");?>"></script>
@@ -176,7 +179,7 @@
 
 		$("#report_footer").addClass('is-active');
 		$("#header_title").text('Report');
-		getData(idHotelC, namaHotelC, dateFilter, today);
+		
 	});
 
 </script>
@@ -187,6 +190,7 @@
 	var idHotelC = getCookie('id_hotel');
 	var today = getToday();
 	var dateFilter = lastWeek();
+	var idOwner = "";
 
 	$(function () {
 		$('input[name="daterange"]').daterangepicker({
@@ -199,16 +203,16 @@
 		});
 	});
 
-	function getAllHotel() {
+	function getAllHotel(ownerId) {
 		return $.ajax(
-			"<?php echo base_url() ?>index.php/get_all_hotel", {
+			"<?php echo base_url() ?>index.php/get_hotel_by_owner/"+ownerId, {
 				dataType: 'json'
 			}
 		);
 	}
 
 	function getRevenue(idHotel, tglawal, tglakhir) {
-		
+
 		return $.ajax(
 			"<?php echo base_url() ?>index.php/get_revenue_hotel_by_tanggalcheckin/" + idHotel + "/" + tglawal + "/" +
 			tglakhir, {
@@ -263,106 +267,111 @@
 		][mydate.getMonth()];
 		return mydate.getDate() + ' ' + month;
 	}
+	$.when(getLoginCookieServer('ownerCookie')).done(function (response) {
+		getAllHotel(response);
+		idOwner = response;
+		getData(idHotelC, namaHotelC, dateFilter, today);
+	});
+		function getData(idHotel, namaHotel, filterDate, today) {
+			$.when(getAllHotel(idOwner), getRevenue(idHotel, filterDate, today), getSource(idHotel, filterDate,
+				today)).done(
 
-	function getData(idHotel, namaHotel, filterDate, today) {
-		$.when(getAllHotel(), getRevenue(idHotel, filterDate, today), getSource(idHotel, filterDate,
-		today)).done(
+				function (allHotel, getrevenue, getsource) {
+					$('#list_hotel').empty();
+					$('.lds-ring').hide();
+					$('.container').show();
+					var datarevenue = getrevenue[0];
+					var datalabels = [];
+					var datavalues = [];
+					var totalRevenue = 0;
+					console.log(getrevenue);
+					for (i = 0; i < allHotel[0].length; i++) {
+						var tmp = $('#hotel_option')[0].innerHTML;
+						tmp = $.parseHTML(tmp);
+						$(tmp).text(allHotel[0][i].nama_hotel);
+						$(tmp).data('id', allHotel[0][i].id_hotel);
+						$(tmp).data('nama', allHotel[0][i].nama_hotel);
+						$(tmp).appendTo('#list_hotel');
+					}
+					$('.dropdown-toggle').dropdown();
+					$('#nama_hotel').text(namaHotel);
 
-			function (allHotel, getrevenue, getsource) {
-				$('#list_hotel').empty();
-				$('.lds-ring').hide();
-				$('.container').show();
-				var datarevenue = getrevenue[0];
-				var datalabels = [];
-				var datavalues = [];
-				var totalRevenue = 0;
-				console.log(getrevenue);
-				for (i = 0; i < allHotel[0].length; i++) {
-					var tmp = $('#hotel_option')[0].innerHTML;
-					tmp = $.parseHTML(tmp);
-					$(tmp).text(allHotel[0][i].nama_hotel);
-					$(tmp).data('id', allHotel[0][i].id_hotel);
-					$(tmp).data('nama', allHotel[0][i].nama_hotel);
-					$(tmp).appendTo('#list_hotel');
-				}
-				$('.dropdown-toggle').dropdown();
-				$('#nama_hotel').text(namaHotel);
+					for (var i = 0; i < datarevenue.length; i++) {
+						datalabels.push(reformatDate(datarevenue[i].tanggal_check_in_real));
+						datavalues.push(datarevenue[i].revenue / 1000);
+						totalRevenue = totalRevenue + parseInt(datarevenue[i].revenue);
+					}
+					$("#totalRevenue").html(currency.format(totalRevenue));
 
-				for (var i = 0; i < datarevenue.length; i++) {
-					datalabels.push(reformatDate(datarevenue[i].tanggal_check_in_real));
-					datavalues.push(datarevenue[i].revenue / 1000);
-					totalRevenue = totalRevenue + parseInt(datarevenue[i].revenue);
-				}
-				$("#totalRevenue").html(currency.format(totalRevenue));
+					var linectx = document.getElementById('myLineChart').getContext('2d');
+					var chart = new Chart(linectx, {
+						type: 'line',
 
-				var linectx = document.getElementById('myLineChart').getContext('2d');
-				var chart = new Chart(linectx, {
-					type: 'line',
-
-					data: {
-						labels: datalabels,
-						datasets: [{
-							label: 'Ribu Rupiah',
-							backgroundColor: 'rgb(255, 99, 132)',
-							borderColor: 'rgb(255, 99, 132)',
-							data: datavalues
-						}]
-					},
-
-					options: {
-						scales: {
-							xAxes: [{
-								ticks: {
-									maxTicksLimit: 5
-								}
-							}],
-							yAxes: [{
-								ticks: {
-									suggestedMin: 0
-								}
+						data: {
+							labels: datalabels,
+							datasets: [{
+								label: 'Ribu Rupiah',
+								backgroundColor: 'rgb(255, 99, 132)',
+								borderColor: 'rgb(255, 99, 132)',
+								data: datavalues
 							}]
+						},
+
+						options: {
+							scales: {
+								xAxes: [{
+									ticks: {
+										maxTicksLimit: 5
+									}
+								}],
+								yAxes: [{
+									ticks: {
+										suggestedMin: 0
+									}
+								}]
+							}
 						}
+					});
+					var datasource = getsource[0];
+					var datalabels = [];
+					var datavalues = [];
+					var totalSource = 0;
+					for (var i = 0; i < datasource.length; i++) {
+						datalabels.push(datasource[i].sumber_order);
+						datavalues.push(datasource[i].frekuensi);
+						totalSource = totalSource + parseInt(datasource[i].frekuensi);
 					}
+					$("#totalSource").html(totalSource);
+
+					var doughnutctx = document.getElementById('myDoughnutChart').getContext('2d');
+					var chart = new Chart(doughnutctx, {
+						type: 'doughnut',
+
+						data: {
+							labels: datalabels,
+							datasets: [{
+								backgroundColor: [
+									'rgb(255, 99, 132)',
+									'rgb(99, 255, 132)',
+									'rgb(132, 99, 255)',
+									'rgb(99, 132, 255)',
+									'rgb(255, 132, 99)'
+								],
+								data: datavalues
+							}]
+						},
+
+						options: {
+
+						}
+					});
 				});
-				var datasource = getsource[0];
-				var datalabels = [];
-				var datavalues = [];
-				var totalSource = 0;
-				for (var i = 0; i < datasource.length; i++) {
-					datalabels.push(datasource[i].sumber_order);
-					datavalues.push(datasource[i].frekuensi);
-					totalSource = totalSource + parseInt(datasource[i].frekuensi);
-				}
-				$("#totalSource").html(totalSource);
-
-				var doughnutctx = document.getElementById('myDoughnutChart').getContext('2d');
-				var chart = new Chart(doughnutctx, {
-					type: 'doughnut',
-
-					data: {
-						labels: datalabels,
-						datasets: [{
-							backgroundColor: [
-								'rgb(255, 99, 132)',
-								'rgb(99, 255, 132)',
-								'rgb(132, 99, 255)',
-								'rgb(99, 132, 255)',
-								'rgb(255, 132, 99)'
-							],
-							data: datavalues
-						}]
-					},
-
-					options: {
-
-					}
-				});
-			});
-	}
+		}
+	
 	$(document).on('click', '#hotel-item', function () {
 		let namaHotel = $(this).data('nama');
 		let idHotel = $(this).data('id');
-		
+
 		$('#nama_hotel').text(namaHotel);
 		namaHotelC = namaHotel;
 		idHotelC = idHotel;
@@ -384,7 +393,7 @@
 			dateFilter = filter;
 			getData(idHotelC, namaHotelC, filter, today);
 		}
-		
+
 	});
 
 </script>
