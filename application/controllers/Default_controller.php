@@ -965,7 +965,7 @@ class Default_controller extends CI_Controller {
 
 			//reset password
 			if (!empty($this->input->post('password'))) {
-				$data[] = 'password_owner' => md5($this->input->post('password'));
+				$data['password_owner'] = md5($this->input->post('password'));
 			}
 			
 			$updateStatus = $this->Default_model->update_owner($id,$data);
@@ -1009,7 +1009,7 @@ class Default_controller extends CI_Controller {
 
 			//reset password
 			if (!empty($this->input->post('password'))) {
-				$data[] = 'password_receptionist' => md5($this->input->post('password'));
+				$data['password_receptionist'] = md5($this->input->post('password'));
 			}
 
 			$updateStatus = $this->Default_model->update_receptionist($id,$data);
