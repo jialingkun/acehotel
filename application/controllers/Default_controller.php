@@ -139,6 +139,14 @@ class Default_controller extends CI_Controller {
 		}
 	}
 
+	public function managementadminowner(){
+		if ($this->checkcookieadmin()) {
+			$this->load->view('admin/management_owner');
+		}else{
+			header("Location: ".base_url()."index.php/loginadmin");
+			die();
+		}
+	}
 	public function managementowner(){
 		if ($this->checkcookieowner()) {
 			$this->load->view('owner/management');
@@ -147,7 +155,6 @@ class Default_controller extends CI_Controller {
 			die();
 		}
 	}
-
 
 
 	//testing

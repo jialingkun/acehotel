@@ -171,7 +171,7 @@
 							<p id="waitDetail">Please Wait</p>
 							<div class="col-12 no-padding" id="modalContent">
 								
-								<a href=""><button type="button" class="btn btn-success w-100">Download
+								<a id="downloadReport"><button type="button" class="btn btn-success w-100">Download
 										Report</button></a>
 								<div id="listRevenue" class="tab-pane active"><br>
 								</div>
@@ -444,6 +444,9 @@
 	$(document).on('click', '#totalDetail', function () {
 		urls = "get_report_hotel_by_tanggalcheckin/";
 		$('#kamar').empty();
+		$('#listRevenue').empty();
+		let link_download = "<?php echo base_url() ?>index.php/exportCSV/"+idHotelC+"/"+dateFilter+"/"+today;
+		$('#downloadReport').attr('href',link_download);
 		$.ajax({
 			url: "<?php echo base_url() ?>index.php/" + urls + idHotelC + "/" + dateFilter + "/" + today,
 			type: 'GET',
