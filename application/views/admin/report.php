@@ -83,7 +83,9 @@
 	.my-float {
 		margin-top: 22px;
 	}
-	#nama_hotel, #nama_date{
+
+	#nama_hotel,
+	#nama_date {
 		display: block;
 		white-space: nowrap;
 		width: 7em;
@@ -127,10 +129,9 @@
 					<div class="dropdown-menu dropdown-menu-right" id="list_hotel"></div>
 				</div>
 			</div>
-
-
 			<div class="col-sm-12">
-				<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
+				<a class="list-group-item list-group-item-action flex-column align-items-start mgn-list"
+					id="totalDetail" data-toggle="modal" data-target="#revenueModal">
 					<div class="w-100 ">
 						<span>Total Revenue</span>
 						<h5 id="totalRevenue"></h5>
@@ -154,7 +155,33 @@
 					</div>
 				</a>
 			</div>
+		</div>
+		<div class="modal fade" id="revenueModal" tabindex="-1" role="dialog" aria-labelledby="revenueModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<form id="checkin_booking">
+						<div class="modal-header">
+							<h5 class="modal-title" id="revenueModalLabel">Detail Revenue</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<p id="waitDetail">Please Wait</p>
+							<div class="col-12 no-padding" id="modalContent">
 
+								<a href=""><button type="button" class="btn btn-success w-100">Download
+										Report</button></a>
+								<div id="listRevenue" class="tab-pane active"><br>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+							</div>
+					</form>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -171,6 +198,27 @@
 <script id="hotel_option" type="text/HTML">
 	<a class="dropdown-item" id="hotel-item" href="#"></a>
 </script>
+
+<script id="list_revenue" type="text/HTML">
+	<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mgn-list" >
+		<div class="w-100 ">
+			<h5 class="mb-1" id="namaUser"></h5>
+			<h6 class="mb-1" id="namaKamar"></h6>
+		</div>
+		<div class="mgn-list">
+			<span id="jmlRoom"></span> Room
+			.
+			<span id="jmlMalam"></span> Night
+			.
+			<span id="jmlGuest"></span> Guest
+		</div>
+		<div class="mgn-list">
+			<span class="badge badge-pill badge-danger"><span id="reqInAwal"></span> - <span id="reqInAkhir"></span></span>
+			<span class="sm-font" id="totHarga"></span>
+		</div>
+	</a>
+</script>
+
 <script>
 	$(document).ready(function () {
 
@@ -208,7 +256,7 @@
 	}
 
 	function getRevenue(idHotel, tglawal, tglakhir) {
-		
+
 		return $.ajax(
 			"<?php echo base_url() ?>index.php/get_revenue_hotel_by_tanggalcheckin/" + idHotel + "/" + tglawal + "/" +
 			tglakhir, {
@@ -266,7 +314,7 @@
 
 	function getData(idHotel, namaHotel, filterDate, today) {
 		$.when(getAllHotel(), getRevenue(idHotel, filterDate, today), getSource(idHotel, filterDate,
-		today)).done(
+			today)).done(
 
 			function (allHotel, getrevenue, getsource) {
 				$('#list_hotel').empty();
@@ -359,10 +407,11 @@
 				});
 			});
 	}
+
 	$(document).on('click', '#hotel-item', function () {
 		let namaHotel = $(this).data('nama');
 		let idHotel = $(this).data('id');
-		
+
 		$('#nama_hotel').text(namaHotel);
 		namaHotelC = namaHotel;
 		idHotelC = idHotel;
@@ -384,7 +433,48 @@
 			dateFilter = filter;
 			getData(idHotelC, namaHotelC, filter, today);
 		}
-		
+
+	});
+
+	$(document).on('click', '#totalDetail', function () {
+		urls = "get_report_hotel_by_tanggalcheckin/";
+		$('#kamar').empty();
+		$.ajax({
+			url: "<?php echo base_url() ?>index.php/" + urls + idHotelC + "/" + dateFilter + "/" + today,
+			type: 'GET',
+			dataType: 'json',
+			beforeSend: function () {
+				$('#waitDetail').show();
+				$('#modalContent').hide();
+			},
+			success: function (dataComplete) {
+				$('#waitDetail').hide();
+				$('#modalContent').show();
+				for (var i = 0; i < dataComplete.length; i++) {
+					var ckInDate = new Date(dataComplete[i].tanggal_check_in);
+					var ckOtDate = new Date(dataComplete[i].tanggal_check_out);
+					var selisihDate = Math.ceil((ckOtDate - ckInDate) / (1000 * 60 * 60 * 24));
+					var tmp = $('#list_revenue')[0].innerHTML;
+					tmp = $.parseHTML(tmp);
+
+
+					$(tmp).data('id', dataComplete[i].id_order);
+					$(tmp).find('#namaUser').text(dataComplete[i].nama_pemesan);
+					$(tmp).find('#namaKamar').text(dataComplete[i].nama_kamar);
+					$(tmp).find('#jmlRoom').text(dataComplete[i].jumlah_room);
+					$(tmp).find('#jmlMalam').text(selisihDate);
+					$(tmp).find('#jmlGuest').text(dataComplete[i].jumlah_guest);
+					if (dataComplete[i].request_jam_check_in_awal != null) {
+						$(tmp).find('#reqInAwal').text(dataComplete[i].request_jam_check_in_awal);
+						$(tmp).find('#reqInAkhir').text(dataComplete[i].request_jam_check_in_akhir);
+					} else {
+						$(tmp).find('#reqInAkhir').parent('.badge').hide();
+					}
+					$(tmp).find('#totHarga').text(currency.format(dataComplete[i].total_harga));
+					$(tmp).appendTo('#listRevenue');
+				}
+			}
+		});
 	});
 
 </script>

@@ -301,8 +301,6 @@
 								<span>Request Breakfast: </span><b><span id="cReqBreakfast"></span></b><br>
 								<span>Request Rent Car: </span><b><span id="cReqRentCar"></span></b><br>
 							</div>
-
-
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
