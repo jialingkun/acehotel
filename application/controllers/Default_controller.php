@@ -683,9 +683,9 @@ class Default_controller extends CI_Controller {
 	}
 
 
-	//get revenue hotel by range tanggal checkin
+	//get report hotel by range tanggal checkin
 	//parameter: id hotel, tgl check in awal (ex:2019-12-17), tgl check in akhir
-	//note: ambil data revenue hotel berdasarkan range tanggal checkin, revenue dihitung dari saat check in
+	//note: ambil data report hotel berdasarkan range tanggal checkin, report dihitung dari saat check in
 	public function get_report_hotel_by_tanggalcheckin($id, $tglawal, $tglakhir, $return_var = NULL){
 		$filter = array(
 			'orders.id_hotel'=> $id,
@@ -774,7 +774,7 @@ class Default_controller extends CI_Controller {
 		if ($this->checkcookieadmin() || $this->checkcookieowner()) {
 			$data = array(
 				'username_receptionist' => $this->input->post('username'),
-				'password_receptionist' => $this->input->post('password'),
+				'password_receptionist' => md5($this->input->post('password')),
 				'id_hotel' => $this->input->post('id_hotel'),
 				'nama_receptionist' => $this->input->post('nama'),
 				'telepon_receptionist' => $this->input->post('telepon')
@@ -962,6 +962,12 @@ class Default_controller extends CI_Controller {
 				'nama_owner' => $this->input->post('nama'),
 				'telepon_owner' => $this->input->post('telepon')
 			);
+
+			//reset password
+			if (!empty($this->input->post('password'))) {
+				$data['password_owner'] = md5($this->input->post('password'));
+			}
+			
 			$updateStatus = $this->Default_model->update_owner($id,$data);
 			echo $updateStatus;
 		}else{
@@ -995,11 +1001,17 @@ class Default_controller extends CI_Controller {
 	public function update_receptionist($id){
 		if ($this->checkcookieadmin() || $this->checkcookieowner()) {
 			$data = array(
-				'password_receptionist' => $this->input->post('password'),
+				// 'password_receptionist' => $this->input->post('password'),
 				// 'id_hotel' => $this->input->post('id_hotel'),
 				'nama_receptionist' => $this->input->post('nama'),
 				'telepon_receptionist' => $this->input->post('telepon')
 			);
+
+			//reset password
+			if (!empty($this->input->post('password'))) {
+				$data['password_receptionist'] = md5($this->input->post('password'));
+			}
+
 			$updateStatus = $this->Default_model->update_receptionist($id,$data);
 			echo $updateStatus;
 		}else{
