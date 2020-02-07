@@ -169,7 +169,8 @@
 									<h5 id="eUsername"> </h5>
 								</div>
 								<div class="form-group">
-									<button id="ePassword" class="btn btn-warning btn-md">Reset Password</button>
+									<label for="alamat">Password</label>
+									<input type="password" name="password" class="form-control">
 								</div>
 								<div class="form-group">
 									<label for="alamat">Nama Owner</label>

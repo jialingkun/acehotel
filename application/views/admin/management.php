@@ -94,7 +94,7 @@
 							<h5 class="mb-1">MANAJEMEN HOTEL</h5>
 						</div>
 					</a>
-					<a href="<?=base_url("/index.php/managementowner");?>" class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
+					<a href="<?=base_url("/index.php/managementadminowner");?>" class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
 						<div class="d-flex w-100">
 							<h5 class="mb-1">MANAJEMEN OWNER</h5>
 						</div>

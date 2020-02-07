@@ -129,10 +129,9 @@
 					<div class="dropdown-menu dropdown-menu-right" id="list_hotel"></div>
 				</div>
 			</div>
-
-
 			<div class="col-sm-12">
-				<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
+				<a class="list-group-item list-group-item-action flex-column align-items-start mgn-list"
+					id="totalDetail" data-toggle="modal" data-target="#revenueModal">
 					<div class="w-100 ">
 						<span>Total Revenue</span>
 						<h5 id="totalRevenue"></h5>
@@ -156,7 +155,33 @@
 					</div>
 				</a>
 			</div>
-
+		</div>
+		<div class="modal fade" id="revenueModal" tabindex="-1" role="dialog" aria-labelledby="revenueModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<form id="checkin_booking">
+						<div class="modal-header">
+							<h5 class="modal-title" id="revenueModalLabel">Detail Revenue</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<p id="waitDetail">Please Wait</p>
+							<div class="col-12 no-padding" id="modalContent">
+								
+								<a id="downloadReport"><button type="button" class="btn btn-success w-100">Download
+										Report</button></a>
+								<div id="listRevenue" class="tab-pane active"><br>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+							</div>
+					</form>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -174,12 +199,31 @@
 <script id="hotel_option" type="text/HTML">
 	<a class="dropdown-item" id="hotel-item" href="#"></a>
 </script>
+<script id="list_revenue" type="text/HTML">
+	<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mgn-list" >
+		<div class="w-100 ">
+			<h5 class="mb-1" id="namaUser"></h5>
+			<h6 class="mb-1" id="namaKamar"></h6>
+		</div>
+		<div class="mgn-list">
+			<span id="jmlRoom"></span> Room
+			.
+			<span id="jmlMalam"></span> Night
+			.
+			<span id="jmlGuest"></span> Guest
+		</div>
+		<div class="mgn-list">
+			<span class="badge badge-pill badge-danger"><span id="reqInAwal"></span> - <span id="reqInAkhir"></span></span>
+			<span class="sm-font" id="totHarga"></span>
+		</div>
+	</a>
+</script>
 <script>
 	$(document).ready(function () {
 
 		$("#report_footer").addClass('is-active');
 		$("#header_title").text('Report');
-		
+
 	});
 
 </script>
@@ -197,15 +241,15 @@
 			opens: 'left'
 		}, function (start, end, label) {
 			$('#nama_date').text(start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-			filter = start.format('YYYY-MM-DD');
+			dateFilter = start.format('YYYY-MM-DD');
 			today = end.format('YYYY-MM-DD');
-			getData(idHotelC, namaHotelC, filter, today);
+			getData(idHotelC, namaHotelC, dateFilter, today);
 		});
 	});
 
 	function getAllHotel(ownerId) {
 		return $.ajax(
-			"<?php echo base_url() ?>index.php/get_hotel_by_owner/"+ownerId, {
+			"<?php echo base_url() ?>index.php/get_hotel_by_owner/" + ownerId, {
 				dataType: 'json'
 			}
 		);
@@ -272,102 +316,103 @@
 		idOwner = response;
 		getData(idHotelC, namaHotelC, dateFilter, today);
 	});
-		function getData(idHotel, namaHotel, filterDate, today) {
-			$.when(getAllHotel(idOwner), getRevenue(idHotel, filterDate, today), getSource(idHotel, filterDate,
-				today)).done(
 
-				function (allHotel, getrevenue, getsource) {
-					$('#list_hotel').empty();
-					$('.lds-ring').hide();
-					$('.container').show();
-					var datarevenue = getrevenue[0];
-					var datalabels = [];
-					var datavalues = [];
-					var totalRevenue = 0;
-					console.log(getrevenue);
-					for (i = 0; i < allHotel[0].length; i++) {
-						var tmp = $('#hotel_option')[0].innerHTML;
-						tmp = $.parseHTML(tmp);
-						$(tmp).text(allHotel[0][i].nama_hotel);
-						$(tmp).data('id', allHotel[0][i].id_hotel);
-						$(tmp).data('nama', allHotel[0][i].nama_hotel);
-						$(tmp).appendTo('#list_hotel');
-					}
-					$('.dropdown-toggle').dropdown();
-					$('#nama_hotel').text(namaHotel);
+	function getData(idHotel, namaHotel, filterDate, today) {
+		$.when(getAllHotel(idOwner), getRevenue(idHotel, filterDate, today), getSource(idHotel, filterDate,
+			today)).done(
 
-					for (var i = 0; i < datarevenue.length; i++) {
-						datalabels.push(reformatDate(datarevenue[i].tanggal_check_in_real));
-						datavalues.push(datarevenue[i].revenue / 1000);
-						totalRevenue = totalRevenue + parseInt(datarevenue[i].revenue);
-					}
-					$("#totalRevenue").html(currency.format(totalRevenue));
+			function (allHotel, getrevenue, getsource) {
+				$('#list_hotel').empty();
+				$('.lds-ring').hide();
+				$('.container').show();
+				var datarevenue = getrevenue[0];
+				var datalabels = [];
+				var datavalues = [];
+				var totalRevenue = 0;
 
-					var linectx = document.getElementById('myLineChart').getContext('2d');
-					var chart = new Chart(linectx, {
-						type: 'line',
+				for (i = 0; i < allHotel[0].length; i++) {
+					var tmp = $('#hotel_option')[0].innerHTML;
+					tmp = $.parseHTML(tmp);
+					$(tmp).text(allHotel[0][i].nama_hotel);
+					$(tmp).data('id', allHotel[0][i].id_hotel);
+					$(tmp).data('nama', allHotel[0][i].nama_hotel);
+					$(tmp).appendTo('#list_hotel');
+				}
+				$('.dropdown-toggle').dropdown();
+				$('#nama_hotel').text(namaHotel);
 
-						data: {
-							labels: datalabels,
-							datasets: [{
-								label: 'Ribu Rupiah',
-								backgroundColor: 'rgb(255, 99, 132)',
-								borderColor: 'rgb(255, 99, 132)',
-								data: datavalues
+				for (var i = 0; i < datarevenue.length; i++) {
+					datalabels.push(reformatDate(datarevenue[i].tanggal_check_in_real));
+					datavalues.push(datarevenue[i].revenue / 1000);
+					totalRevenue = totalRevenue + parseInt(datarevenue[i].revenue);
+				}
+				$("#totalRevenue").html(currency.format(totalRevenue));
+
+				var linectx = document.getElementById('myLineChart').getContext('2d');
+				var chart = new Chart(linectx, {
+					type: 'line',
+
+					data: {
+						labels: datalabels,
+						datasets: [{
+							label: 'Ribu Rupiah',
+							backgroundColor: 'rgb(255, 99, 132)',
+							borderColor: 'rgb(255, 99, 132)',
+							data: datavalues
+						}]
+					},
+
+					options: {
+						scales: {
+							xAxes: [{
+								ticks: {
+									maxTicksLimit: 5
+								}
+							}],
+							yAxes: [{
+								ticks: {
+									suggestedMin: 0
+								}
 							}]
-						},
-
-						options: {
-							scales: {
-								xAxes: [{
-									ticks: {
-										maxTicksLimit: 5
-									}
-								}],
-								yAxes: [{
-									ticks: {
-										suggestedMin: 0
-									}
-								}]
-							}
 						}
-					});
-					var datasource = getsource[0];
-					var datalabels = [];
-					var datavalues = [];
-					var totalSource = 0;
-					for (var i = 0; i < datasource.length; i++) {
-						datalabels.push(datasource[i].sumber_order);
-						datavalues.push(datasource[i].frekuensi);
-						totalSource = totalSource + parseInt(datasource[i].frekuensi);
 					}
-					$("#totalSource").html(totalSource);
-
-					var doughnutctx = document.getElementById('myDoughnutChart').getContext('2d');
-					var chart = new Chart(doughnutctx, {
-						type: 'doughnut',
-
-						data: {
-							labels: datalabels,
-							datasets: [{
-								backgroundColor: [
-									'rgb(255, 99, 132)',
-									'rgb(99, 255, 132)',
-									'rgb(132, 99, 255)',
-									'rgb(99, 132, 255)',
-									'rgb(255, 132, 99)'
-								],
-								data: datavalues
-							}]
-						},
-
-						options: {
-
-						}
-					});
 				});
-		}
-	
+				var datasource = getsource[0];
+				var datalabels = [];
+				var datavalues = [];
+				var totalSource = 0;
+				for (var i = 0; i < datasource.length; i++) {
+					datalabels.push(datasource[i].sumber_order);
+					datavalues.push(datasource[i].frekuensi);
+					totalSource = totalSource + parseInt(datasource[i].frekuensi);
+				}
+				$("#totalSource").html(totalSource);
+
+				var doughnutctx = document.getElementById('myDoughnutChart').getContext('2d');
+				var chart = new Chart(doughnutctx, {
+					type: 'doughnut',
+
+					data: {
+						labels: datalabels,
+						datasets: [{
+							backgroundColor: [
+								'rgb(255, 99, 132)',
+								'rgb(99, 255, 132)',
+								'rgb(132, 99, 255)',
+								'rgb(99, 132, 255)',
+								'rgb(255, 132, 99)'
+							],
+							data: datavalues
+						}]
+					},
+
+					options: {
+
+					}
+				});
+			});
+	}
+
 	$(document).on('click', '#hotel-item', function () {
 		let namaHotel = $(this).data('nama');
 		let idHotel = $(this).data('id');
@@ -394,6 +439,50 @@
 			getData(idHotelC, namaHotelC, filter, today);
 		}
 
+	});
+
+	$(document).on('click', '#totalDetail', function () {
+		urls = "get_report_hotel_by_tanggalcheckin/";
+		$('#kamar').empty();
+		$('#listRevenue').empty();
+		let link_download = "<?php echo base_url() ?>index.php/exportCSV/"+idHotelC+"/"+dateFilter+"/"+today;
+		$('#downloadReport').attr('href',link_download);
+		$.ajax({
+			url: "<?php echo base_url() ?>index.php/" + urls + idHotelC + "/" + dateFilter + "/" + today,
+			type: 'GET',
+			dataType: 'json',
+			beforeSend: function () {
+				$('#waitDetail').show();
+				$('#modalContent').hide();
+			},
+			success: function (dataComplete) {
+				$('#waitDetail').hide();
+				$('#modalContent').show();
+				for (var i = 0; i < dataComplete.length; i++) {
+					var ckInDate = new Date(dataComplete[i].tanggal_check_in);
+					var ckOtDate = new Date(dataComplete[i].tanggal_check_out);
+					var selisihDate = Math.ceil((ckOtDate - ckInDate) / (1000 * 60 * 60 * 24));
+					var tmp = $('#list_revenue')[0].innerHTML;
+					tmp = $.parseHTML(tmp);
+					
+
+					$(tmp).data('id', dataComplete[i].id_order);
+					$(tmp).find('#namaUser').text(dataComplete[i].nama_pemesan);
+					$(tmp).find('#namaKamar').text(dataComplete[i].nama_kamar);
+					$(tmp).find('#jmlRoom').text(dataComplete[i].jumlah_room);
+					$(tmp).find('#jmlMalam').text(selisihDate);
+					$(tmp).find('#jmlGuest').text(dataComplete[i].jumlah_guest);
+					if (dataComplete[i].request_jam_check_in_awal != null) {
+						$(tmp).find('#reqInAwal').text(dataComplete[i].request_jam_check_in_awal);
+						$(tmp).find('#reqInAkhir').text(dataComplete[i].request_jam_check_in_akhir);
+					} else {
+						$(tmp).find('#reqInAkhir').parent('.badge').hide();
+					}
+					$(tmp).find('#totHarga').text(currency.format(dataComplete[i].total_harga));
+					$(tmp).appendTo('#listRevenue');
+				}
+			}
+		});
 	});
 
 </script>
