@@ -87,21 +87,20 @@
 	<?php $this->load->view("admin/header");?>
 	<div class="container">
 		<div class="row" style="margin-top:20%; margin-bottom:20%;">
-			<div class="col-sm-12 m-2">
+			<div class="col-sm-12  mt-3">
 				<h5 class="mb-1" id="nama_hotel">...</h5>
 				<span>Alamat : </span>
 				<span id="alamat_hotel"></span>
 				<br>
-				<span class="sm-font">Tlep : </span>
+				<span class="sm-font">Tlp : </span>
 				<span class="sm-font" id="tlp_hotel">...</span>
 				<button type="button" class="btn btn-primary d-block pl-3 pr-3 mt-2" data-toggle="modal"
 					data-target="#editHotel">Edit</button>
-				<div class="tab-content">
-					<div id="all_kamar" class="tab-pane active"><br>
-						<div class="list-group">
-
-						</div>
-					</div>
+			</div>
+			<div class="col-sm-12 ">
+				<div id="all_kamar" class="tab-pane active">
+					<br>
+					<div class="list-group"></div>
 				</div>
 			</div>
 		</div>
@@ -154,7 +153,7 @@
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="editTransaksiLabel">Edit Owner</h5>
+						<h5 class="modal-title" id="editTransaksiLabel">Edit Kamar</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
@@ -172,18 +171,6 @@
 									<input type="text" id="eGuest" name="max_guest" class="form-control"
 										pattern="^[0-9]+$" required>
 								</div>
-								<div>
-									<h5>Nomor Kamar</h5>
-
-									<div id="ListNoKamar mb-1">
-
-									</div>
-									<input type="text" class="form-control w-50 float-left mt-3"
-										placeholder="Nomor Kamar">
-									<input type="text" class="form-control w-50 float-left mt-3"
-										placeholder="Lantai Kamar">
-								</div>
-
 								<div class="form-group">
 									<button id="eDelete" class="btn btn-danger btn-md float-left">
 										<span onclick="deleteKamar(getCookie('edit_kamar'))">Delete
@@ -193,8 +180,6 @@
 								</div>
 							</form>
 						</div>
-
-
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
@@ -208,7 +193,7 @@
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="editHotelLabel">Edit Owner</h5>
+						<h5 class="modal-title" id="editHotelLabel">Edit Hotel</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
@@ -247,6 +232,45 @@
 			</div>
 		</div>
 
+		<div class="modal fade" id="editNoKamar" tabindex="-1" role="dialog" aria-labelledby="editNoKamar"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="editNoKamar">List Nomor Kamar</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="col-12 no-padding">
+							<form class="d-flex justify-content-around" id="tambah_no_kamar">
+								<input type="text" id="tambahLantai" class="form-control" pattern="^[A-Za-z0-9 ,.'-]+$"
+									style="width: 28%" placeholder="Lantai" required>
+								<input type="text" id="tambahNomor" class="form-control" pattern="^[A-Za-z0-9 ,.'-]+$"
+									style="width: 28%" pattern="^[A-Za-z0-9 ,.'-]+$" placeholder="Nomor" required>
+								<button id="tambahLantaiNomor" class="btn btn-success btn-md" style="width: 28%">
+									<span id="tambahLantaiNomorText" onclick="insertNoKamar()">Tambah</span></button>
+							</form>
+							<hr>
+
+							<div class="d-flex justify-content-around">
+								<span>Lantai</span>
+								<span>Nomor</span>
+								<span class="text-white">Nomor</span>
+							</div>
+							<div id="list_no_kamar">
+
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 	</div>
 	<?php $this->load->view("admin/footer");?>
 </body>
@@ -255,10 +279,21 @@
 <script src="<?=base_url("dist/js/bootstrap.min.js");?>"></script>
 <script src="<?=base_url("dist/js/function.js");?>"></script>
 
+<script id="template_no_kamar" type="text/HTML">
+	<form class="d-flex justify-content-around pt-3">
+		<input type="text" id="lantaiKamar" name="nomorKamar" class="form-control"
+			pattern="^[A-Za-z ,.'-]+$" style="width: 30%" placeholder="Lantai" readonly>
+		<input type="text" id="nomorKamar" name="nomorKamar" class="form-control"
+			style="width: 30%" placeholder="Nomor" readonly>
+		<button id="noKamarHapus" class="btn btn-danger btn-md" style="width: 30%">
+			<span >Hapus</span></button>
+	</form>
+</script>
+
 <script id="list_kamar" type="text/HTML">
-	<a href="#" class="list-group-item list-group-item-action mgn-list data-kamar">
-    <div class="row" data-toggle="modal" data-target="#editTransaksi" id="listKamar">
-        <div class="col-9" >
+	<a href="#" class="list-group-item list-group-item-action mgn-list data-kamar p-0">
+    <div class="row "  id="listKamar">
+        <div class="col-8 px-4 py-3" >
         <input type="hidden" id="id_kamar">
             <div class="d-block">
                 <h6 class="mb-1" id="namaKamar"></h6>
@@ -272,27 +307,13 @@
                 <span id="maxGuest"></span>    
             </div>
         </div>
-        <div class="col-3" style="margin:auto; color:#1C7CD5">
-            <span>Edit</span>
+        <div class="col-4 py-0 pl-0 m-0 d-flex flex-column justify-content-around" style="margin:auto; color:#1C7CD5">
+			<div id="btn_edit_kamar" class="d-flex justify-content-center align-items-center bg-primary text-white" data-toggle="modal" data-target="#editTransaksi" style="height:50%; background-color:gray;">
+				Edit
+			</div>
+			<div id="btn_no_kamar" class="d-flex justify-content-center align-items-center bg-light text-dark" data-toggle="modal" data-target="#editNoKamar" style="height:50%">No Kamar</div>
         </div>
     </div>
-    </a>
-</script>
-
-<script id="list_noKamar" type="text/HTML">
-	<a href="#" class="list-group-item list-group-item-action mgn-list data-kamar">
-        <div class="row">
-            <div class="col-6">
-                <div class="d-block">
-                    <span class="mb-1" >Nomor : 110</span> 	
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="d-block">
-                    <span class="sm-font">Lantai : 11F </span>
-                </div>
-            </div>
-        </div>
     </a>
 </script>
 
@@ -330,6 +351,8 @@
 			$(tmp).find('#jmlKamar').text(getKamar[0][i].jumlah_kamar);
 			$(tmp).find('#maxGuest').text(getKamar[0][i].max_guest);
 			$(tmp).data('id', getKamar[0][i].id_kamar);
+			$(tmp).find('#btn_edit_kamar').data('id', getKamar[0][i].id_kamar);
+			$(tmp).find('#btn_no_kamar').data('id', getKamar[0][i].id_kamar);
 			$(tmp).appendTo('#all_kamar');
 		}
 	});
@@ -356,12 +379,74 @@
 	}
 
 	function getNokamarByKamar(idKamar) {
-		return $.ajax(
-			"<?php echo base_url() ?>index.php/get_nokamar_by_kamar/" + idKamar, {
-				dataType: 'json'
+		$.ajax({
+			url: "<?php echo base_url() ?>index.php/get_nokamar_by_kamar/" + idKamar,
+			dataType: 'json',
+			type: 'GET',
+			success: function (response) {
+				$('#list_no_kamar').empty();
+				let length = response.length;
+				// console.log(response[0]);
+				for (let i = 0; i < length; i++) {
+					var tmp = $('#template_no_kamar')[0].innerHTML;
+					tmp = $.parseHTML(tmp);
+
+					$(tmp).find('#nomorKamar').val(response[i].no_kamar);
+					$(tmp).find('#lantaiKamar').val(response[i].lantai);
+					$(tmp).find('#noKamarHapus').data('id', response[i].no_kamar);
+					$(tmp).appendTo('#list_no_kamar');
+				}
 			}
-		);
+		});
 	}
+
+	function insertNoKamar() {
+		if (confirm('Apakah anda yakin ?')) {
+			urls = "insert_nokamar";
+			var dataString = {
+				'id_kamar': getCookie('id_kamar'),
+				'no_kamar': $('#tambahNomor').val(),
+				'lantai': $('#tambahLantai').val()
+			};
+
+			$("#tambahLantaiNomorText").html("tunggu..");
+			$("#tambahLantaiNomor").prop("disabled", true);
+
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls,
+				type: 'POST',
+				data: dataString,
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						getNokamarByKamar(getCookie('id_kamar'));
+						$("#tambahLantaiNomorText").html("Tambah");
+						$("#tambahLantaiNomor").prop("disabled", false);
+					} else {
+						alert(response);
+						$("#tambahLantaiNomorText").html("Tambah");
+						$("#tambahLantaiNomor").prop("disabled", false);
+					}
+				}
+			});
+		} else {}
+	}
+
+	$(document).on('click', '#noKamarHapus', function () {
+		if (confirm('Apakah anda yakin akan menghapus?')) {
+			var no_kamar = $(this).data('id');
+			var id_kamar = getCookie('id_kamar');
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/delete_nokamar/" + id_kamar + "/" + no_kamar,
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						getNokamarByKamar(getCookie('id_kamar'));
+						location.reload();
+					}
+				}
+			});
+		} else {}
+	});
+
 
 	function insertKamar(e) {
 		if (confirm("Apakah anda yakin ?")) {
@@ -484,7 +569,11 @@
 		$('#eGuest').val(guest);
 
 		setCookie('edit_kamar', id_kamar);
+	});
 
+	$(document).on('click', '#btn_no_kamar', function () {
+		let id = $(this).data('id');
+		getNokamarByKamar(id);
 	});
 
 </script>
