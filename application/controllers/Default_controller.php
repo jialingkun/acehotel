@@ -1,172 +1,13 @@
 <?php
-class Default_controller extends CI_Controller {
+include_once ("Loadview.php");
+
+class Default_controller extends Loadview {
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('Default_model');
 		$this->load->helper('url_helper');
 		date_default_timezone_set('Asia/Jakarta');
 	}
-
-	//LOAD VIEW
-
-	//front
-	public function index(){
-		$this->load->view('frontpage');
-	}
-
-	//login
-	public function loginadmin(){
-		$this->load->view('admin/login');
-	}
-
-	public function loginowner(){
-		$this->load->view('owner/login');
-	}
-
-	public function loginreceptionist(){
-		$this->load->view('receptionist/login');
-	}
-
-	//Dashboard
-	public function dashboardadmin(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/dashboard');
-		}else{
-			header("Location: ".base_url()."index.php/loginadmin");
-			die();
-		}
-	}
-
-	public function dashboardowner(){
-		if ($this->checkcookieowner()) {
-			$this->load->view('owner/dashboard');
-		}else{
-			header("Location: ".base_url()."index.php/loginowner");
-			die();
-		}
-	}
-
-	public function dashboardreceptionist(){
-		if ($this->checkcookiereceptionist()) {
-			$this->load->view('receptionist/dashboard');
-		}else{
-			header("Location: ".base_url()."index.php/loginreceptionist");
-			die();
-		}
-	}
-	
-	//Bookings
-	public function bookingadmin(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/booking');
-		}else{
-			header("Location: ".base_url()."index.php/loginadmin");
-			die();
-		}
-	}
-
-	public function bookingowner(){
-		if ($this->checkcookieowner()) {
-			$this->load->view('owner/booking');
-		}else{
-			header("Location: ".base_url()."index.php/loginowner");
-			die();
-		}
-	}
-
-	public function bookingreceptionist(){
-		if ($this->checkcookiereceptionist()) {
-			$this->load->view('receptionist/booking');
-		}else{
-			header("Location: ".base_url()."index.php/loginreceptionist");
-			die();
-		}
-	}
-
-	//Report
-	public function reportadmin(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/report');
-		}else{
-			header("Location: ".base_url()."index.php/loginadmin");
-			die();
-		}
-	}
-
-	public function reportowner(){
-		if ($this->checkcookieowner()) {
-			$this->load->view('owner/report');
-		}else{
-			header("Location: ".base_url()."index.php/loginowner");
-			die();
-		}
-	}
-
-	public function reportreceptionist(){
-		if ($this->checkcookiereceptionist()) {
-			$this->load->view('receptionist/report');
-		}else{
-			header("Location: ".base_url()."index.php/loginreceptionist");
-			die();
-		}
-	}
-
-	//Management
-	public function managementadmin(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/management');
-		}else{
-			header("Location: ".base_url()."index.php/loginadmin");
-			die();
-		}
-	}
-
-	public function managementhotel(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/management_hotel');
-		}else{
-			header("Location: ".base_url()."index.php/loginadmin");
-			die();
-		}
-	}
-
-	public function managementhoteldetail(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/management_hotel_detail');
-		}else{
-			header("Location: ".base_url()."index.php/loginadmin");
-			die();
-		}
-	}
-
-	public function managementadminowner(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/management_owner');
-		}else{
-			header("Location: ".base_url()."index.php/loginadmin");
-			die();
-		}
-	}
-	public function managementowner(){
-		if ($this->checkcookieowner()) {
-			$this->load->view('owner/management');
-		}else{
-			header("Location: ".base_url()."index.php/loginowner");
-			die();
-		}
-	}
-
-
-	//testing
-	public function test_linechart(){
-		$this->load->view('testpage/linechart');
-	}
-
-	public function test_function(){
-		$this->load->view('testpage/testfunction');
-	}
-
-
 	
 	//GET DATA
 
@@ -1233,7 +1074,8 @@ class Default_controller extends CI_Controller {
 	public function cekloginadmin(){
 		$username = $this->input->post('username');
 		$password = md5($this->input->post('password'));
-		$data = $this->Default_model->get_data_admin();
+		$filter = array('username_admin'=> $username);
+		$data = $this->Default_model->get_data_admin($filter);
 		$is_login = false;
 		foreach ($data as $row){
 			if ($username == $row['username_admin'] && $password == $row['password_admin']) {
@@ -1252,7 +1094,8 @@ class Default_controller extends CI_Controller {
 	public function cekloginowner(){
 		$username = $this->input->post('username');
 		$password = md5($this->input->post('password'));
-		$data = $this->Default_model->get_data_owner();
+		$filter = array('username_owner'=> $username);
+		$data = $this->Default_model->get_data_owner($filter);
 		$is_login = false;
 		foreach ($data as $row){
 			if ($username == $row['username_owner'] && $password == $row['password_owner']) {
@@ -1273,7 +1116,8 @@ class Default_controller extends CI_Controller {
 	public function cekloginreceptionist(){
 		$username = $this->input->post('username');
 		$password = md5($this->input->post('password'));
-		$data = $this->Default_model->get_data_receptionist();
+		$filter = array('username_receptionist'=> $username);
+		$data = $this->Default_model->get_data_receptionist($filter);
 		$is_login = false;
 		foreach ($data as $row){
 			if ($username == $row['username_receptionist'] && $password == $row['password_receptionist']) {
@@ -1296,7 +1140,12 @@ class Default_controller extends CI_Controller {
 	public function checkcookieadmin(){
 		$this->load->helper('cookie');
 		if ($this->input->cookie('adminCookie',true)!=NULL) {
-			return true;
+			$value = $this->str_rot($this->input->cookie('adminCookie',true)); //decrypt first
+			if (empty($this->get_admin_by_id($value,true))) {
+				return false;
+			}else{
+				return true;
+			}
 		}else{
 			return false;
 		}
@@ -1305,7 +1154,12 @@ class Default_controller extends CI_Controller {
 	public function checkcookieowner(){
 		$this->load->helper('cookie');
 		if ($this->input->cookie('ownerCookie',true)!=NULL) {
-			return true;
+			$value = $this->str_rot($this->input->cookie('ownerCookie',true)); //decrypt first
+			if (empty($this->get_owner_by_id($value,true))) {
+				return false;
+			}else{
+				return true;
+			}
 		}else{
 			return false;
 		}
@@ -1314,7 +1168,12 @@ class Default_controller extends CI_Controller {
 	public function checkcookiereceptionist(){
 		$this->load->helper('cookie');
 		if ($this->input->cookie('receptionistCookie',true)!=NULL) {
-			return true;
+			$value = $this->str_rot($this->input->cookie('receptionistCookie',true)); //decrypt first
+			if (empty($this->get_receptionist_by_id($value,true))) {
+				return false;
+			}else{
+				return true;
+			}
 		}else{
 			return false;
 		}
@@ -1394,7 +1253,7 @@ class Default_controller extends CI_Controller {
 		$this->load->helper('cookie');
 		$cookie= array(
 			'name'   => $name,
-			'value'  => str_rot13($value), //Not really encrypt anything, just jumble text :P
+			'value'  => $this->str_rot($value),
 			'expire' => $expire
 		);
 		$this->input->set_cookie($cookie);
@@ -1406,7 +1265,7 @@ class Default_controller extends CI_Controller {
 	public function get_cookie_decrypt($name){
 		$this->load->helper('cookie');
 		if ($this->input->cookie($name,true)!=NULL) {
-			echo str_rot13($this->input->cookie($name,true));
+			echo $this->str_rot($this->input->cookie($name,true));
 		}else{
 			echo "no cookie";
 		}
@@ -1429,8 +1288,8 @@ class Default_controller extends CI_Controller {
 
 		$header = array(); 
 		foreach($reportData[0] as $key => $val){
-            $header[]= $key;
-        }
+			$header[]= $key;
+		}
 
 		fputcsv($file, $header);
 		foreach ($reportData as $key=>$line){ 
@@ -1438,6 +1297,33 @@ class Default_controller extends CI_Controller {
 		}
 		fclose($file); 
 		exit; 
+	}
+
+
+
+
+	//Untuk mengacak teks agar tidak mudah dibaca.
+	//note: alternatif pengganti str_rot13 dan base64decode karena beberapa server melarang fungsi tersebut.
+	//parameter 1: string yang akan di acak
+	//parameter 2: sebanyak berapa posisi huruf berpindah
+	//parameter 3: sebanyak berapa posisi digit berpindah
+	public function str_rot($s, $nletter = 13, $ndiggit = 5) {
+		static $letterslower = 'abcdefghijklmnopqrstuvwxyz';
+		static $lettersupper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		static $digits = '0123456789';
+		$nletter = (int)$nletter % 26;
+		$ndiggit = (int)$ndiggit % 10;
+		for ($i = 0, $l = strlen($s); $i < $l; $i++) {
+			$c = $s[$i];
+			if ($c >= 'a' && $c <= 'z') {
+				$s[$i] = $letterslower[(ord($c) - 71 + $nletter) % 26];
+			} else if ($c >= 'A' && $c <= 'Z') {
+				$s[$i] = $lettersupper[(ord($c) - 39 + $nletter) % 26];
+			} else if ($c >= '0' && $c <= '9') {
+				$s[$i] = $digits[(ord($c) - 38 + $ndiggit) % 10];
+			}
+		}
+		return $s;
 	}
 
 
