@@ -159,5 +159,9 @@ class Loadview extends CI_Controller {
 	public function test_function(){
 		$this->load->view('testpage/testfunction');
 	}
+
+	public function test_uploadphoto(){
+		$this->load->view('testpage/uploadphoto');
+	}
 	
 }

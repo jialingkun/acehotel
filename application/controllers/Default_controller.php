@@ -1327,4 +1327,86 @@ class Default_controller extends Loadview {
 	}
 
 
+
+
+
+
+
+
+
+
+
+
+	//photo upload template
+
+	public function upload_foto($id)
+	{
+		$now = time();
+		$pin = $id;
+		$filename = $pin . '_' . $now;
+
+		$config['upload_path']          = './upload/foto/';
+		$config['allowed_types'] = 'jpg|jpeg|png|gif';
+		// $config['max_size'] = '2048'; //already resized in dropzone option
+		$config['file_name'] = $filename;
+
+		$this->load->library('upload', $config);
+
+		if ($this->upload->do_upload('file')) {
+			echo $filename.$this->upload->data('file_ext');
+		}
+
+		// redirect('test_uploadphoto');
+	}
+
+	public function show_foto($id)
+	{
+		$file_list = array();
+		$dir = './upload/foto/';
+
+		if (is_dir($dir)) {
+			if ($dh = opendir($dir)) {
+
+				while (($file = readdir($dh)) !== false){
+					if($file != '' && $file != '.' && $file != '..') {
+						if (substr($file, 0, 1) == $id) {
+							$file_path = $dir.$file;
+
+							if(!is_dir($file_path)){
+								$size = filesize($file_path);
+								$file_list[] = array('name'=>$file,'size'=>$size,'path'=>base_url('upload/foto/' . $file));
+							}
+						}
+					}
+				}
+				closedir($dh);
+			}
+		}
+		echo json_encode($file_list);
+	}
+
+	public function view_foto($filename)
+	{
+		$dir = "./upload/foto/" . $filename;
+		if(file_exists($dir)){ 
+			$mime = mime_content_type($dir);
+			header('Content-Length: '.filesize($dir));
+			header("Content-Type: $mime");
+			header('Content-Disposition: inline; filename="'.$dir.'";');
+			readfile($dir);
+			die();
+			exit;
+		}
+	}
+
+	public function delete_foto()
+	{
+		$dir = './upload/foto/';
+		$filename = $_POST['name'];
+		$filepath = $dir.$filename;
+		unlink($filepath);       
+		exit;
+	}
+
+
 }
