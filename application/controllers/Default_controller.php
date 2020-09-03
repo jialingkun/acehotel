@@ -1409,4 +1409,66 @@ class Default_controller extends Loadview {
 	}
 
 
+
+	//SYNC
+	//untuk sinkronisasi master data hotel
+	//parameter: 
+	//output: 
+	public function syncProperties(){
+		$data = json_decode($this->getProperties());
+		// var_dump($data->getProperties);
+
+		$result = $this->Default_model->syncHotel($data);
+		echo $result;
+	}
+
+
+
+
+
+	//Beds24 API
+
+	//untuk sinkronisasi master data hotel
+	//parameter: 
+	//output: 
+	public function getProperties(){
+		$auth = array();
+		$auth['apiKey'] = 'acehotelapiaccessmaster';
+
+		$data = array();
+		$data['authentication'] = $auth;
+
+		$json = json_encode($data);
+
+		$url = "https://api.beds24.com/json/getProperties";
+
+		$ch=curl_init();
+		curl_setopt($ch, CURLOPT_POST, 1) ;
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		$result = curl_exec($ch);
+		curl_close ($ch);
+		return $result;		
+	}
+
+
+
+	//untuk sinkronisasi master data hotel
+	//parameter: 
+	//output: 
+	public function testing(){
+		$data = array(
+			'username_admin' => "test2",
+			'password_admin' => "asasas"
+		);
+
+		$result = $this->Default_model->insertOrUpdate('admin',$data);
+		echo $result;
+		
+	}
+
+
+
 }

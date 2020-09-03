@@ -340,5 +340,60 @@ class Default_model extends CI_Model {
 		}
 		return $return_message;
 	}
-	
+
+
+
+
+	//Other
+	//Insert or Update
+	public function insertOrUpdate($table, $data) {
+		if (empty($table) || empty($data)) return false;
+		$duplicate_data = array();
+		foreach($data AS $key => $value) {
+			$duplicate_data[] = sprintf("%s='%s'", $key, $value);
+		}
+
+		$sql = sprintf("%s ON DUPLICATE KEY UPDATE %s", $this->db->insert_string($table, $data), implode(',', $duplicate_data));
+		$this->db->query($sql);
+		if ($this->db->affected_rows() > 0 ) {
+			$return_message = 'success';
+		}else{
+			$return_message = 'failed';
+		}
+		return $return_message;
+	}
+
+
+	public function syncHotel($data){
+		$ids = array();
+		$change = false;
+		foreach($data->getProperties as $row)
+		{
+			$insertdata = array(
+				'id_hotel' => $row->propId,
+				'nama_hotel' => $row->name,
+				'alamat_hotel' => $row->address,
+				'kota_hotel' => $row->city
+			);
+			$return_message = $this->insertOrUpdate('hotel',$insertdata);
+			$ids[] = $row->propId;
+			if ($return_message == "success") {
+				$change = true;
+			}
+		}
+
+		$this->db->where_not_in('id_hotel', $ids);
+		$this->db->delete('hotel');
+		if ($this->db->affected_rows() > 0 ) {
+			$change = true;
+		}
+
+
+		if ($change) {
+			echo "success";
+		}else{
+			echo "failed";
+		}
+
+	}
 }
