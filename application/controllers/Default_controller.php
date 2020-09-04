@@ -2,11 +2,19 @@
 include_once ("Loadview.php");
 
 class Default_controller extends Loadview {
+
+	//GLOBAL VARIABLE
+	var $beds24APIkey;
+
+
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('Default_model');
 		$this->load->helper('url_helper');
 		date_default_timezone_set('Asia/Jakarta');
+
+		//init global variable
+		$this->beds24APIkey = 'acehotelapiaccessmaster';
 	}
 	
 	//GET DATA
@@ -1433,7 +1441,7 @@ class Default_controller extends Loadview {
 	//output: 
 	public function getProperties(){
 		$auth = array();
-		$auth['apiKey'] = 'acehotelapiaccessmaster';
+		$auth['apiKey'] = $this->beds24APIkey;
 
 		$data = array();
 		$data['authentication'] = $auth;
@@ -1450,7 +1458,7 @@ class Default_controller extends Loadview {
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
 		$result = curl_exec($ch);
 		curl_close ($ch);
-		return $result;		
+		return $result;
 	}
 
 
