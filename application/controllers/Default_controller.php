@@ -838,9 +838,9 @@ class Default_controller extends Loadview {
 	public function update_hotel($id){
 		if ($this->checkcookieadmin()) {
 			$data = array(
-				// 'username_owner' => $this->input->post('username_owner'),
-				'nama_hotel' => $this->input->post('nama'),
-				'alamat_hotel' => $this->input->post('alamat'),
+				'username_owner' => $this->input->post('username_owner'),
+				// 'nama_hotel' => $this->input->post('nama'),
+				// 'alamat_hotel' => $this->input->post('alamat'),
 				'telepon_hotel' => $this->input->post('telepon')
 			);
 			$updateStatus = $this->Default_model->update_hotel($id,$data);
