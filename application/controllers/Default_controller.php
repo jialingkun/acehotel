@@ -1423,10 +1423,11 @@ class Default_controller extends Loadview {
 	//parameter: 
 	//output: 
 	public function syncProperties(){
+		set_time_limit(3000);
 		$data = json_decode($this->getProperties());
 		// var_dump($data->getProperties);
 
-		$result = $this->Default_model->syncHotel($data);
+		$result = $this->Default_model->syncAllHotel($data);
 		echo $result;
 	}
 

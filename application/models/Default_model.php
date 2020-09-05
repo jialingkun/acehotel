@@ -364,26 +364,76 @@ class Default_model extends CI_Model {
 	}
 
 
-	public function syncHotel($data){
-		$ids = array();
+	public function syncAllHotel($data){
+		$hotelids = array();
+		$roomids = array();
 		$change = false;
-		foreach($data->getProperties as $row)
-		{
+		foreach($data->getProperties as $row) {
 			$insertdata = array(
 				'id_hotel' => $row->propId,
 				'nama_hotel' => $row->name,
-				'alamat_hotel' => $row->address,
-				'kota_hotel' => $row->city
+				'alamat_hotel' => $row->address
 			);
 			$return_message = $this->insertOrUpdate('hotel',$insertdata);
-			$ids[] = $row->propId;
 			if ($return_message == "success") {
 				$change = true;
 			}
+			$hotelids[] = $row->propId;
+
+			foreach($row->roomTypes as $row2) {
+				$insertdata = array(
+					'id_kamar' => $row2->roomId,
+					'id_hotel' => $row->propId,
+					'nama_kamar' => $row2->name,
+					'max_guest' => $row2->maxPeople
+				);
+				$return_message = $this->insertOrUpdate('kamar',$insertdata);
+				if ($return_message == "success") {
+					$change = true;
+				}
+				$roomids[] = $row2->roomId;
+
+
+				$unitNames = explode("\r\n",$row2->unitNames);
+
+				//NO KAMAR
+				for ($i=0; $i < $row2->qty; $i++) { 
+					if (empty($unitNames[$i])) {
+						$unitNames[$i] = $i+1;
+					}
+
+					$insertdata = array(
+						'id_no_kamar' => $i+1,
+						'id_kamar' => $row2->roomId,
+						'no_kamar' =>$unitNames[$i]
+					);
+					$return_message = $this->insertOrUpdate('nokamar',$insertdata);
+					if ($return_message == "success") {
+						$change = true;
+					}
+				}
+
+				$this->db->where('id_no_kamar >', $row2->qty);
+				$this->db->where('id_kamar', $row2->roomId);
+				$this->db->delete('nokamar');
+				if ($this->db->affected_rows() > 0 ) {
+					$change = true;
+				}
+
+
+
+			}
 		}
 
-		$this->db->where_not_in('id_hotel', $ids);
+		$this->db->where_not_in('id_hotel', $hotelids);
 		$this->db->delete('hotel');
+		if ($this->db->affected_rows() > 0 ) {
+			$change = true;
+		}
+
+
+		$this->db->where_not_in('id_kamar', $roomids);
+		$this->db->delete('kamar');
 		if ($this->db->affected_rows() > 0 ) {
 			$change = true;
 		}
