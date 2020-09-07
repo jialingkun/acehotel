@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 05, 2020 at 12:21 PM
+-- Generation Time: Sep 07, 2020 at 11:28 AM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.2.32
 
@@ -39,6 +39,17 @@ CREATE TABLE `admin` (
 INSERT INTO `admin` (`username_admin`, `password_admin`) VALUES
 ('admin1', 'd01393436e02c4c5078bd5d4a9808182'),
 ('admin2', 'd01393436e02c4c5078bd5d4a9808182');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `error_log`
+--
+
+CREATE TABLE `error_log` (
+  `id_log` int(11) NOT NULL,
+  `value` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -230,6 +241,12 @@ ALTER TABLE `admin`
   ADD PRIMARY KEY (`username_admin`);
 
 --
+-- Indexes for table `error_log`
+--
+ALTER TABLE `error_log`
+  ADD PRIMARY KEY (`id_log`);
+
+--
 -- Indexes for table `hotel`
 --
 ALTER TABLE `hotel`
@@ -274,6 +291,12 @@ ALTER TABLE `receptionist`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `error_log`
+--
+ALTER TABLE `error_log`
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `orders`

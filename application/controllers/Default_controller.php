@@ -5,6 +5,7 @@ class Default_controller extends Loadview {
 
 	//GLOBAL VARIABLE
 	var $beds24APIkey;
+	var $propAPIkeyprefix;
 
 
 	public function __construct(){
@@ -15,6 +16,7 @@ class Default_controller extends Loadview {
 
 		//init global variable
 		$this->beds24APIkey = 'acehotelapiaccessmaster';
+		$this->propAPIkeyprefix = 'propapiaccess/';
 	}
 	
 	//GET DATA
@@ -561,6 +563,20 @@ class Default_controller extends Loadview {
 	}
 
 
+	//ambil data error log (developer only)
+	public function get_error_log($orderby = NULL, $sort = "asc", $limit = NULL, $return_var = NULL){
+		$data = $this->Default_model->get_data_error_log($orderby, $sort, $limit);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+
 
 
 
@@ -713,6 +729,22 @@ class Default_controller extends Loadview {
 		}else{
 			echo "access denied";
 		}
+	}
+
+
+	//Tambah data admin
+	//note: API hanya bisa diakses saat ada cookie admin
+	//input: form POST seperti di bawah
+	//output: success/failed/access denied
+	public function insert_error_log($log = NULL){
+		if (!empty($this->input->post('log'))) {
+			$log = $this->input->post('log');
+		}
+		$data = array(
+			'value' => $log
+		);
+		$insertStatus = $this->Default_model->insert_error_log($data);
+		// echo $insertStatus;
 	}
 	
 
@@ -1419,17 +1451,39 @@ class Default_controller extends Loadview {
 
 
 	//SYNC
-	//untuk sinkronisasi master data hotel
+	//untuk sinkronisasi master data semua hotel
 	//parameter: 
 	//output: 
 	public function syncProperties(){
 		set_time_limit(3000);
 		$data = json_decode($this->getProperties());
-		// var_dump($data->getProperties);
-
-		$result = $this->Default_model->syncAllHotel($data);
-		echo $result;
+		if (!empty($data->error)) {
+			echo $data->error;
+		}else{
+			$result = $this->Default_model->syncHotel($data, true);
+			echo $result;
+		}
 	}
+
+	//untuk sinkronisasi master data satu hotel
+	//parameter: 
+	//output: 
+	public function syncProperty($propid){
+		set_time_limit(3000);
+		$data = json_decode($this->getProperty($propid));
+		if (!empty($data->error)) {
+			echo $data->error;
+		}else{
+			$result = $this->Default_model->syncHotel($data, false);
+			echo $result;
+		}
+	}
+
+	//WEBHOOK
+	public function webhookProperty($propid){
+ 		$this->syncProperty($propid);
+ 		$this->insert_error_log($propid);
+ 	}
 
 
 
@@ -1437,47 +1491,80 @@ class Default_controller extends Loadview {
 
 	//Beds24 API
 
+	//untuk sinkronisasi master data semua hotel
+	//parameter: 
+	//output: 
+ 	public function getProperties(){
+ 		$auth = array();
+ 		$auth['apiKey'] = $this->beds24APIkey;
+
+ 		$data = array();
+ 		$data['authentication'] = $auth;
+
+ 		$json = json_encode($data);
+
+ 		$url = "https://api.beds24.com/json/getProperties";
+
+ 		$ch=curl_init();
+ 		curl_setopt($ch, CURLOPT_POST, 1) ;
+ 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+ 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+ 		curl_setopt($ch, CURLOPT_URL, $url);
+ 		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+ 		$result = curl_exec($ch);
+ 		if(curl_errno($ch)){
+ 			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
+ 		}
+ 		curl_close ($ch);
+ 		return $result;
+ 	}
+
+
 	//untuk sinkronisasi master data hotel
 	//parameter: 
 	//output: 
-	public function getProperties(){
-		$auth = array();
-		$auth['apiKey'] = $this->beds24APIkey;
+ 	public function getProperty($propid){
+ 		$auth = array();
+ 		$auth['apiKey'] = $this->beds24APIkey;
+ 		$auth['propKey'] = $this->propAPIkeyprefix.$propid;
 
-		$data = array();
-		$data['authentication'] = $auth;
+ 		$data = array();
+ 		$data['authentication'] = $auth;
+ 		$data['includeRooms'] = true;
+ 		$json = json_encode($data);
 
-		$json = json_encode($data);
+ 		$url = "https://api.beds24.com/json/getProperty";
 
-		$url = "https://api.beds24.com/json/getProperties";
-
-		$ch=curl_init();
-		curl_setopt($ch, CURLOPT_POST, 1) ;
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-		$result = curl_exec($ch);
-		curl_close ($ch);
-		return $result;
-	}
+ 		$ch=curl_init();
+ 		curl_setopt($ch, CURLOPT_POST, 1) ;
+ 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+ 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+ 		curl_setopt($ch, CURLOPT_URL, $url);
+ 		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+ 		$result = curl_exec($ch);
+ 		if(curl_errno($ch)){
+ 			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
+ 		}
+ 		curl_close ($ch);	
+ 		return $result;
+ 	}
 
 
 
 	//untuk sinkronisasi master data hotel
 	//parameter: 
 	//output: 
-	public function testing(){
-		$data = array(
-			'username_admin' => "test2",
-			'password_admin' => "asasas"
-		);
+ 	public function testing(){
+ 		$data = array(
+ 			'username_admin' => "test2",
+ 			'password_admin' => "asasas"
+ 		);
 
-		$result = $this->Default_model->insertOrUpdate('admin',$data);
-		echo $result;
-		
-	}
+ 		$result = $this->Default_model->insertOrUpdate('admin',$data);
+ 		echo $result;
+
+ 	}
 
 
 
-}
+ }

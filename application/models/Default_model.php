@@ -108,6 +108,20 @@ class Default_model extends CI_Model {
 	}
 
 
+	public function get_data_error_log($orderby = NULL, $sort = "asc", $limit = NULL){
+		$this->db->select('*');
+		$this->db->from('error_log');
+		if ($orderby != NULL) {
+			$this->db->order_by($orderby, $sort);
+		}
+		if ($limit != NULL) {
+			$this->db->limit($limit);
+		}
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+
 	//INSERT DATABASE
 	public function insert_admin($data){
 		$this->db->insert('admin', $data);
@@ -171,6 +185,17 @@ class Default_model extends CI_Model {
 
 	public function insert_order($data){
 		$this->db->insert('orders', $data);
+		if ($this->db->affected_rows() > 0 ) {
+			$return_message = 'success';
+		}else{
+			$return_message = 'failed';
+		}
+		return $return_message;
+	}
+
+
+	public function insert_error_log($data){
+		$this->db->insert('error_log', $data);
 		if ($this->db->affected_rows() > 0 ) {
 			$return_message = 'success';
 		}else{
@@ -364,11 +389,16 @@ class Default_model extends CI_Model {
 	}
 
 
-	public function syncAllHotel($data){
+	public function syncHotel($data, $all){
 		$hotelids = array();
 		$roomids = array();
 		$change = false;
-		foreach($data->getProperties as $row) {
+		if ($all) {
+			$content = $data->getProperties;
+		}else{
+			$content = $data->getProperty;
+		}
+		foreach($content as $row) {
 			$insertdata = array(
 				'id_hotel' => $row->propId,
 				'nama_hotel' => $row->name,
@@ -425,17 +455,25 @@ class Default_model extends CI_Model {
 			}
 		}
 
-		$this->db->where_not_in('id_hotel', $hotelids);
-		$this->db->delete('hotel');
-		if ($this->db->affected_rows() > 0 ) {
-			$change = true;
-		}
+		if ($all) {
+			$this->db->where_not_in('id_hotel', $hotelids);
+			$this->db->delete('hotel');
+			if ($this->db->affected_rows() > 0 ) {
+				$change = true;
+			}
 
-
-		$this->db->where_not_in('id_kamar', $roomids);
-		$this->db->delete('kamar');
-		if ($this->db->affected_rows() > 0 ) {
-			$change = true;
+			$this->db->where_not_in('id_kamar', $roomids);
+			$this->db->delete('kamar');
+			if ($this->db->affected_rows() > 0 ) {
+				$change = true;
+			}
+		}else{
+			$this->db->where('id_hotel', $content[0]->propId);
+			$this->db->where_not_in('id_kamar', $roomids);
+			$this->db->delete('kamar');
+			if ($this->db->affected_rows() > 0 ) {
+				$change = true;
+			}
 		}
 
 
