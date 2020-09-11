@@ -1479,10 +1479,29 @@ class Default_controller extends Loadview {
 		}
 	}
 
+
+	//untuk sinkronisasi master data semua booking mulai hari ini sampai satu tahun kedepan
+	//parameter: 
+	//output: 
+	public function syncAllBookings(){
+		set_time_limit(3000);
+		$data = json_decode($this->getAllBookings());
+		if (!empty($data->error)) {
+			echo $data->error;
+		}else{
+			$result = $this->Default_model->syncBookings($data);
+			echo $result;
+		}
+	}
+
 	//WEBHOOK
 	public function webhookProperty($propid){
  		$this->syncProperty($propid);
- 		$this->insert_error_log($propid);
+ 		$this->insert_error_log("webhookProperty: ".$propid);
+ 	}
+
+ 	public function webhookBooking(){
+ 		$this->insert_error_log("webhookBooking: ".$this->input->get('bookid'));
  	}
 
 
@@ -1521,7 +1540,7 @@ class Default_controller extends Loadview {
 
 
 	//untuk sinkronisasi master data hotel
-	//parameter: 
+	//parameter: idproperty
 	//output: 
  	public function getProperty($propid){
  		$auth = array();
@@ -1550,19 +1569,43 @@ class Default_controller extends Loadview {
  	}
 
 
+ 	//untuk sinkronisasi master data semua booking mulai hari ini hingga satu tahun kedepan
+	//parameter: idproperty
+	//output: 
+ 	public function getAllBookings($propid){
+ 		$auth = array();
+ 		$auth['apiKey'] = $this->beds24APIkey;
+ 		$auth['propKey'] = $this->propAPIkeyprefix.$propid;
+
+ 		$data = array();
+ 		$data['authentication'] = $auth;
+ 		$data['includeInvoice'] = true;
+ 		$data['includeInfoItems'] = true;
+ 		$json = json_encode($data);
+
+ 		$url = "https://api.beds24.com/json/getBookings";
+
+ 		$ch=curl_init();
+ 		curl_setopt($ch, CURLOPT_POST, 1) ;
+ 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+ 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+ 		curl_setopt($ch, CURLOPT_URL, $url);
+ 		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+ 		$result = curl_exec($ch);
+ 		if(curl_errno($ch)){
+ 			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
+ 		}
+ 		curl_close ($ch);	
+ 		echo $result;
+ 	}
+
+
 
 	//untuk sinkronisasi master data hotel
 	//parameter: 
 	//output: 
  	public function testing(){
- 		$data = array(
- 			'username_admin' => "test2",
- 			'password_admin' => "asasas"
- 		);
-
- 		$result = $this->Default_model->insertOrUpdate('admin',$data);
- 		echo $result;
-
+ 		echo $this->input->get('status');
  	}
 
 

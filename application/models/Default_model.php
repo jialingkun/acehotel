@@ -433,9 +433,9 @@ class Default_model extends CI_Model {
 					}
 
 					$insertdata = array(
-						'id_no_kamar' => $i+1,
+						'no_kamar' => $i+1,
 						'id_kamar' => $row2->roomId,
-						'no_kamar' =>$unitNames[$i]
+						'nama_no_kamar' =>$unitNames[$i]
 					);
 					$return_message = $this->insertOrUpdate('nokamar',$insertdata);
 					if ($return_message == "success") {
@@ -443,7 +443,7 @@ class Default_model extends CI_Model {
 					}
 				}
 
-				$this->db->where('id_no_kamar >', $row2->qty);
+				$this->db->where('no_kamar >', $row2->qty);
 				$this->db->where('id_kamar', $row2->roomId);
 				$this->db->delete('nokamar');
 				if ($this->db->affected_rows() > 0 ) {
@@ -482,6 +482,13 @@ class Default_model extends CI_Model {
 		}else{
 			echo "failed";
 		}
+
+	}
+
+
+
+
+	public function syncBookings($data){
 
 	}
 }
