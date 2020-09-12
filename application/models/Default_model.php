@@ -489,6 +489,64 @@ class Default_model extends CI_Model {
 
 
 	public function syncBookings($data){
+		$change = false;
+		foreach($data as $row) {
+			$tglcheckinreal = NULL;
+			$tglcheckoutreal = NULL;
+			foreach ($row->infoItems as $row2) {
+				if ($row2->code == "CHECKIN") {
+					$tglcheckinreal = date("Y-m-d",strtotime($row2->time));
+				}else if ($row2->code == "CHECKOUT"){
+					$tglcheckoutreal = date("Y-m-d",strtotime($row2->time));
+				}
+			}
 
+			if ($row->status == 0) {
+				$statusbooking = 'cancelled';
+			}else if ($row->status == 4){
+				$statusbooking = 'black';
+			}else if ($tglcheckoutreal!=NULL) {
+				$statusbooking = 'completed';
+			}else if($tglcheckinreal!=NULL){
+				$statusbooking = 'inhouse';
+			}else{
+				$statusbooking = 'upcoming';
+			}
+
+			$insertdata = array(
+				'id_order' => $row->bookId,
+				'id_hotel' => $row->propId,
+				'id_kamar' => $row->roomId,
+				'no_kamar' => ($row->unitId!='0')?$row->unitId:NULL,
+				'nama_pemesan' => $row->guestFirstName." ".$row->guestName,
+				'telepon_pemesan' => $row->guestMobile." ".$row->guestPhone,
+				'email_pemesan' => $row->guestEmail,
+				'tanggal_check_in' => $row->firstNight,
+				'tanggal_check_out' => date("Y-m-d",strtotime('+1 day', strtotime($row->lastNight))),
+				'tanggal_check_in_real' => $tglcheckinreal,
+				'tanggal_check_out_real' => $tglcheckoutreal,
+				'jumlah_guest' => $row->numAdult,
+				'jumlah_room' => $row->roomQty,
+				'request_jam_tiba' => $row->guestArrivalTime,
+				'total_harga' => $row->price,
+				'comments' => $row->guestComments,
+				'tanggal_order' => $row->bookingTime,
+				'sumber_order' => $row->referer,
+				'status_order' => $statusbooking,
+				'invoice' => json_encode($row->invoice),
+				'tanggal_modified' => $row->modified
+			);
+			$return_message = $this->insertOrUpdate('orders',$insertdata);
+			if ($return_message == "success") {
+				$change = true;
+			}
+			
+		}
+
+		if ($change) {
+			echo "success";
+		}else{
+			echo "failed";
+		}
 	}
 }

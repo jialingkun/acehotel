@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 11, 2020 at 04:20 PM
+-- Generation Time: Sep 12, 2020 at 12:18 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.2.32
 
@@ -165,7 +165,7 @@ CREATE TABLE `orders` (
   `request_jam_tiba` varchar(255) DEFAULT NULL,
   `total_harga` int(11) DEFAULT NULL,
   `comments` text DEFAULT NULL,
-  `tanggal_order` date DEFAULT NULL,
+  `tanggal_order` datetime DEFAULT NULL,
   `sumber_order` varchar(255) DEFAULT NULL,
   `status_order` varchar(255) DEFAULT NULL,
   `invoice` text DEFAULT NULL,
@@ -177,17 +177,17 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id_order`, `id_hotel`, `id_kamar`, `no_kamar`, `nama_pemesan`, `telepon_pemesan`, `email_pemesan`, `tanggal_check_in`, `tanggal_check_out`, `tanggal_check_in_real`, `tanggal_check_out_real`, `jumlah_guest`, `jumlah_room`, `request_jam_tiba`, `total_harga`, `comments`, `tanggal_order`, `sumber_order`, `status_order`, `invoice`, `tanggal_modified`) VALUES
-(1, 'araya001', '1', '105,106', 'Benny Hartono', '09834092834', 'email@gmail.com', '2020-02-03', '2020-02-05', '2020-02-03', '2020-02-04', 2, 2, NULL, 180000, NULL, '2020-02-02', 'OYO', 'completed', NULL, NULL),
-(2, 'araya001', '1', '103', 'Yoko', '0749853948545', 'email@gmail.com', '2020-02-04', '2020-02-05', '2020-02-04', '2020-02-05', 1, 1, NULL, 120000, NULL, '2020-02-03', 'TRAVELOKA', 'completed', NULL, NULL),
-(3, 'araya001', '1', '101', 'Andreas', '093459845934', 'email@gmail.com', '2020-02-05', '2020-02-08', '2020-02-05', NULL, 2, 1, NULL, 100000, NULL, '2020-02-04', 'OTHER', 'inhouse', NULL, NULL),
-(4, 'araya001', '1', '101,102', 'Benny Hartono', '09834092834', 'email@gmail.com', '2020-02-03', '2020-02-04', '2020-02-03', '2020-02-04', 2, 2, NULL, 180000, NULL, '2020-02-02', 'OYO', 'completed', NULL, NULL),
-(5, 'araya001', '1', '104', 'Yoko', '0749853948545', 'email@gmail.com', '2020-02-04', '2020-02-06', '2020-02-04', '2020-02-06', 1, 1, NULL, 120000, NULL, '2020-02-03', 'TRAVELOKA', 'completed', NULL, NULL),
-(6, 'araya001', '1', '102', 'Andreas', '093459845934', 'email@gmail.com', '2020-02-06', '2020-02-08', '2020-02-06', NULL, 2, 1, NULL, 100000, NULL, '2020-02-05', 'OTHER', 'inhouse', NULL, NULL),
-(7, 'araya001', '1', '103,104', 'Benny Hartono', '09834092834', 'email@gmail.com', '2020-02-06', '2020-02-08', '2020-02-06', NULL, 2, 2, NULL, 180000, NULL, '2020-02-05', 'OYO', 'inhouse', NULL, NULL),
-(8, 'araya001', '1', '105', 'Yoko', '0749853948545', 'email@gmail.com', '2020-02-07', '2020-02-08', NULL, NULL, 1, 1, NULL, 120000, NULL, '2020-02-03', 'bookingcom', 'upcoming', NULL, NULL),
-(9, 'araya001', '5', NULL, 'Andre', '087857419412', 'bekkostudio@gmail.com', '2020-02-09', '2020-02-03', NULL, NULL, 4, 2, NULL, 5000000, NULL, '2020-02-08', 'bookingcom', 'upcoming', NULL, NULL),
-(10, 'araya001', '1', '103', 'vfcfbt', '08589559885855', 'ddfx@grgr.com', '2020-02-12', '2020-02-13', '2020-02-11', '2020-02-11', 2, 1, '14:30:00', 300000, NULL, '2020-02-11', 'oyo', 'completed', NULL, NULL),
-(11, 'araya001', '1', NULL, 'Benny', '08623232656', 'benny@yaho.com', '2020-07-20', '2020-07-21', NULL, NULL, 2, 1, NULL, 10000, NULL, '2020-07-20', 'tiketcom', 'upcoming', NULL, NULL);
+(1, 'araya001', '1', '105,106', 'Benny Hartono', '09834092834', 'email@gmail.com', '2020-02-04', '2020-02-05', '2020-02-03', '2020-02-04', 2, 2, NULL, 180000, NULL, '2020-02-02 00:00:00', 'OYO', 'completed', NULL, NULL),
+(2, 'araya001', '1', '103', 'Yoko', '0749853948545', 'email@gmail.com', '2020-02-04', '2020-02-05', '2020-02-04', '2020-02-05', 1, 1, NULL, 120000, NULL, '2020-02-03 00:00:00', 'TRAVELOKA', 'completed', NULL, NULL),
+(3, 'araya001', '1', '101', 'Andreas', '093459845934', 'email@gmail.com', '2020-02-05', '2020-02-08', '2020-02-05', NULL, 2, 1, NULL, 100000, NULL, '2020-02-04 00:00:00', 'OTHER', 'inhouse', NULL, NULL),
+(4, 'araya001', '1', '101,102', 'Benny Hartono', '09834092834', 'email@gmail.com', '2020-02-03', '2020-02-04', '2020-02-03', '2020-02-04', 2, 2, NULL, 180000, NULL, '2020-02-02 00:00:00', 'OYO', 'completed', NULL, NULL),
+(5, 'araya001', '1', '104', 'Yoko', '0749853948545', 'email@gmail.com', '2020-02-04', '2020-02-06', '2020-02-04', '2020-02-06', 1, 1, NULL, 120000, NULL, '2020-02-03 00:00:00', 'TRAVELOKA', 'completed', NULL, NULL),
+(6, 'araya001', '1', '102', 'Andreas', '093459845934', 'email@gmail.com', '2020-02-06', '2020-02-08', '2020-02-06', NULL, 2, 1, NULL, 100000, NULL, '2020-02-05 00:00:00', 'OTHER', 'inhouse', NULL, NULL),
+(7, 'araya001', '1', '103,104', 'Benny Hartono', '09834092834', 'email@gmail.com', '2020-02-06', '2020-02-08', '2020-02-06', NULL, 2, 2, NULL, 180000, NULL, '2020-02-05 00:00:00', 'OYO', 'inhouse', NULL, NULL),
+(8, 'araya001', '1', '105', 'Yoko', '0749853948545', 'email@gmail.com', '2020-02-07', '2020-02-08', NULL, NULL, 1, 1, NULL, 120000, NULL, '2020-02-03 00:00:00', 'bookingcom', 'upcoming', NULL, NULL),
+(9, 'araya001', '5', NULL, 'Andre', '087857419412', 'bekkostudio@gmail.com', '2020-02-09', '2020-02-03', NULL, NULL, 4, 2, NULL, 5000000, NULL, '2020-02-08 00:00:00', 'bookingcom', 'upcoming', NULL, NULL),
+(10, 'araya001', '1', '103', 'vfcfbt', '08589559885855', 'ddfx@grgr.com', '2020-02-12', '2020-02-13', '2020-02-11', '2020-02-11', 2, 1, '14:30:00', 300000, NULL, '2020-02-11 00:00:00', 'oyo', 'completed', NULL, NULL),
+(11, 'araya001', '1', NULL, 'Benny', '08623232656', 'benny@yaho.com', '2020-07-20', '2020-07-21', NULL, NULL, 2, 1, NULL, 10000, NULL, '2020-07-20 00:00:00', 'tiketcom', 'upcoming', NULL, NULL);
 
 -- --------------------------------------------------------
 
