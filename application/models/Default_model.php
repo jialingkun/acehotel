@@ -82,6 +82,8 @@ class Default_model extends CI_Model {
 			$this->db->select('*'); //default select
 		}
 		$this->db->from('orders');
+		// $this->db->join('hotel', 'orders.id_hotel = hotel.id_hotel', 'left');
+		$this->db->join('kamar', 'orders.id_kamar = kamar.id_kamar', 'left');
 		if ($filter != NULL){
 			$this->db->where($filter);
 		}
@@ -531,7 +533,7 @@ class Default_model extends CI_Model {
 				'total_harga' => $row->price,
 				'comments' => $row->guestComments,
 				'tanggal_order' => $row->bookingTime,
-				'sumber_order' => $row->referer,
+				'sumber_order' => $row->refererEditable,
 				'status_order' => $statusbooking,
 				'invoice' => json_encode($row->invoice),
 				'tanggal_modified' => $row->modified

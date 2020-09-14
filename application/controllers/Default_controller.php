@@ -553,7 +553,7 @@ class Default_controller extends Loadview {
 		);
 
 		$data = $this->Default_model->get_data_order($filter, 'tanggal_check_in_real','asc',NULL,
-			'orders.id_order, orders.nama_pemesan, orders.sumber_order, orders.tanggal_check_in, orders.tanggal_check_out, orders.status_order, orders.jumlah_room, orders.jumlah_guest, orders.nama_kamar, orders.no_kamar, orders.total_harga');
+			'orders.id_order, orders.nama_pemesan, orders.sumber_order, orders.tanggal_check_in, orders.tanggal_check_out, orders.status_order, orders.jumlah_room, orders.jumlah_guest, kamar.nama_kamar, orders.no_kamar, orders.total_harga');
 
 		if ($return_var == true) {
 			return $data;
@@ -695,37 +695,73 @@ class Default_controller extends Loadview {
 
 	//Tambah data order
 	//note: API hanya bisa diakses saat ada cookie admin atau owner atau receptionist
-	//output: success/failed/access denied
+	//output: success/failed/access denied/output error lain dari API
 	public function insert_order(){
 		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
-			$datakamar = $this->get_kamar_by_id($this->input->post('id_kamar'),true);
+			$propid = $this->input->post('propid'); //id hotel
 			$data = array(
-				'id_hotel' => $this->input->post('id_hotel'),
-				'id_kamar' => $this->input->post('id_kamar'),
-				'nama_pemesan' => $this->input->post('nama_pemesan'),
-				'telepon_pemesan' => $this->input->post('telepon_pemesan'),
-				'email_pemesan' => $this->input->post('email_pemesan'),
-				'no_ktp_pemesan' => $this->input->post('no_ktp_pemesan'),
-				'tanggal_check_in' => date("Y-m-d", strtotime($this->input->post('tanggal_check_in'))),
-				'tanggal_check_out' => date("Y-m-d", strtotime($this->input->post('tanggal_check_out'))),
-				'jumlah_guest' => $this->input->post('jumlah_guest'),
-				'jumlah_room' => $this->input->post('jumlah_room'),
-				'max_guest' => $datakamar[0]['max_guest'],
-				'nama_kamar' => $datakamar[0]['nama_kamar'],
-				'nama_hotel' => $datakamar[0]['nama_hotel'],
-				'alamat_hotel' => $datakamar[0]['alamat_hotel'],
-				'telepon_hotel' => $datakamar[0]['telepon_hotel'],
-				'request_jam_check_in_awal' => ($this->input->post('request_jam_check_in_awal') == '') ? null : $this->input->post('request_jam_check_in_awal'),
-				'request_jam_check_in_akhir' => ($this->input->post('request_jam_check_in_akhir') == '') ? null : $this->input->post('request_jam_check_in_akhir'),
-				'request_breakfast' => $this->input->post('request_breakfast'),
-				'request_rent_car' => $this->input->post('request_rent_car'),
-				'total_harga' => $this->input->post('total_harga'),
-				'tanggal_order' => date('Y-m-d'),
-				'sumber_order' => $this->input->post('sumber_order'),
-				'status_order' => "upcoming"
+				'roomId' => $this->input->post('roomId'),
+				'roomQty' => $this->input->post('roomQty'),
+				'status' => 1,
+				'firstNight' => date("Y-m-d", strtotime($this->input->post('firstNight'))),
+				'lastNight' => date("Y-m-d",strtotime('-1 day', strtotime($this->input->post('lastNight')))), //tgl checkout
+				'numAdult' => $this->input->post('numAdult'), //jumlah tamu
+				'guestFirstName' => $this->input->post('guestFirstName'),
+				'guestName' => $this->input->post('guestName'),
+				'guestEmail' => $this->input->post('guestEmail'),
+				'guestPhone' => $this->input->post('guestPhone'),
+				'guestMobile' => $this->input->post('guestMobile'),
+				'guestArrivalTime' => $this->input->post('guestArrivalTime'),
+				'guestComments' => $this->input->post('guestComments'),
+				'refererEditable' => $this->input->post('refererEditable'), //sumber order
+				'notifyUrl' => false,
+				'notifyGuest' => false,
+				'notifyHost' => false,
+				'assignBooking' => false,
+				'checkAvailability' => true,
+				'deleteInvoice' => false,
 			);
-			$insertStatus = $this->Default_model->insert_order($data);
-			echo $insertStatus;
+
+			$totalprice = $this->input->post('invoiceprice0');
+			$data['invoice'][0] = array(
+				'description' => $this->input->post('invoicedesc0'), //required
+				'price' => $this->input->post('invoiceprice0'), //required
+			);
+
+			//biaya tambahan opsional, bisa dikosongi
+			if (!empty($this->input->post('invoiceprice1'))) {
+				$totalprice = $totalprice + $this->input->post('invoiceprice1');
+				$data['invoice'][1] = array(
+					'description' => $this->input->post('invoicedesc1'),
+					'price' => $this->input->post('invoiceprice1'),
+				);
+			}
+
+			if (!empty($this->input->post('invoiceprice2'))) {
+				$totalprice = $totalprice + $this->input->post('invoiceprice2');
+				$data['invoice'][2] = array(
+					'description' => $this->input->post('invoicedesc2'),
+					'price' => $this->input->post('invoiceprice2'),
+				);
+			}
+
+			if (!empty($this->input->post('invoiceprice3'))) {
+				$totalprice = $totalprice + $this->input->post('invoiceprice3');
+				$data['invoice'][3] = array(
+					'description' => $this->input->post('invoicedesc3'),
+					'price' => $this->input->post('invoiceprice3'),
+				);
+			}
+
+			$data['price'] = $totalprice;
+
+			set_time_limit(3000);
+			$result = json_decode($this->setBooking($propid,$data));
+			if (!empty($result->error)) {
+				echo $result->error;
+			}else{
+				$this->syncBookings($propid,$result->bookId);
+			}
 		}else{
 			echo "access denied";
 		}
@@ -1510,14 +1546,14 @@ class Default_controller extends Loadview {
 
 	//WEBHOOK
 	public function webhookProperty($propid){
- 		$this->syncProperty($propid);
- 		$this->insert_error_log("webhookProperty: ".$propid);
- 	}
+		$this->syncProperty($propid);
+		$this->insert_error_log("webhookProperty: ".$propid);
+	}
 
- 	public function webhookBooking($propid){
- 		$this->syncBookings($propid,$this->input->get('bookid'));
- 		$this->insert_error_log("webhookBooking: ".$this->input->get('bookid'). "| Property: ".$propid);
- 	}
+	public function webhookBooking($propid){
+		$this->syncBookings($propid,$this->input->get('bookid'));
+		$this->insert_error_log("webhookBooking: ".$this->input->get('bookid'). "| Property: ".$propid);
+	}
 
 
 
@@ -1528,133 +1564,162 @@ class Default_controller extends Loadview {
 	//untuk sinkronisasi master data semua hotel
 	//parameter: 
 	//output: 
- 	public function getProperties(){
- 		$auth = array();
- 		$auth['apiKey'] = $this->beds24APIkey;
+	public function getProperties(){
+		$auth = array();
+		$auth['apiKey'] = $this->beds24APIkey;
 
- 		$data = array();
- 		$data['authentication'] = $auth;
+		$data = array();
+		$data['authentication'] = $auth;
 
- 		$json = json_encode($data);
+		$json = json_encode($data);
 
- 		$url = "https://api.beds24.com/json/getProperties";
+		$url = "https://api.beds24.com/json/getProperties";
 
- 		$ch=curl_init();
- 		curl_setopt($ch, CURLOPT_POST, 1) ;
- 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
- 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
- 		curl_setopt($ch, CURLOPT_URL, $url);
- 		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
- 		$result = curl_exec($ch);
- 		if(curl_errno($ch)){
- 			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
- 		}
- 		curl_close ($ch);
- 		return $result;
- 	}
+		$ch=curl_init();
+		curl_setopt($ch, CURLOPT_POST, 1) ;
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		$result = curl_exec($ch);
+		if(curl_errno($ch)){
+			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
+		}
+		curl_close ($ch);
+		return $result;
+	}
 
 
 	//untuk sinkronisasi master data hotel
 	//parameter: idproperty
 	//output: 
- 	public function getProperty($propid){
- 		$auth = array();
- 		$auth['apiKey'] = $this->beds24APIkey;
- 		$auth['propKey'] = $this->propAPIkeyprefix.$propid;
+	public function getProperty($propid){
+		$auth = array();
+		$auth['apiKey'] = $this->beds24APIkey;
+		$auth['propKey'] = $this->propAPIkeyprefix.$propid;
 
- 		$data = array();
- 		$data['authentication'] = $auth;
- 		$data['includeRooms'] = true;
- 		$json = json_encode($data);
+		$data = array();
+		$data['authentication'] = $auth;
+		$data['includeRooms'] = true;
+		$json = json_encode($data);
 
- 		$url = "https://api.beds24.com/json/getProperty";
+		$url = "https://api.beds24.com/json/getProperty";
 
- 		$ch=curl_init();
- 		curl_setopt($ch, CURLOPT_POST, 1) ;
- 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
- 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
- 		curl_setopt($ch, CURLOPT_URL, $url);
- 		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
- 		$result = curl_exec($ch);
- 		if(curl_errno($ch)){
- 			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
- 		}
- 		curl_close ($ch);	
- 		return $result;
- 	}
+		$ch=curl_init();
+		curl_setopt($ch, CURLOPT_POST, 1) ;
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		$result = curl_exec($ch);
+		if(curl_errno($ch)){
+			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
+		}
+		curl_close ($ch);	
+		return $result;
+	}
 
 
  	//untuk sinkronisasi master data semua booking mulai hari ini hingga satu tahun kedepan
 	//parameter: idproperty
 	//output: 
- 	public function getAllBookings($propid){
- 		$auth = array();
- 		$auth['apiKey'] = $this->beds24APIkey;
- 		$auth['propKey'] = $this->propAPIkeyprefix.$propid;
+	public function getAllBookings($propid){
+		$auth = array();
+		$auth['apiKey'] = $this->beds24APIkey;
+		$auth['propKey'] = $this->propAPIkeyprefix.$propid;
 
- 		$data = array();
- 		$data['authentication'] = $auth;
- 		$data['includeInvoice'] = true;
- 		$data['includeInfoItems'] = true;
- 		$json = json_encode($data);
+		$data = array();
+		$data['authentication'] = $auth;
+		$data['includeInvoice'] = true;
+		$data['includeInfoItems'] = true;
+		$json = json_encode($data);
 
- 		$url = "https://api.beds24.com/json/getBookings";
+		$url = "https://api.beds24.com/json/getBookings";
 
- 		$ch=curl_init();
- 		curl_setopt($ch, CURLOPT_POST, 1);
- 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
- 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
- 		curl_setopt($ch, CURLOPT_URL, $url);
- 		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
- 		$result = curl_exec($ch);
- 		if(curl_errno($ch)){
- 			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
- 		}
- 		curl_close ($ch);	
- 		return $result;
- 	}
+		$ch=curl_init();
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		$result = curl_exec($ch);
+		if(curl_errno($ch)){
+			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
+		}
+		curl_close ($ch);	
+		return $result;
+	}
 
 
  	//untuk sinkronisasi master data booking
 	//parameter: idbooking
 	//output: 
- 	public function getBookings($propid,$bookid){
- 		$auth = array();
- 		$auth['apiKey'] = $this->beds24APIkey;
- 		$auth['propKey'] = $this->propAPIkeyprefix.$propid;
+	public function getBookings($propid,$bookid){
+		$auth = array();
+		$auth['apiKey'] = $this->beds24APIkey;
+		$auth['propKey'] = $this->propAPIkeyprefix.$propid;
 
- 		$data = array();
- 		$data['authentication'] = $auth;
- 		$data['includeInvoice'] = true;
- 		$data['includeInfoItems'] = true;
- 		$data['bookId'] = $bookid;
- 		$json = json_encode($data);
+		$data = array();
+		$data['authentication'] = $auth;
+		$data['includeInvoice'] = true;
+		$data['includeInfoItems'] = true;
+		$data['bookId'] = $bookid;
+		$json = json_encode($data);
 
- 		$url = "https://api.beds24.com/json/getBookings";
+		$url = "https://api.beds24.com/json/getBookings";
 
- 		$ch=curl_init();
- 		curl_setopt($ch, CURLOPT_POST, 1);
- 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
- 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
- 		curl_setopt($ch, CURLOPT_URL, $url);
- 		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
- 		$result = curl_exec($ch);
- 		if(curl_errno($ch)){
- 			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
- 		}
- 		curl_close ($ch);	
- 		return $result;
- 	}
+		$ch=curl_init();
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		$result = curl_exec($ch);
+		if(curl_errno($ch)){
+			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
+		}
+		curl_close ($ch);	
+		return $result;
+	}
+
+
+ 	//untuk sinkronisasi master data booking
+	//parameter: id property, data booking
+	//output: 
+	public function setBooking($propid,$data){
+		$auth = array();
+		$auth['apiKey'] = $this->beds24APIkey;
+		$auth['propKey'] = $this->propAPIkeyprefix.$propid;
+
+ 		// $data = array();
+		$data['authentication'] = $auth;
+		$json = json_encode($data);
+
+		$url = "https://api.beds24.com/json/setBooking";
+
+		$ch=curl_init();
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		$result = curl_exec($ch);
+		if(curl_errno($ch)){
+			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
+		}
+		curl_close ($ch);	
+		return $result;
+	}
 
 
 
 	//untuk sinkronisasi master data hotel
 	//parameter: 
 	//output: 
- 	public function testing(){
- 		echo $this->input->get('status');
- 	}
+	public function testing(){
+		echo $this->input->get('status');
+	}
 
 
 
- }
+}
