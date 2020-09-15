@@ -718,7 +718,7 @@ class Default_controller extends Loadview {
 			$propid = $this->input->post('propid'); //id hotel
 			$data = array(
 				'roomId' => $this->input->post('roomId'),
-				'roomQty' => $this->input->post('roomQty'),
+				'roomQty' => 1,
 				'status' => 1,
 				'firstNight' => date("Y-m-d", strtotime($this->input->post('firstNight'))),
 				'lastNight' => date("Y-m-d",strtotime('-1 day', strtotime($this->input->post('lastNight')))), //tgl checkout
@@ -1010,7 +1010,6 @@ class Default_controller extends Loadview {
 			$propid = $this->input->post('propid'); //id hotel
 			$data = array(
 				'bookId' => $bookid,
-				'roomQty' => $this->input->post('roomQty'),
 				'status' => 1,
 				'firstNight' => date("Y-m-d", strtotime($this->input->post('firstNight'))),
 				'lastNight' => date("Y-m-d",strtotime('-1 day', strtotime($this->input->post('lastNight')))), //tgl checkout
