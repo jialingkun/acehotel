@@ -172,7 +172,7 @@
 										pattern="^[0-9]+$" required>
 								</div>
 								<div class="form-group">
-									<button id="eDelete" class="btn btn-danger btn-md float-left">
+									<button type="button" id="eDelete" class="btn btn-danger btn-md float-left">
 										<span onclick="deleteKamar(getCookie('edit_kamar'))">Delete
 											Kamar</span></button>
 									<button type="submit" id="eButton" class="btn btn-primary btn-md float-right">
@@ -216,7 +216,7 @@
 										pattern="^[0-9]+$" required>
 								</div>
 								<div class="form-group">
-									<button id="eDelete" class="btn btn-danger btn-md float-left">
+									<button type="button" id="eDelete" class="btn btn-danger btn-md float-left">
 										<span onclick="deleteHotel(getCookie('manajemen_id_hotel'))">Delete
 											Hotel</span></button>
 									<button type="submit" id="eButton" class="btn btn-primary btn-md float-right">
@@ -249,7 +249,7 @@
 									style="width: 28%" placeholder="Lantai" required>
 								<input type="text" id="tambahNomor" class="form-control" pattern="^[A-Za-z0-9 ,.'-]+$"
 									style="width: 28%" pattern="^[A-Za-z0-9 ,.'-]+$" placeholder="Nomor" required>
-								<button id="tambahLantaiNomor" class="btn btn-success btn-md" style="width: 28%">
+								<button type="button" id="tambahLantaiNomor" class="btn btn-success btn-md" style="width: 28%">
 									<span id="tambahLantaiNomorText" onclick="insertNoKamar()">Tambah</span></button>
 							</form>
 							<hr>
@@ -285,7 +285,7 @@
 			pattern="^[A-Za-z ,.'-]+$" style="width: 30%" placeholder="Lantai" readonly>
 		<input type="text" id="nomorKamar" name="nomorKamar" class="form-control"
 			style="width: 30%" placeholder="Nomor" readonly>
-		<button id="noKamarHapus" class="btn btn-danger btn-md" style="width: 30%">
+		<button type="button" id="noKamarHapus" class="btn btn-danger btn-md" style="width: 30%">
 			<span >Hapus</span></button>
 	</form>
 </script>

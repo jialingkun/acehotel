@@ -1,172 +1,23 @@
 <?php
-class Default_controller extends CI_Controller {
+include_once ("Loadview.php");
+
+class Default_controller extends Loadview {
+
+	//GLOBAL VARIABLE
+	var $beds24APIkey;
+	var $propAPIkeyprefix;
+
+
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('Default_model');
 		$this->load->helper('url_helper');
 		date_default_timezone_set('Asia/Jakarta');
+
+		//init global variable
+		$this->beds24APIkey = 'acehotelapiaccessmaster';
+		$this->propAPIkeyprefix = 'propapiaccess/';
 	}
-
-	//LOAD VIEW
-
-	//front
-	public function index(){
-		$this->load->view('frontpage');
-	}
-
-	//login
-	public function loginadmin(){
-		$this->load->view('admin/login');
-	}
-
-	public function loginowner(){
-		$this->load->view('owner/login');
-	}
-
-	public function loginreceptionist(){
-		$this->load->view('receptionist/login');
-	}
-
-	//Dashboard
-	public function dashboardadmin(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/dashboard');
-		}else{
-			header("Location: ".base_url()."index.php/loginadmin");
-			die();
-		}
-	}
-
-	public function dashboardowner(){
-		if ($this->checkcookieowner()) {
-			$this->load->view('owner/dashboard');
-		}else{
-			header("Location: ".base_url()."index.php/loginowner");
-			die();
-		}
-	}
-
-	public function dashboardreceptionist(){
-		if ($this->checkcookiereceptionist()) {
-			$this->load->view('receptionist/dashboard');
-		}else{
-			header("Location: ".base_url()."index.php/loginreceptionist");
-			die();
-		}
-	}
-	
-	//Bookings
-	public function bookingadmin(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/booking');
-		}else{
-			header("Location: ".base_url()."index.php/loginadmin");
-			die();
-		}
-	}
-
-	public function bookingowner(){
-		if ($this->checkcookieowner()) {
-			$this->load->view('owner/booking');
-		}else{
-			header("Location: ".base_url()."index.php/loginowner");
-			die();
-		}
-	}
-
-	public function bookingreceptionist(){
-		if ($this->checkcookiereceptionist()) {
-			$this->load->view('receptionist/booking');
-		}else{
-			header("Location: ".base_url()."index.php/loginreceptionist");
-			die();
-		}
-	}
-
-	//Report
-	public function reportadmin(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/report');
-		}else{
-			header("Location: ".base_url()."index.php/loginadmin");
-			die();
-		}
-	}
-
-	public function reportowner(){
-		if ($this->checkcookieowner()) {
-			$this->load->view('owner/report');
-		}else{
-			header("Location: ".base_url()."index.php/loginowner");
-			die();
-		}
-	}
-
-	public function reportreceptionist(){
-		if ($this->checkcookiereceptionist()) {
-			$this->load->view('receptionist/report');
-		}else{
-			header("Location: ".base_url()."index.php/loginreceptionist");
-			die();
-		}
-	}
-
-	//Management
-	public function managementadmin(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/management');
-		}else{
-			header("Location: ".base_url()."index.php/loginadmin");
-			die();
-		}
-	}
-
-	public function managementhotel(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/management_hotel');
-		}else{
-			header("Location: ".base_url()."index.php/loginadmin");
-			die();
-		}
-	}
-
-	public function managementhoteldetail(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/management_hotel_detail');
-		}else{
-			header("Location: ".base_url()."index.php/loginadmin");
-			die();
-		}
-	}
-
-	public function managementadminowner(){
-		if ($this->checkcookieadmin()) {
-			$this->load->view('admin/management_owner');
-		}else{
-			header("Location: ".base_url()."index.php/loginadmin");
-			die();
-		}
-	}
-	public function managementowner(){
-		if ($this->checkcookieowner()) {
-			$this->load->view('owner/management');
-		}else{
-			header("Location: ".base_url()."index.php/loginowner");
-			die();
-		}
-	}
-
-
-	//testing
-	public function test_linechart(){
-		$this->load->view('testpage/linechart');
-	}
-
-	public function test_function(){
-		$this->load->view('testpage/testfunction');
-	}
-
-
 	
 	//GET DATA
 
@@ -205,6 +56,7 @@ class Default_controller extends CI_Controller {
 		}
 	}
 
+	//TODO YOKO
 	public function get_all_hotel($return_var = NULL){
 		$data = $this->Default_model->get_data_hotel();
 		if (empty($data)){
@@ -249,6 +101,7 @@ class Default_controller extends CI_Controller {
 		}
 	}
 
+	//TODO YOKO
 	public function get_all_nokamar($return_var = NULL){
 		$data = $this->Default_model->get_data_nokamar();
 		if (empty($data)){
@@ -261,6 +114,7 @@ class Default_controller extends CI_Controller {
 		}
 	}
 
+	//TODO YOKO
 	public function get_all_order($return_var = NULL){
 		$data = $this->Default_model->get_data_order(NULL,'id_order');
 		if (empty($data)){
@@ -310,6 +164,7 @@ class Default_controller extends CI_Controller {
 		}
 	}
 
+	//TODO YOKO
 	public function get_hotel_by_id($id, $return_var = NULL){
 		$filter = array('id_hotel'=> $id);
 		$data = $this->Default_model->get_data_hotel($filter);
@@ -357,6 +212,7 @@ class Default_controller extends CI_Controller {
 		}
 	}
 
+	//TODO YOKO
 	public function get_nokamar_by_id($idkamar, $nokamar, $return_var = NULL){
 		$filter = array('nokamar.id_kamar'=> $idkamar, 'no_kamar'=> $nokamar);
 		$data = $this->Default_model->get_data_nokamar($filter);
@@ -370,6 +226,7 @@ class Default_controller extends CI_Controller {
 		}
 	}
 
+	//TODO YOKO
 	public function get_order_by_id($id, $return_var = NULL){
 		$filter = array('id_order'=> $id);
 		$data = $this->Default_model->get_data_order($filter);
@@ -386,6 +243,7 @@ class Default_controller extends CI_Controller {
 	//get hotel by owner
 	//parameter: username owner
 	//note: ambil data hotel berdasarkan owner
+	//TODO YOKO
 	public function get_hotel_by_owner($id, $return_var = NULL){
 		$filter = array('hotel.username_owner'=> $id);
 		$data = $this->Default_model->get_data_hotel($filter);
@@ -422,6 +280,7 @@ class Default_controller extends CI_Controller {
 	//get nokamar by kamar
 	//parameter: id kamar
 	//note: ambil data nomer kamar berdasarkan jenis kamar
+	//TODO YOKO
 	public function get_nokamar_by_kamar($id, $return_var = NULL){
 		$filter = array('nokamar.id_kamar'=> $id);
 		$data = $this->Default_model->get_data_nokamar($filter, 'lantai');
@@ -458,6 +317,7 @@ class Default_controller extends CI_Controller {
 	//get order by hotel
 	//parameter: id hotel
 	//note: ambil data order berdasarkan hotel
+	//TODO YOKO
 	public function get_order_by_hotel($id, $return_var = NULL){
 		$filter = array('orders.id_hotel'=> $id);
 		$data = $this->Default_model->get_data_order($filter,'id_order');
@@ -474,6 +334,7 @@ class Default_controller extends CI_Controller {
 	//get order hotel upcoming
 	//parameter: id hotel
 	//note: ambil data order upcoming berdasarkan hotel
+	//TODO YOKO
 	public function get_order_by_hotel_upcoming($id, $return_var = NULL){
 		$filter = array('orders.id_hotel'=> $id, 'orders.status_order'=> 'upcoming');
 		$data = $this->Default_model->get_data_order($filter, 'tanggal_check_in');
@@ -490,6 +351,7 @@ class Default_controller extends CI_Controller {
 	//get order hotel inhouse
 	//parameter: id hotel
 	//note: ambil data order inhouse berdasarkan hotel
+	//TODO YOKO
 	public function get_order_by_hotel_inhouse($id, $return_var = NULL){
 		$filter = array('orders.id_hotel'=> $id, 'orders.status_order'=> 'inhouse');
 		$data = $this->Default_model->get_data_order($filter, 'tanggal_check_out');
@@ -506,6 +368,7 @@ class Default_controller extends CI_Controller {
 	//get order hotel completed
 	//parameter: id hotel
 	//note: ambil data order completed berdasarkan hotel
+	//TODO YOKO
 	public function get_order_by_hotel_completed($id, $return_var = NULL){
 		$filter = array('orders.id_hotel'=> $id, 'orders.status_order'=> 'completed');
 		$data = $this->Default_model->get_data_order($filter, 'tanggal_check_out','desc',NULL,NULL,50);
@@ -603,6 +466,7 @@ class Default_controller extends CI_Controller {
 	//get ketersediaan nokamar by kamar
 	//parameter: id kamar, tgl check out (ex:2019-12-17)
 	//note: ambil data nomer kamar berdasarkan jenis kamar dengan detail ketersediaannya di tanggal check out tertentu
+	//TODO YOKO
 	public function get_ketersediaan_nokamar($id, $tglcheckout, $return_var = NULL){
 		$data = $this->get_nokamar_by_kamar($id, true);
 		foreach ($data as &$row){
@@ -693,6 +557,7 @@ class Default_controller extends CI_Controller {
 	//get report hotel by range tanggal checkin
 	//parameter: id hotel, tgl check in awal (ex:2019-12-17), tgl check in akhir
 	//note: ambil data report hotel berdasarkan range tanggal checkin, report dihitung dari saat check in
+	//TODO YOKO
 	public function get_report_hotel_by_tanggalcheckin($id, $tglawal, $tglakhir, $return_var = NULL){
 		$filter = array(
 			'orders.id_hotel'=> $id,
@@ -702,8 +567,22 @@ class Default_controller extends CI_Controller {
 		);
 
 		$data = $this->Default_model->get_data_order($filter, 'tanggal_check_in_real','asc',NULL,
-			'orders.id_order, orders.nama_pemesan, orders.sumber_order, orders.tanggal_check_in, orders.tanggal_check_out, orders.status_order, orders.jumlah_room, orders.jumlah_guest, orders.nama_kamar, orders.no_kamar, orders.total_harga');
+			'orders.id_order, orders.nama_pemesan, orders.sumber_order, orders.tanggal_check_in, orders.tanggal_check_out, orders.status_order, orders.jumlah_room, orders.jumlah_guest, kamar.nama_kamar, orders.no_kamar, orders.total_harga');
 
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+
+	//ambil data error log (developer only)
+	public function get_error_log($orderby = NULL, $sort = "asc", $limit = NULL, $return_var = NULL){
+		$data = $this->Default_model->get_data_error_log($orderby, $sort, $limit);
+		if (empty($data)){
+			$data = [];
+		}
 		if ($return_var == true) {
 			return $data;
 		}else{
@@ -758,6 +637,7 @@ class Default_controller extends CI_Controller {
 	//Tambah data hotel
 	//note: API hanya bisa diakses saat ada cookie admin
 	//output: success/failed/access denied
+	//API INI TIDAK DIPAKAI LAGI
 	public function insert_hotel(){
 		if ($this->checkcookieadmin()) {
 			$data = array(
@@ -796,6 +676,7 @@ class Default_controller extends CI_Controller {
 	//Tambah data kamar
 	//note: API hanya bisa diakses saat ada cookie admin
 	//output: success/failed/access denied
+	//API INI TIDAK DIPAKAI LAGI
 	public function insert_kamar(){
 		if ($this->checkcookieadmin()) {
 			$data = array(
@@ -814,6 +695,7 @@ class Default_controller extends CI_Controller {
 	//Tambah data nomer kamar
 	//note: API hanya bisa diakses saat ada cookie admin
 	//output: success/failed/access denied
+	//API INI TIDAK DIPAKAI LAGI
 	public function insert_nokamar(){
 		if ($this->checkcookieadmin()) {
 			$data = array(
@@ -830,40 +712,92 @@ class Default_controller extends CI_Controller {
 
 	//Tambah data order
 	//note: API hanya bisa diakses saat ada cookie admin atau owner atau receptionist
-	//output: success/failed/access denied
+	//output: success/failed/access denied/output error lain dari API
 	public function insert_order(){
 		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
-			$datakamar = $this->get_kamar_by_id($this->input->post('id_kamar'),true);
+			$propid = $this->input->post('propid'); //id hotel
 			$data = array(
-				'id_hotel' => $this->input->post('id_hotel'),
-				'id_kamar' => $this->input->post('id_kamar'),
-				'nama_pemesan' => $this->input->post('nama_pemesan'),
-				'telepon_pemesan' => $this->input->post('telepon_pemesan'),
-				'email_pemesan' => $this->input->post('email_pemesan'),
-				'no_ktp_pemesan' => $this->input->post('no_ktp_pemesan'),
-				'tanggal_check_in' => date("Y-m-d", strtotime($this->input->post('tanggal_check_in'))),
-				'tanggal_check_out' => date("Y-m-d", strtotime($this->input->post('tanggal_check_out'))),
-				'jumlah_guest' => $this->input->post('jumlah_guest'),
-				'jumlah_room' => $this->input->post('jumlah_room'),
-				'max_guest' => $datakamar[0]['max_guest'],
-				'nama_kamar' => $datakamar[0]['nama_kamar'],
-				'nama_hotel' => $datakamar[0]['nama_hotel'],
-				'alamat_hotel' => $datakamar[0]['alamat_hotel'],
-				'telepon_hotel' => $datakamar[0]['telepon_hotel'],
-				'request_jam_check_in_awal' => ($this->input->post('request_jam_check_in_awal') == '') ? null : $this->input->post('request_jam_check_in_awal'),
-				'request_jam_check_in_akhir' => ($this->input->post('request_jam_check_in_akhir') == '') ? null : $this->input->post('request_jam_check_in_akhir'),
-				'request_breakfast' => $this->input->post('request_breakfast'),
-				'request_rent_car' => $this->input->post('request_rent_car'),
-				'total_harga' => $this->input->post('total_harga'),
-				'tanggal_order' => date('Y-m-d'),
-				'sumber_order' => $this->input->post('sumber_order'),
-				'status_order' => "upcoming"
+				'roomId' => $this->input->post('roomId'),
+				'roomQty' => $this->input->post('roomQty'),
+				'status' => 1,
+				'firstNight' => date("Y-m-d", strtotime($this->input->post('firstNight'))),
+				'lastNight' => date("Y-m-d",strtotime('-1 day', strtotime($this->input->post('lastNight')))), //tgl checkout
+				'numAdult' => $this->input->post('numAdult'), //jumlah tamu
+				'guestFirstName' => $this->input->post('guestFirstName'),
+				'guestName' => $this->input->post('guestName'),
+				'guestEmail' => $this->input->post('guestEmail'),
+				'guestPhone' => $this->input->post('guestPhone'),
+				'guestMobile' => $this->input->post('guestMobile'),
+				'guestArrivalTime' => $this->input->post('guestArrivalTime'),
+				'guestComments' => $this->input->post('guestComments'),
+				'refererEditable' => $this->input->post('refererEditable'), //sumber order
+				'notifyUrl' => false,
+				'notifyGuest' => false,
+				'notifyHost' => false,
+				'assignBooking' => false,
+				'checkAvailability' => true,
+				'deleteInvoice' => false,
 			);
-			$insertStatus = $this->Default_model->insert_order($data);
-			echo $insertStatus;
+
+			$totalprice = $this->input->post('invoiceprice0');
+			$data['invoice'][0] = array(
+				'description' => $this->input->post('invoicedesc0'), //required
+				'price' => $this->input->post('invoiceprice0'), //required
+			);
+
+			//biaya tambahan opsional, bisa dikosongi
+			if (!empty($this->input->post('invoiceprice1'))) {
+				$totalprice = $totalprice + $this->input->post('invoiceprice1');
+				$data['invoice'][1] = array(
+					'description' => $this->input->post('invoicedesc1'),
+					'price' => $this->input->post('invoiceprice1'),
+				);
+			}
+
+			if (!empty($this->input->post('invoiceprice2'))) {
+				$totalprice = $totalprice + $this->input->post('invoiceprice2');
+				$data['invoice'][2] = array(
+					'description' => $this->input->post('invoicedesc2'),
+					'price' => $this->input->post('invoiceprice2'),
+				);
+			}
+
+			if (!empty($this->input->post('invoiceprice3'))) {
+				$totalprice = $totalprice + $this->input->post('invoiceprice3');
+				$data['invoice'][3] = array(
+					'description' => $this->input->post('invoicedesc3'),
+					'price' => $this->input->post('invoiceprice3'),
+				);
+			}
+
+			$data['price'] = $totalprice;
+
+			set_time_limit(3000);
+			$result = json_decode($this->setBooking($propid,$data));
+			if (!empty($result->error)) {
+				echo $result->error;
+			}else{
+				$this->syncBookings($propid,$result->bookId);
+			}
 		}else{
 			echo "access denied";
 		}
+	}
+
+
+	//Tambah data admin
+	//note: API hanya bisa diakses saat ada cookie admin
+	//input: form POST seperti di bawah
+	//output: success/failed/access denied
+	public function insert_error_log($log = NULL){
+		if (!empty($this->input->post('log'))) {
+			$log = $this->input->post('log');
+		}
+		$data = array(
+			'value' => $log
+		);
+		$insertStatus = $this->Default_model->insert_error_log($data);
+		// echo $insertStatus;
 	}
 	
 
@@ -986,12 +920,13 @@ class Default_controller extends CI_Controller {
 	//parameter: id hotel
 	//note: API hanya bisa diakses saat ada cookie admin
 	//output: success/failed/access denied
+	//TODO YOKO
 	public function update_hotel($id){
 		if ($this->checkcookieadmin()) {
 			$data = array(
-				// 'username_owner' => $this->input->post('username_owner'),
-				'nama_hotel' => $this->input->post('nama'),
-				'alamat_hotel' => $this->input->post('alamat'),
+				'username_owner' => $this->input->post('username_owner'),
+				// 'nama_hotel' => $this->input->post('nama'),
+				// 'alamat_hotel' => $this->input->post('alamat'),
 				'telepon_hotel' => $this->input->post('telepon')
 			);
 			$updateStatus = $this->Default_model->update_hotel($id,$data);
@@ -1030,6 +965,7 @@ class Default_controller extends CI_Controller {
 	//parameter: id kamar
 	//note: API hanya bisa diakses saat ada cookie admin
 	//output: success/failed/access denied
+	//API INI TIDAK DIPAKAI LAGI
 	public function update_kamar($id){
 		if ($this->checkcookieadmin()) {
 			$data = array(
@@ -1049,6 +985,7 @@ class Default_controller extends CI_Controller {
 	//parameter: id kamar, nomer kamar
 	//note: API hanya bisa diakses saat ada cookie admin
 	//output: success/failed/access denied
+	//TODO YOKO
 	public function update_nokamar($idkamar, $nokamar){
 		if ($this->checkcookieadmin()) {
 			$data = array(
@@ -1067,71 +1004,131 @@ class Default_controller extends CI_Controller {
 	//parameter: id order
 	//note: API hanya bisa diakses saat ada cookie admin atau owner
 	//output: success/failed/access denied
-	public function update_order($id){
+	//TODO YOKO
+	public function update_order($bookid){
 		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
-			$datakamar = $this->get_kamar_by_id($this->input->post('id_kamar'),true);
+			$propid = $this->input->post('propid'); //id hotel
 			$data = array(
-				// 'id_hotel' => $this->input->post('id_hotel'),
-				'id_kamar' => $this->input->post('id_kamar'),
-				'nama_pemesan' => $this->input->post('nama_pemesan'),
-				'telepon_pemesan' => $this->input->post('telepon_pemesan'),
-				'email_pemesan' => $this->input->post('email_pemesan'),
-				'no_ktp_pemesan' => $this->input->post('no_ktp_pemesan'),
-				'tanggal_check_in' => date("Y-m-d", strtotime($this->input->post('tanggal_check_in'))),
-				'tanggal_check_out' => date("Y-m-d", strtotime($this->input->post('tanggal_check_out'))),
-				'jumlah_guest' => $this->input->post('jumlah_guest'),
-				'jumlah_room' => $this->input->post('jumlah_room'),
-				'max_guest' => $datakamar[0]['max_guest'],
-				'nama_kamar' => $datakamar[0]['nama_kamar'],
-				'nama_hotel' => $datakamar[0]['nama_hotel'],
-				'alamat_hotel' => $datakamar[0]['alamat_hotel'],
-				'telepon_hotel' => $datakamar[0]['telepon_hotel'],
-				'request_jam_check_in_awal' => ($this->input->post('request_jam_check_in_awal') == '') ? null : $this->input->post('request_jam_check_in_awal'),
-				'request_jam_check_in_akhir' => ($this->input->post('request_jam_check_in_akhir') == '') ? null : $this->input->post('request_jam_check_in_akhir'),
-				'request_breakfast' => $this->input->post('request_breakfast'),
-				'request_rent_car' => $this->input->post('request_rent_car'),
-				'total_harga' => $this->input->post('total_harga'),
-				// 'tanggal_order' => date('Y-m-d'),
-				'sumber_order' => $this->input->post('sumber_order'),
-				// 'status_order' => "upcoming"
+				'bookId' => $bookid,
+				'roomQty' => $this->input->post('roomQty'),
+				'status' => 1,
+				'firstNight' => date("Y-m-d", strtotime($this->input->post('firstNight'))),
+				'lastNight' => date("Y-m-d",strtotime('-1 day', strtotime($this->input->post('lastNight')))), //tgl checkout
+				'numAdult' => $this->input->post('numAdult'), //jumlah tamu
+				'guestFirstName' => $this->input->post('guestFirstName'),
+				'guestName' => $this->input->post('guestName'),
+				'guestEmail' => $this->input->post('guestEmail'),
+				'guestPhone' => $this->input->post('guestPhone'),
+				'guestMobile' => $this->input->post('guestMobile'),
+				'guestArrivalTime' => $this->input->post('guestArrivalTime'),
+				'guestComments' => $this->input->post('guestComments'),
+				'refererEditable' => $this->input->post('refererEditable'), //sumber order
+				'notifyUrl' => false,
+				'assignBooking' => false,
+				'checkAvailability' => true,
+				'deleteInvoice' => true,
 			);
-			$updateStatus = $this->Default_model->update_order($id,$data);
-			echo $updateStatus;
+
+			$totalprice = $this->input->post('invoiceprice0');
+			$data['invoice'][0] = array(
+				'description' => $this->input->post('invoicedesc0'), //required
+				'price' => $this->input->post('invoiceprice0'), //required
+			);
+
+			//biaya tambahan opsional, bisa dikosongi
+			if (!empty($this->input->post('invoiceprice1'))) {
+				$totalprice = $totalprice + $this->input->post('invoiceprice1');
+				$data['invoice'][1] = array(
+					'description' => $this->input->post('invoicedesc1'),
+					'price' => $this->input->post('invoiceprice1'),
+				);
+			}
+
+			if (!empty($this->input->post('invoiceprice2'))) {
+				$totalprice = $totalprice + $this->input->post('invoiceprice2');
+				$data['invoice'][2] = array(
+					'description' => $this->input->post('invoicedesc2'),
+					'price' => $this->input->post('invoiceprice2'),
+				);
+			}
+
+			if (!empty($this->input->post('invoiceprice3'))) {
+				$totalprice = $totalprice + $this->input->post('invoiceprice3');
+				$data['invoice'][3] = array(
+					'description' => $this->input->post('invoicedesc3'),
+					'price' => $this->input->post('invoiceprice3'),
+				);
+			}
+
+			$data['price'] = $totalprice;
+
+			set_time_limit(3000);
+			$result = json_decode($this->setBooking($propid,$data));
+			if (!empty($result->error)) {
+				echo $result->error;
+			}else{
+				$this->syncBookings($propid,$bookid);
+			}
 		}else{
 			echo "access denied";
 		}
 	}
 
 	//check in order ke inhouse
-	//parameter: id order
+	//parameter: id booking
 	//note: API hanya bisa diakses saat ada cookie admin atau owner atau receptionist
 	//output: success/failed/access denied
-	public function update_order_check_in($id){
+	//TODO BENNY
+	public function update_order_check_in($bookid){
 		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
+
+			$propid = $this->input->post('propid'); //id hotel
 			$data = array(
-				'no_kamar' => $this->input->post('no_kamar'), //banyak kamar dipisah dengan koma tanpa spasi misal:101,102F,103
-				'tanggal_check_in_real' => date('Y-m-d'),
-				'status_order' => "inhouse"
+				'bookId' => $bookid,
+				'unitId'=> $this->input->post('unitId'), //no kamar (bukan nama no kamar)
+				'notifyUrl' => false,
 			);
-			$updateStatus = $this->Default_model->update_order($id,$data);
-			echo $updateStatus;
+			$data['infoItems'][0] = array(
+				'code' => 'CHECKIN',
+			);
+
+			set_time_limit(3000);
+			$result = json_decode($this->setBooking($propid,$data));
+			if (!empty($result->error)) {
+				echo $result->error;
+			}else{
+				$this->syncBookings($propid,$bookid);
+			}
+
+
 		}else{
 			echo "access denied";
 		}
 	}
 
 	//check out order ke completed
-	//parameter: id order
+	//parameter: id booking
 	//note: API hanya bisa diakses saat ada cookie admin atau owner atau receptionist
 	//output: success/failed/access denied
-	public function update_order_check_out($id){
+	//TODO BENNY
+	public function update_order_check_out($bookid){
 		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
+			$propid = $this->input->post('propid'); //id hotel
 			$data = array(
-				'tanggal_check_out_real' => date('Y-m-d'),
-				'status_order' => "completed"
+				'bookId' => $bookid,
+				'notifyUrl' => false,
 			);
-			$updateStatus = $this->Default_model->update_order($id,$data);
-			echo $updateStatus;
+			$data['infoItems'][0] = array(
+				'code' => 'CHECKOUT',
+			);
+
+			set_time_limit(3000);
+			$result = json_decode($this->setBooking($propid,$data));
+			if (!empty($result->error)) {
+				echo $result->error;
+			}else{
+				$this->syncBookings($propid,$bookid);
+			}
 		}else{
 			echo "access denied";
 		}
@@ -1167,6 +1164,7 @@ class Default_controller extends CI_Controller {
 	//Delete hotel
 	//note: API hanya bisa diakses saat ada cookie admin
 	//output: success/failed/access denied
+	//API INI TIDAK DIPAKAI LAGI
 	public function delete_hotel($id){
 		if ($this->checkcookieadmin()) {
 			$deleteStatus = $this->Default_model->delete_hotel($id);
@@ -1191,6 +1189,7 @@ class Default_controller extends CI_Controller {
 	//Delete kamar
 	//note: API hanya bisa diakses saat ada cookie admin
 	//output: success/failed/access denied
+	//API INI TIDAK DIPAKAI LAGI
 	public function delete_kamar($id){
 		if ($this->checkcookieadmin()) {
 			$deleteStatus = $this->Default_model->delete_kamar($id);
@@ -1203,6 +1202,7 @@ class Default_controller extends CI_Controller {
 	//Delete nomer kamar
 	//note: API hanya bisa diakses saat ada cookie admin
 	//output: success/failed/access denied
+	//API INI TIDAK DIPAKAI LAGI
 	public function delete_nokamar($idkamar, $nokamar){
 		if ($this->checkcookieadmin()) {
 			$deleteStatus = $this->Default_model->delete_nokamar($idkamar, $nokamar);
@@ -1215,6 +1215,7 @@ class Default_controller extends CI_Controller {
 	//Delete order
 	//note: API hanya bisa diakses saat ada cookie admin
 	//output: success/failed/access denied
+	//API INI TIDAK DIPAKAI LAGI
 	public function delete_order($id){
 		if ($this->checkcookieadmin()) {
 			$deleteStatus = $this->Default_model->delete_order($id);
@@ -1233,7 +1234,8 @@ class Default_controller extends CI_Controller {
 	public function cekloginadmin(){
 		$username = $this->input->post('username');
 		$password = md5($this->input->post('password'));
-		$data = $this->Default_model->get_data_admin();
+		$filter = array('username_admin'=> $username);
+		$data = $this->Default_model->get_data_admin($filter);
 		$is_login = false;
 		foreach ($data as $row){
 			if ($username == $row['username_admin'] && $password == $row['password_admin']) {
@@ -1252,7 +1254,8 @@ class Default_controller extends CI_Controller {
 	public function cekloginowner(){
 		$username = $this->input->post('username');
 		$password = md5($this->input->post('password'));
-		$data = $this->Default_model->get_data_owner();
+		$filter = array('username_owner'=> $username);
+		$data = $this->Default_model->get_data_owner($filter);
 		$is_login = false;
 		foreach ($data as $row){
 			if ($username == $row['username_owner'] && $password == $row['password_owner']) {
@@ -1273,7 +1276,8 @@ class Default_controller extends CI_Controller {
 	public function cekloginreceptionist(){
 		$username = $this->input->post('username');
 		$password = md5($this->input->post('password'));
-		$data = $this->Default_model->get_data_receptionist();
+		$filter = array('username_receptionist'=> $username);
+		$data = $this->Default_model->get_data_receptionist($filter);
 		$is_login = false;
 		foreach ($data as $row){
 			if ($username == $row['username_receptionist'] && $password == $row['password_receptionist']) {
@@ -1296,7 +1300,12 @@ class Default_controller extends CI_Controller {
 	public function checkcookieadmin(){
 		$this->load->helper('cookie');
 		if ($this->input->cookie('adminCookie',true)!=NULL) {
-			return true;
+			$value = $this->str_rot($this->input->cookie('adminCookie',true)); //decrypt first
+			if (empty($this->get_admin_by_id($value,true))) {
+				return false;
+			}else{
+				return true;
+			}
 		}else{
 			return false;
 		}
@@ -1305,7 +1314,12 @@ class Default_controller extends CI_Controller {
 	public function checkcookieowner(){
 		$this->load->helper('cookie');
 		if ($this->input->cookie('ownerCookie',true)!=NULL) {
-			return true;
+			$value = $this->str_rot($this->input->cookie('ownerCookie',true)); //decrypt first
+			if (empty($this->get_owner_by_id($value,true))) {
+				return false;
+			}else{
+				return true;
+			}
 		}else{
 			return false;
 		}
@@ -1314,7 +1328,12 @@ class Default_controller extends CI_Controller {
 	public function checkcookiereceptionist(){
 		$this->load->helper('cookie');
 		if ($this->input->cookie('receptionistCookie',true)!=NULL) {
-			return true;
+			$value = $this->str_rot($this->input->cookie('receptionistCookie',true)); //decrypt first
+			if (empty($this->get_receptionist_by_id($value,true))) {
+				return false;
+			}else{
+				return true;
+			}
 		}else{
 			return false;
 		}
@@ -1394,7 +1413,7 @@ class Default_controller extends CI_Controller {
 		$this->load->helper('cookie');
 		$cookie= array(
 			'name'   => $name,
-			'value'  => str_rot13($value), //Not really encrypt anything, just jumble text :P
+			'value'  => $this->str_rot($value),
 			'expire' => $expire
 		);
 		$this->input->set_cookie($cookie);
@@ -1406,7 +1425,7 @@ class Default_controller extends CI_Controller {
 	public function get_cookie_decrypt($name){
 		$this->load->helper('cookie');
 		if ($this->input->cookie($name,true)!=NULL) {
-			echo str_rot13($this->input->cookie($name,true));
+			echo $this->str_rot($this->input->cookie($name,true));
 		}else{
 			echo "no cookie";
 		}
@@ -1429,8 +1448,8 @@ class Default_controller extends CI_Controller {
 
 		$header = array(); 
 		foreach($reportData[0] as $key => $val){
-            $header[]= $key;
-        }
+			$header[]= $key;
+		}
 
 		fputcsv($file, $header);
 		foreach ($reportData as $key=>$line){ 
@@ -1439,6 +1458,272 @@ class Default_controller extends CI_Controller {
 		fclose($file); 
 		exit; 
 	}
+
+
+
+
+	//Untuk mengacak teks agar tidak mudah dibaca.
+	//note: alternatif pengganti str_rot13 dan base64decode karena beberapa server melarang fungsi tersebut.
+	//parameter 1: string yang akan di acak
+	//parameter 2: sebanyak berapa posisi huruf berpindah
+	//parameter 3: sebanyak berapa posisi digit berpindah
+	public function str_rot($s, $nletter = 13, $ndiggit = 5) {
+		static $letterslower = 'abcdefghijklmnopqrstuvwxyz';
+		static $lettersupper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		static $digits = '0123456789';
+		$nletter = (int)$nletter % 26;
+		$ndiggit = (int)$ndiggit % 10;
+		for ($i = 0, $l = strlen($s); $i < $l; $i++) {
+			$c = $s[$i];
+			if ($c >= 'a' && $c <= 'z') {
+				$s[$i] = $letterslower[(ord($c) - 71 + $nletter) % 26];
+			} else if ($c >= 'A' && $c <= 'Z') {
+				$s[$i] = $lettersupper[(ord($c) - 39 + $nletter) % 26];
+			} else if ($c >= '0' && $c <= '9') {
+				$s[$i] = $digits[(ord($c) - 38 + $ndiggit) % 10];
+			}
+		}
+		return $s;
+	}
+
+	//SYNC
+	//untuk sinkronisasi master data semua hotel
+	//parameter: 
+	//output: success/failed/pesan error API
+	//TODO YOKO
+	public function syncProperties(){
+		set_time_limit(3000);
+		$data = json_decode($this->getProperties());
+		if (!empty($data->error)) {
+			echo $data->error;
+		}else{
+			$result = $this->Default_model->syncHotel($data, true);
+			echo $result;
+		}
+	}
+
+	//untuk sinkronisasi master data satu hotel
+	//parameter: id property
+	//output: success/failed/pesan error API
+	//TODO YOKO
+	public function syncProperty($propid){
+		set_time_limit(3000);
+		$data = json_decode($this->getProperty($propid));
+		if (!empty($data->error)) {
+			echo $data->error;
+		}else{
+			$result = $this->Default_model->syncHotel($data, false);
+			echo $result;
+		}
+	}
+
+
+	//untuk sinkronisasi master data semua booking mulai hari ini sampai satu tahun kedepan
+	//parameter: id property
+	//output: success/failed/pesan error API
+	//TODO YOKO
+	public function syncAllBookings($propid){
+		set_time_limit(3000);
+		$data = json_decode($this->getAllBookings($propid));
+		if (!empty($data->error)) {
+			echo $data->error;
+		}else{
+			$result = $this->Default_model->syncBookings($data);
+			echo $result;
+		}
+	}
+
+	//untuk sinkronisasi master data booking
+	//parameter: id property dan id booking
+	//output: success/failed/pesan error API
+	//TODO YOKO
+	public function syncBookings($propid, $bookid){
+		set_time_limit(3000);
+		$data = json_decode($this->getBookings($propid, $bookid));
+		if (!empty($data->error)) {
+			echo $data->error;
+		}else{
+			$result = $this->Default_model->syncBookings($data);
+			echo $result;
+		}
+	}
+
+	//WEBHOOK
+	public function webhookProperty($propid){
+		$this->syncProperty($propid);
+		$this->insert_error_log("webhookProperty: ".$propid);
+	}
+
+	public function webhookBooking($propid){
+		$this->syncBookings($propid,$this->input->get('bookid'));
+		$this->insert_error_log("webhookBooking: ".$this->input->get('bookid'). "| Property: ".$propid);
+	}
+
+
+
+
+
+	//Beds24 API
+
+	//untuk ambil data semua hotel
+	//parameter: 
+	//output: json data hotel atau pesan error
+	public function getProperties(){
+		$auth = array();
+		$auth['apiKey'] = $this->beds24APIkey;
+
+		$data = array();
+		$data['authentication'] = $auth;
+
+		$json = json_encode($data);
+
+		$url = "https://api.beds24.com/json/getProperties";
+
+		$ch=curl_init();
+		curl_setopt($ch, CURLOPT_POST, 1) ;
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		$result = curl_exec($ch);
+		if(curl_errno($ch)){
+			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
+		}
+		curl_close ($ch);
+		return $result;
+	}
+
+
+	//untuk ambil data data hotel
+	//parameter: idproperty
+	//output: json data hotel atau pesan error
+	public function getProperty($propid){
+		$auth = array();
+		$auth['apiKey'] = $this->beds24APIkey;
+		$auth['propKey'] = $this->propAPIkeyprefix.$propid;
+
+		$data = array();
+		$data['authentication'] = $auth;
+		$data['includeRooms'] = true;
+		$json = json_encode($data);
+
+		$url = "https://api.beds24.com/json/getProperty";
+
+		$ch=curl_init();
+		curl_setopt($ch, CURLOPT_POST, 1) ;
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		$result = curl_exec($ch);
+		if(curl_errno($ch)){
+			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
+		}
+		curl_close ($ch);	
+		return $result;
+	}
+
+
+ 	//untuk ambil data data semua booking mulai hari ini hingga satu tahun kedepan
+	//parameter: idproperty
+	//output: json data booking atau pesan error
+	public function getAllBookings($propid){
+		$auth = array();
+		$auth['apiKey'] = $this->beds24APIkey;
+		$auth['propKey'] = $this->propAPIkeyprefix.$propid;
+
+		$data = array();
+		$data['authentication'] = $auth;
+		$data['includeInvoice'] = true;
+		$data['includeInfoItems'] = true;
+		$json = json_encode($data);
+
+		$url = "https://api.beds24.com/json/getBookings";
+
+		$ch=curl_init();
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		$result = curl_exec($ch);
+		if(curl_errno($ch)){
+			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
+		}
+		curl_close ($ch);	
+		return $result;
+	}
+
+
+ 	//untuk ambil data data booking
+	//parameter: idbooking
+	//output: json data booking atau pesan error
+	public function getBookings($propid,$bookid){
+		$auth = array();
+		$auth['apiKey'] = $this->beds24APIkey;
+		$auth['propKey'] = $this->propAPIkeyprefix.$propid;
+
+		$data = array();
+		$data['authentication'] = $auth;
+		$data['includeInvoice'] = true;
+		$data['includeInfoItems'] = true;
+		$data['bookId'] = $bookid;
+		$json = json_encode($data);
+
+		$url = "https://api.beds24.com/json/getBookings";
+
+		$ch=curl_init();
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		$result = curl_exec($ch);
+		if(curl_errno($ch)){
+			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
+		}
+		curl_close ($ch);	
+		return $result;
+	}
+
+
+ 	//untuk menambah data data booking
+	//parameter: id property, data booking
+	//output: json success atau error
+	public function setBooking($propid,$data){
+		$auth = array();
+		$auth['apiKey'] = $this->beds24APIkey;
+		$auth['propKey'] = $this->propAPIkeyprefix.$propid;
+
+ 		// $data = array();
+		$data['authentication'] = $auth;
+		$json = json_encode($data);
+
+		$url = "https://api.beds24.com/json/setBooking";
+
+		$ch=curl_init();
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+		$result = curl_exec($ch);
+		if(curl_errno($ch)){
+			$result = '{"error":"'.curl_error($ch).'","errorCode":0}';
+		}
+		curl_close ($ch);	
+		return $result;
+	}
+
+
+
+	//untuk testing
+	//parameter: 
+	//output: 
+	public function testing(){
+		echo $this->input->get('status');
+	}
+
 
 
 }
