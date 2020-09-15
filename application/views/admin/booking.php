@@ -118,8 +118,8 @@
 		<div class="col-sm-12">
 			<span>Today :</span>
 			<span class="sm-font"><span id="jmlBooking"></span> Booking</span>
-			<span class="sm-font">.</span>
-			<span class="sm-font"><span id="jmlRoom"></span> Room</span>
+			<!-- <span class="sm-font">.</span>
+			<span class="sm-font"><span id="jmlRoom"></span> Room</span> -->
 		</div>
 		<div class="col-sm-12" style="padding:0 2%; margin-bottom:20%;">
 
@@ -432,7 +432,7 @@
 		var dataInhouse = inhouse[0];
 		var dataComplete = complete[0];
 		var dataKamar = listKamar[0];
-		var jmlRoom = 0;
+		// var jmlRoom = 0;
 
 
 		$('.lds-ring').hide();
@@ -454,7 +454,7 @@
 			var selisihDate = Math.ceil((ckOtDate - ckInDate) / (1000 * 60 * 60 * 24));
 			var tmp = $('#list_booking')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
-			jmlRoom += parseInt(dataUpcoming[i].jumlah_room);
+			// jmlRoom += parseInt(dataUpcoming[i].jumlah_room);
 
 			$(tmp).attr('id', 'toinhouse');
 			$(tmp).attr('data-toggle', 'modal');
@@ -481,7 +481,7 @@
 			var selisihDate = Math.ceil((ckOtDate - ckInDate) / (1000 * 60 * 60 * 24));
 			var tmp = $('#list_booking')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
-			jmlRoom += parseInt(dataInhouse[i].jumlah_room);
+			// jmlRoom += parseInt(dataInhouse[i].jumlah_room);
 
 			$(tmp).attr('id', 'tocomplete');
 			$(tmp).data('id', dataInhouse[i].id_order);
@@ -506,7 +506,7 @@
 			var selisihDate = Math.ceil((ckOtDate - ckInDate) / (1000 * 60 * 60 * 24));
 			var tmp = $('#list_booking')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
-			jmlRoom += parseInt(dataComplete[i].jumlah_room);
+			// jmlRoom += parseInt(dataComplete[i].jumlah_room);
 
 			$(tmp).attr('id', 'complete');
 			$(tmp).attr('data-toggle', 'modal');
@@ -527,7 +527,7 @@
 			$(tmp).appendTo('#completed');
 		}
 
-		$('#jmlRoom').text(jmlRoom);
+		// $('#jmlRoom').text(jmlRoom);
 	});
 
 	function getKamar(idHotel) {
