@@ -81,16 +81,27 @@
 		margin-top: 22px;
 	}
 
+	.loading-back{
+		position:fixed;
+		background-color:rgba(255, 255, 255, 0.5); 
+		height:100vh; 
+		width:100%; 
+		z-index:10;
+	}
+
 </style>
 
 <body>
 	<?php $this->load->view("admin/header");?>
-	<div class="lds-ring">
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
+	<div class="loading-back">
+		<div class="lds-ring">
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+		</div>
 	</div>
+
 	<div class="container">
 		<div class="row" style="margin-top:10%;">
 			<div class="col-sm-12" style="padding:2%;">
@@ -103,60 +114,9 @@
 				</div>
 			</div>
 		</div>
-		<a class="float" data-toggle="modal" data-target="#inputTransaksi">
-			<i class="fa fa-plus my-float text-white" aria-hidden="true"></i>
+		<a class="float bg-success" onclick="syncHotels()">
+			<i class="fa fa-refresh my-float text-white bg-success" aria-hidden="true"></i>
 		</a>
-		<div class="modal fade" id="inputTransaksi" tabindex="-1" role="dialog" aria-labelledby="inputTransaksiLabel"
-			aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="inputTransaksiLabel">Tambah Hotel</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<div class="col-12 no-padding">
-							<form id="insert_hotel" onsubmit="insertHotel(event)">
-								<div class="form-group">
-									<label for="usr">ID Hotel</label>
-									<input type="text" name="id_hotel" class="form-control" pattern="^[A-Za-z0-9-_]+$"
-										required>
-								</div>
-								<div class="form-group">
-									<label for="username_owner">Owner</label>
-									<select class="form-control" id="username_owner" name="username_owner"
-										pattern="^[A-Za-z0-9-_]+$" required>
-									</select>
-								</div>
-								<div class="form-group">
-									<label for="nama">Nama Hotel</label>
-									<input type="text" name="nama" class="form-control" pattern="^[A-Za-z ,.'-]+$"
-										required>
-								</div>
-								<div class="form-group">
-									<label for="alamat">Alamat</label>
-									<input type="text" name="alamat" class="form-control">
-								</div>
-								<div class="form-group">
-									<label for="alamat">Telepon</label>
-									<input type="text" name="telepon" class="form-control"
-										placeholder="format: 081333777999" pattern="^[0-9]+$" required>
-								</div>
-								<div class="form-group">
-									<button type="submit" id="submitButton" class="btn btn-primary btn-md float-right">
-										<span id="submit">Submit</span></button>
-								</div>
-							</form>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
 	</div>
 	<?php $this->load->view("admin/footer");?>
 </body>
@@ -186,14 +146,13 @@
 		$("#header_title").text('Management Hotel');
 	});
 
-	$('.lds-ring').show();
+	$('.loading-back').show();
 	$('.container').hide();
 
-	$.when(getAllHotel(), getUsernameOwner()).done(function (getHotel, getOwner) {
-		$('.lds-ring').hide();
+	$.when(getAllHotel()).done(function (getHotel) {
+		$('.loading-back').hide();
 		$('.container').show();
-		var listHotel = getHotel[0];
-		var listOwner = getOwner[0];
+		var listHotel = getHotel;
 
 		for (var i = 0; i < listHotel.length; i++) {
 			var tmp = $('#list_hotel')[0].innerHTML;
@@ -205,16 +164,6 @@
 			$(tmp).data('id', listHotel[i].id_hotel);
 			$(tmp).appendTo('#all_hotel');
 		}
-
-		for (var i = 0; i < listOwner.length; i++) {
-			$('#username_owner').append(
-				$('<option>', {
-					value: listOwner[i].username_owner,
-					text: listOwner[i].nama_owner
-				})
-			);
-		}
-
 	});
 
 	$(document).on('click', '.hotel-data', function () {
@@ -231,42 +180,29 @@
 		);
 	}
 
-	function getUsernameOwner() {
-		return $.ajax(
-			"<?php echo base_url() ?>index.php/get_all_owner", {
-				dataType: 'json'
-			}
-		);
-	}
-
-	function insertHotel(e) {
-		if (confirm("Apakah anda yakin ?")) {
-			e.preventDefault();
-			urls = "insert_hotel";
-			var dataString = $("#insert_hotel").serialize();
-
-			$("#submit").html("tunggu..");
-			$("#submitButton").prop("disabled", true);
-
-			$.ajax({
-				url: "<?php echo base_url() ?>index.php/" + urls,
-				type: 'POST',
-				data: dataString,
-				success: function (response) {
-					if (response.startsWith("success", 0)) {
-						location.reload();
-					} else {
+	function syncHotels(){
+		$('.loading-back').show();
+		
+		$.ajax({
+			url: "<?php echo base_url() ?>index.php/syncProperties/",
+			type: 'GET',
+			success: function (response) {
+				if (response.startsWith("success", 0)) {
+					alert("Berhasil!");
+					location.reload();
+				} else {
+					if (response.startsWith("failed", 0)) {
+						alert("Tidak ada data yang berubah");
+					}else{
 						alert(response);
-						$("#submit").html("Submit");
-						$("#submitButton").prop("disabled", false);
 					}
-				},
-				error: function () {
-					alert(response);
-					$("#submitButton").prop("disabled", false);
+					$('.loading-back').hide();
 				}
-			});
-		} else {}
+			},
+			error: function () {
+				alert(response);
+				$('.loading-back').hide();
+			}
+		});
 	}
-
 </script>
