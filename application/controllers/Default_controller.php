@@ -283,7 +283,7 @@ class Default_controller extends Loadview {
 	//TODO YOKO
 	public function get_nokamar_by_kamar($id, $return_var = NULL){
 		$filter = array('nokamar.id_kamar'=> $id);
-		$data = $this->Default_model->get_data_nokamar($filter, 'lantai');
+		$data = $this->Default_model->get_data_nokamar($filter);
 		if (empty($data)){
 			$data = [];
 		}

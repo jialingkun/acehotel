@@ -74,24 +74,49 @@
 		box-shadow: 2px 2px 3px #999;
 		z-index: 100;
 	}
-
-	.my-float {
-		margin-top: 22px;
+	.floatx {
+		position: fixed;
+		width: 60px;
+		bottom: 10%;
+		right: 10%;
+		z-index: 100;
+		display: flex;
+		flex-direction: column-reverse;
+	}
+	
+	.floatx i {
+		margin-top: 10px;
+		padding-top:22px;
+		height: 60px;
+		border-radius: 50px;
+		text-align: center;
+		box-shadow: 2px 2px 3px #999;
+		vertical-align: middle;
 	}
 
 	#namaUser {
 		text-transform: uppercase;
 	}
 
+	.loading-back{
+		position:fixed;
+		background-color:rgba(255, 255, 255, 0.5); 
+		height:100vh; 
+		width:100%; 
+		z-index:10;
+	}
+
 </style>
 
 <body>
 	<?php $this->load->view("admin/header");?>
-	<div class="lds-ring">
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
+	<div class="loading-back">
+		<div class="lds-ring">
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+		</div>
 	</div>
 	<div class="container">
 		<div class="row" style="margin-top:20%; margin-left:1%; margin-right:1%;">
@@ -139,8 +164,12 @@
 			</div>
 		</div>
 
-		<a class="float" id="tambah_order" data-toggle="modal" data-target="#inputTransaksi">
+		<!-- <a class="float" id="tambah_order" data-toggle="modal" data-target="#inputTransaksi">
 			<i class="fa fa-plus my-float text-white" aria-hidden="true"></i>
+		</a> -->
+		<a class="floatx">
+			<i class="fa fa-plus text-white bg-primary" id="tambah_order" data-toggle="modal" data-target="#inputTransaksi" aria-hidden="true"></i>
+			<i class="fa fa-refresh text-white bg-success" aria-hidden="true" onclick="syncBooking()"></i>
 		</a>
 
 		<div class="modal fade" id="inputTransaksi" tabindex="-1" role="dialog" aria-labelledby="inputTransaksiLabel"
@@ -408,7 +437,7 @@
 		$("#comp").tab('show');
 	}
 
-	$('.lds-ring').show();
+	$('.loading-back').show();
 	$('.container').hide();
 
 	$(document).ready(function () {
@@ -432,10 +461,8 @@
 		var dataInhouse = inhouse[0];
 		var dataComplete = complete[0];
 		var dataKamar = listKamar[0];
-		// var jmlRoom = 0;
 
-
-		$('.lds-ring').hide();
+		$('.loading-back').hide();
 		$('.container').show();
 		$('#jmlBooking').text(dataUpcoming.length);
 
@@ -506,7 +533,6 @@
 			var selisihDate = Math.ceil((ckOtDate - ckInDate) / (1000 * 60 * 60 * 24));
 			var tmp = $('#list_booking')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
-			// jmlRoom += parseInt(dataComplete[i].jumlah_room);
 
 			$(tmp).attr('id', 'complete');
 			$(tmp).attr('data-toggle', 'modal');
@@ -526,8 +552,6 @@
 			$(tmp).find('#totHarga').text(currency.format(dataComplete[i].total_harga));
 			$(tmp).appendTo('#completed');
 		}
-
-		// $('#jmlRoom').text(jmlRoom);
 	});
 
 	function getKamar(idHotel) {
@@ -857,10 +881,8 @@
 				}else{
 					rentBf = response[0].request_breakfast;
 				}
-
 				$('#cReqRentCar').text(rentCar);
 				$('#cReqBreakfast').text(rentBf);
-
 			}
 		});
 	});
@@ -876,6 +898,32 @@
 			}
 		}
 		return arr;
+	}
+
+	function syncBooking(){
+		$('.loading-back').show();
+		
+		$.ajax({
+			url: "<?php echo base_url() ?>index.php/syncAllBookings/"+idHotel,
+			type: 'GET',
+			success: function (response) {
+				if (response.startsWith("success", 0)) {
+					alert("Berhasil!");
+					location.reload();
+				} else {
+					if (response.startsWith("failed", 0)) {
+						alert("Tidak ada data yang berubah");
+					}else{
+						alert(response);
+					}
+					$('.loading-back').hide();
+				}
+			},
+			error: function () {
+				alert(response);
+				$('.loading-back').hide();
+			}
+		});
 	}
 
 </script>
