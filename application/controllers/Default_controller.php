@@ -474,6 +474,7 @@ class Default_controller extends Loadview {
 				'orders.id_kamar'=> $id,
 				'orders.no_kamar REGEXP '=> "(^|,)".$row['no_kamar']."($|,)", 
 				'orders.status_order !='=> 'completed', 
+				'orders.status_order !='=> 'cancelled',
 				'orders.tanggal_check_in <=' =>date("Y-m-d", strtotime($tglcheckout))
 			);
 			$dataorder = $this->Default_model->get_data_order($filter);
@@ -518,6 +519,8 @@ class Default_controller extends Loadview {
 		$filter = array(
 			'orders.id_hotel'=> $id,
 			'orders.status_order !='=> 'upcoming',
+			'orders.status_order !='=> 'cancelled',
+			'orders.status_order !='=> 'black',
 			'orders.tanggal_check_in_real >=' =>date("Y-m-d", strtotime($tglawal)),
 			'orders.tanggal_check_in_real <=' =>date("Y-m-d", strtotime($tglakhir))
 		);
@@ -539,6 +542,8 @@ class Default_controller extends Loadview {
 		$filter = array(
 			'orders.id_hotel'=> $id,
 			'orders.status_order !='=> 'upcoming',
+			'orders.status_order !='=> 'cancelled',
+			'orders.status_order !='=> 'black',
 			'orders.tanggal_check_in_real >=' =>date("Y-m-d", strtotime($tglawal)),
 			'orders.tanggal_check_in_real <=' =>date("Y-m-d", strtotime($tglakhir))
 		);
@@ -562,6 +567,8 @@ class Default_controller extends Loadview {
 		$filter = array(
 			'orders.id_hotel'=> $id,
 			'orders.status_order !='=> 'upcoming',
+			'orders.status_order !='=> 'cancelled',
+			'orders.status_order !='=> 'black',
 			'orders.tanggal_check_in_real >=' =>date("Y-m-d", strtotime($tglawal)),
 			'orders.tanggal_check_in_real <=' =>date("Y-m-d", strtotime($tglakhir))
 		);
