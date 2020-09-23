@@ -495,22 +495,22 @@ class Default_controller extends Loadview {
 	//get revenue hotel by range tanggal order
 	//parameter: id hotel, tgl order awal (ex:2019-12-17), tgl order akhir
 	//note: ambil data revenue hotel berdasarkan range tanggal order, revenue dihitung dari saat order
-	public function get_revenue_hotel_by_tanggalorder($id, $tglawal, $tglakhir, $return_var = NULL){
-		$filter = array(
-			'orders.id_hotel'=> $id,
-			'orders.tanggal_order >=' =>date("Y-m-d", strtotime($tglawal)),
-			'orders.tanggal_order <=' =>date("Y-m-d", strtotime($tglakhir))
-		);
+	// public function get_revenue_hotel_by_tanggalorder($id, $tglawal, $tglakhir, $return_var = NULL){
+	// 	$filter = array(
+	// 		'orders.id_hotel'=> $id,
+	// 		'orders.tanggal_order >=' =>date("Y-m-d", strtotime($tglawal)),
+	// 		'orders.tanggal_order <=' =>date("Y-m-d", strtotime($tglakhir))
+	// 	);
 
-		$data = $this->Default_model->get_data_order($filter, 'tanggal_order','asc','tanggal_order',
-			'orders.id_hotel, orders.tanggal_order, SUM(orders.total_harga) as revenue');
+	// 	$data = $this->Default_model->get_data_order($filter, 'tanggal_order','asc','tanggal_order',
+	// 		'orders.id_hotel, orders.tanggal_order, SUM(orders.total_harga) as revenue');
 
-		if ($return_var == true) {
-			return $data;
-		}else{
-			echo json_encode($data);
-		}
-	}
+	// 	if ($return_var == true) {
+	// 		return $data;
+	// 	}else{
+	// 		echo json_encode($data);
+	// 	}
+	// }
 
 	//get revenue hotel by range tanggal checkin
 	//parameter: id hotel, tgl check in awal (ex:2019-12-17), tgl check in akhir
