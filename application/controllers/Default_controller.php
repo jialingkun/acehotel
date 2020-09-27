@@ -232,6 +232,16 @@ class Default_controller extends Loadview {
 		$data = $this->Default_model->get_data_order($filter);
 		if (empty($data)){
 			$data = [];
+		}else{
+			foreach ($data as &$row){
+				$name = explode(",",$row['nama_pemesan']);
+				$row['guestFirstName'] = $name[0];
+				$row['guestName'] = (empty($name[1])?"":$name[1]);
+
+				$name = explode(",",$row['telepon_pemesan']);
+				$row['guestMobile'] = $name[0];
+				$row['guestPhone'] = (empty($name[1])?"":$name[1]);
+			}
 		}
 		if ($return_var == true) {
 			return $data;

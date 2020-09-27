@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap-grid.min.css");?>">
 	<link rel="stylesheet" href="<?=base_url("dist/css/style.css");?>">
 	<link rel="stylesheet" href="<?=base_url("dist/css/font-awesome.min.css");?>">
-	<title>DASHBOARD OWNER</title>
+	<title>DASHBOARD ADMIN</title>
 </head>
 <style>
 	.is-active {
@@ -75,49 +75,23 @@
 		z-index: 100;
 	}
 
-	.floatx {
-		position: fixed;
-		width: 60px;
-		bottom: 10%;
-		right: 10%;
-		z-index: 2;
-		display: flex;
-		flex-direction: column-reverse;
-	}
-
-	.floatx i {
-		margin-top: 10px;
-		padding-top: 22px;
-		height: 60px;
-		border-radius: 50px;
-		text-align: center;
-		box-shadow: 2px 2px 3px #999;
-		vertical-align: middle;
+	.my-float {
+		margin-top: 22px;
 	}
 
 	#namaUser {
 		text-transform: uppercase;
 	}
 
-	.loading-back {
-		position: fixed;
-		background-color: rgba(255, 255, 255, 0.5);
-		height: 100vh;
-		width: 100%;
-		z-index: 10;
-	}
-
 </style>
 
 <body>
-	<?php $this->load->view("owner/header");?>
-	<div class="loading-back">
-		<div class="lds-ring">
-			<div></div>
-			<div></div>
-			<div></div>
-			<div></div>
-		</div>
+	<?php $this->load->view("receptionist/header");?>
+	<div class="lds-ring">
+		<div></div>
+		<div></div>
+		<div></div>
+		<div></div>
 	</div>
 	<div class="container">
 		<div class="row" style="margin-top:20%; margin-left:1%; margin-right:1%;">
@@ -144,8 +118,8 @@
 		<div class="col-sm-12">
 			<span>Today :</span>
 			<span class="sm-font"><span id="jmlBooking"></span> Booking</span>
-			<!-- <span class="sm-font">.</span>
-			<span class="sm-font"><span id="jmlRoom"></span> Room</span> -->
+			<span class="sm-font">.</span>
+			<span class="sm-font"><span id="jmlRoom"></span> Room</span>
 		</div>
 		<div class="col-sm-12" style="padding:0 2%; margin-bottom:20%;">
 
@@ -165,13 +139,8 @@
 			</div>
 		</div>
 
-		<!-- <a class="float" id="tambah_order" data-toggle="modal" data-target="#inputTransaksi">
+		<a class="float" id="tambah_order" data-toggle="modal" data-target="#inputTransaksi">
 			<i class="fa fa-plus my-float text-white" aria-hidden="true"></i>
-		</a> -->
-		<a class="floatx">
-			<i class="fa fa-plus text-white bg-primary" id="tambah_order" data-toggle="modal"
-				data-target="#inputTransaksi" aria-hidden="true"></i>
-			<i class="fa fa-refresh text-white bg-success" aria-hidden="true" onclick="syncBooking()"></i>
 		</a>
 
 		<div class="modal fade" id="inputTransaksi" tabindex="-1" role="dialog" aria-labelledby="inputTransaksiLabel"
@@ -193,72 +162,69 @@
 								<h5 class="text-center">Informasi Pemesan</h5>
 								<hr>
 								<div class="form-group">
-									<label>Nama Depan</label>
-									<input type="text" id="guestFirstName" name="guestFirstName" class="form-control"
+									<label>Nama Pemesan</label>
+									<input type="text" id="nama_pemesan" name="nama_pemesan" class="form-control"
 										pattern="^[A-Za-z ,.'-]+$" required>
 								</div>
 								<div class="form-group">
-									<label>Nama Belakang</label>
-									<input type="text" id="guestName" name="guestName" class="form-control"
-										pattern="^[A-Za-z ,.'-]+$" required>
-								</div>
-								<div class="form-group">
-									<label>Telepon 1</label>
-									<input type="tel" id="guestPhone" name="guestPhone" class="form-control" required>
-								</div>
-								<div class="form-group">
-									<label>Telepon 2</label>
-									<input type="tel" id="guestMobile" name="guestMobile" class="form-control" required>
+									<label>Telepon</label>
+									<input type="tel" id="telepon_pemesan" name="telepon_pemesan" class="form-control"
+										required>
 								</div>
 								<div class="form-group">
 									<label>Email</label>
-									<input type="email" id="guestEmail" name="guestEmail" class="form-control" required>
+									<input type="email" id="email_pemesan" name="email_pemesan" class="form-control"
+										required>
 								</div>
-								<!-- <div class="form-group">
+								<div class="form-group">
 									<label>No KTP</label>
 									<input type="text" id="no_ktp_pemesan" name="no_ktp_pemesan" class="form-control"
 										pattern="^[0-9]+$">
-								</div> -->
+								</div>
 								<h5 class="text-center">Informasi Order</h5>
 								<hr>
 								<div class="form-group">
 									<h5 class="text-center" id="namaHotel"></h5>
-									<input type="hidden" id="propid" name="propid">
+									<input type="hidden" id="id_hotel" name="id_hotel">
 								</div>
 								<div class="form-group">
 									<label>Nama Kamar</label>
-									<select class="form-control" id="roomId" name="roomId" required>
+									<select class="form-control" id="id_kamar" name="id_kamar" required>
 									</select>
 								</div>
-								<!-- <div class="form-group">
+								<div class="form-group">
 									<label>Jumlah Kamar</label>
 									<input type="number" id="jumlah_room" name="jumlah_room" class="form-control"
 										required>
-								</div> -->
+								</div>
 								<div class="form-group">
 									<label>Jumlah Tamu</label>
-									<input type="number" id="numAdult" name="numAdult" class="form-control" required>
+									<input type="number" id="jumlah_guest" name="jumlah_guest" class="form-control"
+										required>
 								</div>
 								<div class="form-group">
 									<label>Tanggal Check In</label>
-									<input type="date" id="firstNight" name="firstNight" class="form-control" required>
+									<input type="date" id="tanggal_check_in" name="tanggal_check_in"
+										class="form-control" required>
 								</div>
 								<div class="form-group">
 									<label>Tanggal Check Out</label>
-									<input type="date" id="lastNight" name="lastNight" class="form-control">
-								</div>
-								<div class="form-group">
-									<label>Waktu Kedatangan</label>
-									<input type="time" id="guestArrivalTime" name="guestArrivalTime"
+									<input type="date" id="tanggal_check_out" name="tanggal_check_out"
 										class="form-control">
 								</div>
 								<div class="form-group">
-									<label>Request Tamu</label>
-									<input type="text" id="guestComments" name="guestComments" class="form-control">
+									<label>Request Jam Checkin Awal</label>
+									<input type="time" id="request_jam_check_in_awal" name="request_jam_check_in_awal"
+										class="form-control">
+								</div>
+								<div class="form-group">
+									<label>Request Jam Checkin Akhir</label>
+									<input type="time" id="request_jam_check_in_akhir" name="request_jam_check_in_akhir"
+										class="form-control">
 								</div>
 								<div class="form-group">
 									<label>Sumber Order</label>
-									<select class="form-control" id="refererEditable" name="refererEditable" required>
+									<select class="form-control" id="sumber_order" name="sumber_order" required>
 										<option value="traveloka">Traveloka</option>
 										<option value="oyo">OYO</option>
 										<option value="bookingcom">Booking</option>
@@ -267,46 +233,13 @@
 									</select>
 								</div>
 								<div class="form-group">
-									<label>Informasi Tambahan</label>
-									<input type="text" id="invoicedesc0" name="invoicedesc0" class="form-control">
-								</div>
-								<div class="form-group">
 									<label>Total Harga</label>
-									<input type="number" id="invoiceprice0" name="invoiceprice0" class="form-control"
+									<input type="number" id="total_harga" name="total_harga" class="form-control"
 										required>
 								</div>
 								<h5 class="text-center">Lain - Lain</h5>
 								<hr>
-								<br>
-								<div class="form-group">
-									<label>Tambahan 1</label>
-									<input type="text" id="invoicedesc1" name="invoicedesc1" class="form-control">
-								</div>
-								<div class="form-group">
-									<label>Total Harga</label>
-									<input type="number" id="invoiceprice1" name="invoiceprice1" class="form-control">
-								</div>
-								<hr>
-								<br>
-								<div class="form-group">
-									<label>Tambahan 2</label>
-									<input type="text" id="invoicedesc2" name="invoicedesc2" class="form-control">
-								</div>
-								<div class="form-group">
-									<label>Total Harga</label>
-									<input type="number" id="invoiceprice2" name="invoiceprice2" class="form-control">
-								</div>
-								<hr>
-								<br>
-								<div class="form-group">
-									<label>Tambahan 3</label>
-									<input type="text" id="invoicedesc3" name="invoicedesc3" class="form-control">
-								</div>
-								<div class="form-group">
-									<label>Total Harga </label>
-									<input type="number" id="invoiceprice3" name="invoiceprice3" class="form-control">
-								</div>
-								<!-- <div class="custom-control custom-checkbox custom-control-inline">
+								<div class="custom-control custom-checkbox custom-control-inline">
 									<input type="checkbox" class="custom-control-input" id="request_breakfast"
 										name="request_breakfast" value="1">
 									<label class="custom-control-label" for="request_breakfast">Breakfast</label>
@@ -315,7 +248,7 @@
 									<input type="checkbox" class="custom-control-input" id="rent_car"
 										name="request_rent_car" value="1">
 									<label class="custom-control-label" for="rent_car">Rent Car</label>
-								</div> -->
+								</div>
 							</div>
 						</div>
 						<div class="modal-footer">
@@ -348,30 +281,25 @@
 								<hr>
 								<span>Nama Pemesan : </span><b><span id="cNamaPemesan"></span></b><br>
 								<span>Telepon : </span><b><span id="cTelepon"></span></b><br>
-								<span>Email : </span><b><span id="cEmail"></span></b><br><br>
+								<span>Email : </span><b><span id="cEmail"></span></b><br>
+								<span>KTP : </span><b><span id="cKTP"></span></b><br>
 								<h5 class="text-center">Informasi Order</h5>
 								<hr>
 								<span>Tanggal Order: </span><b><span id="cTanggalOrder"></span></b><br>
 								<span>Nama Hotel : </span><b><span id="cNamaHotel"></span></b><br>
 								<span>Nama Kamar : </span><b><span id="cNamaKamar"></span></b><br>
+								<span>Jumlah Kamar : </span><b><span id="cJumlahKamar"></span></b><br>
 								<span>Jumlah Guest : </span><b><span id="cJumlahGuest"></span></b><br>
 								<span>Check In : </span><b><span id="cTanggalCheckIn"></span></b><br>
 								<span>Check Out : </span><b><span id="cTanggalCheckOut"></span></b><br>
 								<span>Check In Real: </span><b><span id="cTanggalCheckInReal"></span></b><br>
 								<span>Check Out Real: </span><b><span id="cTanggalCheckOutReal"></span></b><br>
-								<span>Request Jam Tiba: </span><b><span id="cRequesteJamTiba"></span></b><br>
+								<span>Request Jam Awal Check In : </span><b><span id="cRequestAwal"></span></b><br>
+								<span>Request Jam Akhir Check In : </span><b><span id="cRequestAkhir"></span></b><br>
 								<span>Sumber Order : </span><b><span id="cSumberOrder"></span></b><br>
-								<span>Request Tamu : </span><b><span id="cComment"></span></b><br>
-								<span>Informasi Tambahan : </span><b><span id="cTambahan0"></span></b><br>
-								<span>Total Harga : </span><b><span id="cTotal"></span></b><br><br>
-								<h5 class="text-center">Lain - Lain</h5>
-								<hr>
-								<span>Tambahan 1 : </span><b><span id="cTambahan1"></span></b><br>
-								<span>Total Harga : </span><b><span id="cTotal1"></span></b><br><br>
-								<span>Tambahan 2 : </span><b><span id="cTambahan2"></span></b><br>
-								<span>Total Harga : </span><b><span id="cTotal2"></span></b><br><br>
-								<span>Tambahan 3 : </span><b><span id="cTambahan3"></span></b><br>
-								<span>Total Harga : </span><b><span id="cTotal3"></span></b><br><br>
+								<span>Total Harga : </span><b><span id="cTotal"></span></b><br>
+								<span>Request Breakfast: </span><b><span id="cReqBreakfast"></span></b><br>
+								<span>Request Rent Car: </span><b><span id="cReqRentCar"></span></b><br>
 							</div>
 
 
@@ -417,7 +345,7 @@
 			</div>
 		</div>
 	</div>
-	<?php $this->load->view("owner/footer");?>
+	<?php $this->load->view("receptionist/footer");?>
 	<?php $this->load->view("function");?>
 </body>
 <script src="<?=base_url("dist/js/jquery.min.js");?>"></script>
@@ -447,6 +375,7 @@
 
 <script id="list_lantai_kamar" type="text/HTML">
 	<div class="col-12 text-center mt-4 " >
+		<span> Lantai : </span><span id="lantai_kamar"></span>
 		<hr>
 	</div>
 </script>
@@ -479,7 +408,7 @@
 		$("#comp").tab('show');
 	}
 
-	$('.loading-back').show();
+	$('.lds-ring').show();
 	$('.container').hide();
 
 	$(document).ready(function () {
@@ -503,13 +432,15 @@
 		var dataInhouse = inhouse[0];
 		var dataComplete = complete[0];
 		var dataKamar = listKamar[0];
+		var jmlRoom = 0;
 
-		$('.loading-back').hide();
+
+		$('.lds-ring').hide();
 		$('.container').show();
 		$('#jmlBooking').text(dataUpcoming.length);
 
 		for (var i = 0; i < dataKamar.length; i++) {
-			$('#roomId').append(
+			$('#id_kamar').append(
 				$('<option>', {
 					value: dataKamar[i].id_kamar,
 					text: dataKamar[i].nama_kamar
@@ -523,7 +454,7 @@
 			var selisihDate = Math.ceil((ckOtDate - ckInDate) / (1000 * 60 * 60 * 24));
 			var tmp = $('#list_booking')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
-			// jmlRoom += parseInt(dataUpcoming[i].jumlah_room);
+			jmlRoom += parseInt(dataUpcoming[i].jumlah_room);
 
 			$(tmp).attr('id', 'toinhouse');
 			$(tmp).attr('data-toggle', 'modal');
@@ -550,7 +481,7 @@
 			var selisihDate = Math.ceil((ckOtDate - ckInDate) / (1000 * 60 * 60 * 24));
 			var tmp = $('#list_booking')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
-			// jmlRoom += parseInt(dataInhouse[i].jumlah_room);
+			jmlRoom += parseInt(dataInhouse[i].jumlah_room);
 
 			$(tmp).attr('id', 'tocomplete');
 			$(tmp).data('id', dataInhouse[i].id_order);
@@ -575,6 +506,7 @@
 			var selisihDate = Math.ceil((ckOtDate - ckInDate) / (1000 * 60 * 60 * 24));
 			var tmp = $('#list_booking')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
+			jmlRoom += parseInt(dataComplete[i].jumlah_room);
 
 			$(tmp).attr('id', 'complete');
 			$(tmp).attr('data-toggle', 'modal');
@@ -594,6 +526,8 @@
 			$(tmp).find('#totHarga').text(currency.format(dataComplete[i].total_harga));
 			$(tmp).appendTo('#completed');
 		}
+
+		$('#jmlRoom').text(jmlRoom);
 	});
 
 	function getKamar(idHotel) {
@@ -638,6 +572,7 @@
 			urls = "insert_order";
 			var dataString = $("#insert_booking").serialize();
 			console.log(dataString);
+			alert(dataString);
 			$("#submit").html("tunggu..");
 			$("#submitButton").prop("disabled", true);
 
@@ -670,7 +605,6 @@
 			urls = "update_order/";
 			var dataString = $("#insert_booking").serialize();
 			var dataJSON = $("#insert_booking").serializeArray();
-
 			$("#submit").html("tunggu..");
 			$("#submitButton").prop("disabled", true);
 
@@ -682,8 +616,8 @@
 					if (response != "access denied") {
 						alert("Data telah masuk");
 						console.log(dataJSON);
-						jumlahRoom = 1;
-						listKamar(dataJSON[6].value);
+						jumlahRoom = dataJSON[6].value;
+						listKamar(dataJSON[5].value);
 						$("#submit").html("Check In");
 						$("#submitButton").prop("disabled", false);
 					} else {
@@ -717,7 +651,7 @@
 				$('#inputTransaksi').modal('hide');
 				$('#checkIn').modal('show');
 				$('#jml_kmr_dipesan').text(jumlahRoom);
-				console.log(id_kamar + tanggalCheckOut);
+				// console.log(response);
 
 				for (var i = 0; i < response.length; i++) {
 
@@ -725,6 +659,7 @@
 						lantai_kamar = response[i].lantai;
 						var tmp = $('#list_lantai_kamar')[0].innerHTML;
 						tmp = $.parseHTML(tmp);
+						$(tmp).find('#lantai_kamar').text(response[i].lantai);
 						$(tmp).appendTo('#kamar');
 					}
 					if (response[i].ketersediaan == "tidak tersedia") {
@@ -737,7 +672,7 @@
 					}
 					var tmp = $('#list_kamar')[0].innerHTML;
 					tmp = $.parseHTML(tmp);
-					$(tmp).find('#no_kamar').text(response[i].nama_no_kamar);
+					$(tmp).find('#no_kamar').text(response[i].no_kamar);
 					$(tmp).find('#nomor_kamar, button').data('no_kamar', response[i].no_kamar);
 
 					$(tmp).appendTo('#kamar');
@@ -773,13 +708,11 @@
 			urls = "update_order_check_in/";
 			$("#submit").html("tunggu..");
 			$("#checkinButton").prop("disabled", true);
-
 			$.ajax({
 				url: "<?php echo base_url() ?>index.php/" + urls + idOrder,
 				type: 'POST',
 				data: {
-					unitId: choosen_room,
-					propid: idHotel,
+					no_kamar: choosen_room
 				},
 				success: function (response) {
 					if (response != "access denied") {
@@ -807,7 +740,7 @@
 		$(':input').val('');
 		$('#request_breakfast').prop('checked', false);
 		$('#rent_car').prop('checked', false);
-		$('#propid').val(idHotel);
+		$('#id_hotel').val(idHotel);
 		console.log($('#id_order').val());
 	});
 
@@ -825,28 +758,33 @@
 				$('#input_data').hide();
 			},
 			success: function (response) {
-				var invoice = JSON.parse(response[0].invoice);
-				console.log(invoice);
+				console.log(response[0]);
 				idOrder = response[0].id_order;
 				tanggalCheckOut = response[0].tanggal_check_out;
 				$('#wait').hide();
 				$('#input_data').show();
-				$('#guestFirstName').val(response[0].guestFirstName);
-				$('#guestName').val(response[0].guestName);
-				$('#guestPhone').val(response[0].guestPhone);
-				$('#guestMobile').val(response[0].guestMobile);
-				$('#guestEmail').val(response[0].email_pemesan);
-				$('#propid').val(response[0].id_hotel);
-				$('#roomId').val(response[0].id_kamar);
-				$('#numAdult').val(response[0].jumlah_guest);
-				$('#firstNight').val(response[0].tanggal_check_in);
-				$('#lastNight').val(response[0].tanggal_check_out);
-				$('#refererEditable').val(response[0].sumber_order);
-				$('#guestArrivalTime').val(response[0].request_jam_tiba);
-				$('#guestComments').val(response[0].comments);
-				for (let i = 0; i < invoice.length; i++) {
-					$('#invoicedesc' + i + '').val(invoice[i].description);
-					$('#invoiceprice' + i + '').val(invoice[i].price);
+				$('#nama_pemesan').val(response[0].nama_pemesan);
+				$('#telepon_pemesan').val(response[0].telepon_pemesan);
+				$('#email_pemesan').val(response[0].email_pemesan);
+				$('#no_ktp_pemesan').val(response[0].no_ktp_pemesan);
+				$('#id_kamar').val(response[0].id_kamar);
+				$('#jumlah_room').val(response[0].jumlah_room);
+				$('#jumlah_guest').val(response[0].jumlah_guest);
+				$('#tanggal_check_in').val(response[0].tanggal_check_in);
+				$('#tanggal_check_out').val(response[0].tanggal_check_out);
+				$('#request_jam_check_in_awal').val(response[0].request_jam_check_in_awal);
+				$('#request_jam_check_in_akhir').val(response[0].request_jam_check_in_akhir);
+				$('#sumber_order').val(response[0].sumber_order);
+				$('#total_harga').val(response[0].total_harga);
+				if (response[0].request_breakfast === '1') {
+					$('#request_breakfast').prop('checked', true);
+				} else {
+					$('#request_breakfast').prop('checked', false);
+				}
+				if (response[0].request_rent_car === '1') {
+					$('#rent_car').prop('checked', true);
+				} else {
+					$('#rent_car').prop('checked', false);
 				}
 			}
 		});
@@ -855,30 +793,20 @@
 
 	$(document).on('click', '#tocomplete', function () {
 		if (confirm("CHECK OUT order ini?")) {
-			$('.loading-back').show();
 			urls = "update_order_check_out/";
 			$.ajax({
 				url: "<?php echo base_url() ?>index.php/" + urls + $(this).data('id'),
 				type: 'POST',
-				data: {
-					propid: idHotel
-				},
 				success: function (response) {
 					if (response.startsWith("success", 0)) {
 						alert("Data telah masuk");
 						location.reload();
 					} else {
-						if (response.startsWith("failed", 0)) {
-							alert("Tidak ada data yang berubah");
-						} else {
-							alert(response);
-						}
-						$('.loading-back').hide();
+						alert(response);
 					}
 				},
 				error: function () {
 					alert(response);
-					$('.loading-back').hide();
 				}
 			});
 		}
@@ -899,29 +827,40 @@
 			success: function (response) {
 				$('#completedWait').hide();
 				$('#notaCompleted').show();
-				// console.log(response[0]);
-				var invoice = JSON.parse(response[0].invoice);
-				console.log(invoice);
+				console.log(response[0]);
 				$('#cNamaPemesan').text(response[0].nama_pemesan);
 				$('#cTelepon').text(response[0].telepon_pemesan);
 				$('#cEmail').text(response[0].email_pemesan);
-				$('#cNamaHotel').text(response[0].nama_hotel); //nama hotel td ada di db
+				$('#cKTP').text(response[0].no_ktp_pemesan);
+				$('#cNamaHotel').text(response[0].nama_hotel);
 				$('#cNamaKamar').text(response[0].nama_kamar);
+				$('#cJumlahKamar').text(response[0].jumlah_room);
 				$('#cJumlahGuest').text(response[0].jumlah_guest);
 				$('#cTanggalCheckIn').text(response[0].tanggal_check_in);
 				$('#cTanggalCheckOut').text(response[0].tanggal_check_out);
 				$('#cTanggalCheckOut').text(response[0].tanggal_check_out);
 				$('#cTanggalCheckInReal').text(response[0].tanggal_check_in_real);
 				$('#cTanggalCheckOutReal').text(response[0].tanggal_check_out_real);
-				$('#cRequesteJamTiba').text(response[0].request_jam_tiba);
+				$('#cRequestAwal').text(response[0].request_jam_check_in_awal);
+				$('#cRequestAkhir').text(response[0].request_jam_check_in_akhir);
 				$('#cSumberOrder').text(response[0].sumber_order);
-				$('#cComment').text(response[0].comments);
 				$('#cTotal').text(response[0].total_harga);
 				$('#cTanggalOrder').text(response[0].tanggal_order);
-				for (let i = 0; i < invoice.length; i++) {
-					$('#cTambahan' + i + '').text(invoice[i].description);
-					$('#cTotal' + i + '').text(invoice[i].price);
+				
+				if(response[0].request_rent_car == null){
+					rentCar = '-';
+				}else{
+					rentCar = response[0].request_rent_car;
 				}
+				if(response[0].request_breakfast == null){
+					rentBf = '-';
+				}else{
+					rentBf = response[0].request_breakfast;
+				}
+
+				$('#cReqRentCar').text(rentCar);
+				$('#cReqBreakfast').text(rentBf);
+
 			}
 		});
 	});
@@ -937,31 +876,6 @@
 			}
 		}
 		return arr;
-	}
-
-	function syncBooking() {
-		$('.loading-back').show();
-		$.ajax({
-			url: "<?php echo base_url() ?>index.php/syncAllBookings/" + idHotel,
-			type: 'GET',
-			success: function (response) {
-				if (response.startsWith("success", 0)) {
-					alert("Berhasil!");
-					location.reload();
-				} else {
-					if (response.startsWith("failed", 0)) {
-						alert("Tidak ada data yang berubah");
-					} else {
-						alert(response);
-					}
-					$('.loading-back').hide();
-				}
-			},
-			error: function () {
-				alert(response);
-				$('.loading-back').hide();
-			}
-		});
 	}
 
 </script>
