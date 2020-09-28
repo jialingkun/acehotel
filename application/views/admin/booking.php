@@ -170,7 +170,7 @@
 		</a> -->
 		<a class="floatx">
 			<i class="fa fa-plus text-white bg-primary" id="tambah_order" data-toggle="modal"
-				data-target="#inputTransaksi" aria-hidden="true"></i>
+				data-target="#inputTransaksi" aria-hidden="true" onclick="$('#total_biaya').html('0')"></i>
 			<i class="fa fa-refresh text-white bg-success" aria-hidden="true" onclick="syncBooking()"></i>
 		</a>
 
@@ -249,7 +249,7 @@
 								</div>
 								<div class="form-group">
 									<label>Waktu Kedatangan</label>
-									<input type="time" id="guestArrivalTime" name="guestArrivalTime"
+									<input type="text" id="guestArrivalTime" name="guestArrivalTime"
 										class="form-control">
 								</div>
 								<div class="form-group">
@@ -258,64 +258,65 @@
 								</div>
 								<div class="form-group">
 									<label>Sumber Order</label>
-									<select class="form-control" id="refererEditable" name="refererEditable" required>
+									<input type="text" id="refererEditable" name="refererEditable" class="form-control">
+									<!-- <select class="form-control" id="refererEditable" name="refererEditable" required>
 										<option value="traveloka">Traveloka</option>
 										<option value="oyo">OYO</option>
 										<option value="bookingcom">Booking</option>
 										<option value="tiketcom">Tiket</option>
 										<option value="manual">Manual</option>
-									</select>
+									</select> -->
 								</div>
+
+								<h5 class="text-center">Biaya Order</h5>
+								<hr>
+								<br>
 								<div class="form-group">
-									<label>Informasi Tambahan</label>
+									<label>Informasi Booking Kamar</label>
 									<input type="text" id="invoicedesc0" name="invoicedesc0" class="form-control">
 								</div>
 								<div class="form-group">
-									<label>Total Harga</label>
+									<label>Harga Booking Kamar</label>
 									<input type="number" id="invoiceprice0" name="invoiceprice0" class="form-control"
-										required>
+										onchange="hitungBiaya()" required>
 								</div>
-								<h5 class="text-center">Lain - Lain</h5>
 								<hr>
 								<br>
 								<div class="form-group">
-									<label>Tambahan 1</label>
+									<label>Info Biaya Tambahan 1</label>
 									<input type="text" id="invoicedesc1" name="invoicedesc1" class="form-control">
 								</div>
 								<div class="form-group">
-									<label>Total Harga</label>
-									<input type="number" id="invoiceprice1" name="invoiceprice1" class="form-control">
+									<label>Harga</label>
+									<input type="number" id="invoiceprice1" name="invoiceprice1" class="form-control"
+										onchange="hitungBiaya()">
 								</div>
 								<hr>
 								<br>
 								<div class="form-group">
-									<label>Tambahan 2</label>
+									<label>Info Biaya Tambahan 2</label>
 									<input type="text" id="invoicedesc2" name="invoicedesc2" class="form-control">
 								</div>
 								<div class="form-group">
-									<label>Total Harga</label>
-									<input type="number" id="invoiceprice2" name="invoiceprice2" class="form-control">
+									<label>Harga</label>
+									<input type="number" id="invoiceprice2" name="invoiceprice2" class="form-control"
+										onchange="hitungBiaya()">
 								</div>
 								<hr>
 								<br>
 								<div class="form-group">
-									<label>Tambahan 3</label>
+									<label>Info Biaya Tambahan 3</label>
 									<input type="text" id="invoicedesc3" name="invoicedesc3" class="form-control">
 								</div>
 								<div class="form-group">
-									<label>Total Harga </label>
-									<input type="number" id="invoiceprice3" name="invoiceprice3" class="form-control">
+									<label>Harga </label>
+									<input type="number" id="invoiceprice3" name="invoiceprice3" class="form-control"
+										onchange="hitungBiaya()">
 								</div>
-								<!-- <div class="custom-control custom-checkbox custom-control-inline">
-									<input type="checkbox" class="custom-control-input" id="request_breakfast"
-										name="request_breakfast" value="1">
-									<label class="custom-control-label" for="request_breakfast">Breakfast</label>
-								</div>
-								<div class="custom-control custom-checkbox custom-control-inline">
-									<input type="checkbox" class="custom-control-input" id="rent_car"
-										name="request_rent_car" value="1">
-									<label class="custom-control-label" for="rent_car">Rent Car</label>
-								</div> -->
+								<hr>
+								<h5>Total Biaya Order: </h5>
+								<h3><span id="total_biaya">0</span></h3>
+								<hr>
 							</div>
 						</div>
 						<div class="modal-footer">
@@ -352,7 +353,6 @@
 								<h5 class="text-center">Informasi Order</h5>
 								<hr>
 								<span>Tanggal Order: </span><b><span id="cTanggalOrder"></span></b><br>
-								<span>Nama Hotel : </span><b><span id="cNamaHotel"></span></b><br>
 								<span>Nama Kamar : </span><b><span id="cNamaKamar"></span></b><br>
 								<span>Jumlah Guest : </span><b><span id="cJumlahGuest"></span></b><br>
 								<span>Check In : </span><b><span id="cTanggalCheckIn"></span></b><br>
@@ -361,20 +361,22 @@
 								<span>Check Out Real: </span><b><span id="cTanggalCheckOutReal"></span></b><br>
 								<span>Request Jam Tiba: </span><b><span id="cRequesteJamTiba"></span></b><br>
 								<span>Sumber Order : </span><b><span id="cSumberOrder"></span></b><br>
-								<span>Request Tamu : </span><b><span id="cComment"></span></b><br>
-								<span>Informasi Tambahan : </span><b><span id="cTambahan0"></span></b><br>
-								<span>Total Harga : </span><b><span id="cTotal"></span></b><br><br>
-								<h5 class="text-center">Lain - Lain</h5>
+								<span>Request Tamu : </span><b><span id="cComment"></span></b><br><br>
+								<h5 class="text-center">Biaya Order</h5>
 								<hr>
-								<span>Tambahan 1 : </span><b><span id="cTambahan1"></span></b><br>
-								<span>Total Harga : </span><b><span id="cTotal1"></span></b><br><br>
-								<span>Tambahan 2 : </span><b><span id="cTambahan2"></span></b><br>
-								<span>Total Harga : </span><b><span id="cTotal2"></span></b><br><br>
-								<span>Tambahan 3 : </span><b><span id="cTambahan3"></span></b><br>
-								<span>Total Harga : </span><b><span id="cTotal3"></span></b><br><br>
+								<span>Informasi Booking Kamar : </span><br><b><span id="cTambahan0"></span></b><br>
+								<span>Harga Booking Kamar : </span><b><span id="cTotal0"></span></b><br><br>
+								<span>Info Biaya Tambahan 1 : </span><br><b><span id="cTambahan1"></span></b><br>
+								<span>Harga : </span><b><span id="cTotal1"></span></b><br><br>
+								<span>Info Biaya Tambahan 2 : </span><br><b><span id="cTambahan2"></span></b><br>
+								<span>Harga : </span><b><span id="cTotal2"></span></b><br><br>
+								<span>Info Biaya Tambahan 3 : </span><br><b><span id="cTambahan3"></span></b><br>
+								<span>Harga : </span><b><span id="cTotal3"></span></b><br><br>
+								<hr>
+								<h6>Total Biaya Order</h6>
+								<h4 id="cTotalHarga"></h4>
+								<hr>
 							</div>
-
-
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
@@ -632,12 +634,24 @@
 		setCookie('booking_section', active);
 	}
 
+	function hitungBiaya() {
+		var biaya_order = 0;
+		for (let i = 0; i <= 3; i++) {
+			var invoiceprice = parseInt($("#invoiceprice" + i + "").val());
+			if (isNaN(invoiceprice)) {
+				biaya_order += 0;
+			} else {
+				biaya_order = biaya_order + invoiceprice;
+			}
+		}
+		$('#total_biaya').html(currency.format(biaya_order));
+	}
+
 	function insertOrder(e) {
 		if (confirm("Apakah anda yakin akan menambah data?")) {
 			e.preventDefault();
 			urls = "insert_order";
 			var dataString = $("#insert_booking").serialize();
-			console.log(dataString);
 			$("#submit").html("tunggu..");
 			$("#submitButton").prop("disabled", true);
 
@@ -656,7 +670,6 @@
 					}
 				},
 				error: function (e) {
-					console.log(e.responseText);
 					alert(response);
 					$("#submitButton").prop("disabled", false);
 				}
@@ -717,7 +730,6 @@
 				$('#inputTransaksi').modal('hide');
 				$('#checkIn').modal('show');
 				$('#jml_kmr_dipesan').text(jumlahRoom);
-				console.log(id_kamar + tanggalCheckOut);
 
 				for (var i = 0; i < response.length; i++) {
 
@@ -765,7 +777,6 @@
 			alert('max');
 		}
 		choosen_room = selected_room.join();
-		console.log(choosen_room);
 	});
 
 	$(document).on('click', '#checkinButton', function () {
@@ -808,7 +819,6 @@
 		$('#request_breakfast').prop('checked', false);
 		$('#rent_car').prop('checked', false);
 		$('#propid').val(idHotel);
-		console.log($('#id_order').val());
 	});
 
 	$(document).on('click', '#toinhouse', function () {
@@ -826,7 +836,6 @@
 			},
 			success: function (response) {
 				var invoice = JSON.parse(response[0].invoice);
-				console.log(invoice);
 				idOrder = response[0].id_order;
 				tanggalCheckOut = response[0].tanggal_check_out;
 				$('#wait').hide();
@@ -848,9 +857,9 @@
 					$('#invoicedesc' + i + '').val(invoice[i].description);
 					$('#invoiceprice' + i + '').val(invoice[i].price);
 				}
+				hitungBiaya();
 			}
 		});
-
 	});
 
 	$(document).on('click', '#tocomplete', function () {
@@ -899,13 +908,11 @@
 			success: function (response) {
 				$('#completedWait').hide();
 				$('#notaCompleted').show();
-				// console.log(response[0]);
+				console.log(response[0]);
 				var invoice = JSON.parse(response[0].invoice);
-				console.log(invoice);
 				$('#cNamaPemesan').text(response[0].nama_pemesan);
 				$('#cTelepon').text(response[0].telepon_pemesan);
 				$('#cEmail').text(response[0].email_pemesan);
-				$('#cNamaHotel').text(response[0].nama_hotel); //nama hotel td ada di db
 				$('#cNamaKamar').text(response[0].nama_kamar);
 				$('#cJumlahGuest').text(response[0].jumlah_guest);
 				$('#cTanggalCheckIn').text(response[0].tanggal_check_in);
@@ -916,11 +923,11 @@
 				$('#cRequesteJamTiba').text(response[0].request_jam_tiba);
 				$('#cSumberOrder').text(response[0].sumber_order);
 				$('#cComment').text(response[0].comments);
-				$('#cTotal').text(response[0].total_harga);
 				$('#cTanggalOrder').text(response[0].tanggal_order);
+				$('#cTotalHarga').text(currency.format(response[0].total_harga));
 				for (let i = 0; i < invoice.length; i++) {
 					$('#cTambahan' + i + '').text(invoice[i].description);
-					$('#cTotal' + i + '').text(invoice[i].price);
+					$('#cTotal' + i + '').text(currency.format(invoice[i].price));
 				}
 			}
 		});

@@ -117,13 +117,12 @@
 								<form id="edit_receptionist" onsubmit="editUser(event)">
 									<div class="form-group">
 										<label for="usr">Username </label>
-										<input type="text" id="rUsername" name="username_receptionist"
-											class="form-control" pattern="^[a-zA-Z0-9_]+$" required>
+										<input type="text" id="rUsername" name="username" class="form-control"
+											pattern="^[a-zA-Z0-9_]+$" required>
 									</div>
 									<div class="form-group">
 										<label for="usr">Password </label>
-										<input type="text" id="rPassword" name="password"
-											class="form-control" pattern="^[a-zA-Z0-9_]+$" placeholder="KOSONGKAN JIKA PASSWORD TETAP">
+										<input type="password" id="rPassword" name="password" class="form-control">
 									</div>
 									<div class="form-group">
 										<label for="alamat">Nama </label>
@@ -132,9 +131,8 @@
 									</div>
 									<div class="form-group">
 										<label for="alamat">Telepon </label>
-										<input type="text" id="rTelepon" name="telepon"
-											class="form-control" placeholder="format: 081333777999" pattern="^[0-9]+$"
-											required>
+										<input type="text" id="rTelepon" name="telepon" class="form-control"
+											placeholder="format: 081333777999" pattern="^[0-9]+$" required>
 									</div>
 									<div class="form-group">
 										<button type="submit" id="submitButton"
@@ -154,10 +152,12 @@
 	</div>
 	<?php $this->load->view("owner/footer");?>
 	<?php $this->load->view("function");?>
+
 </body>
 <script src="<?=base_url("dist/js/jquery.min.js");?>"></script>
 <script src="<?=base_url("dist/js/popper.min.js");?>"></script>
 <script src="<?=base_url("dist/js/bootstrap.min.js");?>"></script>
+<script src="<?=base_url("dist/js/function.js");?>"></script>
 
 <script id="list_hotel" type="text/HTML">
 	<a class="list-group-item list-group-item-action flex-column align-items-start mgn-list" id="detailHotel" data-toggle="modal" data-target="#editReceptionist">
@@ -224,14 +224,14 @@
 	function editUser(e) {
 		if (confirm("Apakah anda yakin ?")) {
 			e.preventDefault();
-			urls = "update_receptionist/";
+			urls = "insert_receptionist/";
 			var dataString = $("#edit_receptionist").serialize();
-
+			dataString += '&id_hotel=' + getCookie('id_hotel')
 			$("#submit").html("tunggu..");
 			$("#submit").prop("disabled", true);
 
 			$.ajax({
-				url: "<?php echo base_url() ?>index.php/" + urls + id_rec,
+				url: "<?php echo base_url() ?>index.php/" + urls,
 				type: 'POST',
 				data: dataString,
 				success: function (response) {
