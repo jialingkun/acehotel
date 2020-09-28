@@ -676,6 +676,14 @@ class Default_controller extends Loadview {
 	//output: success/failed/access denied
 	public function insert_receptionist(){
 		if ($this->checkcookieadmin() || $this->checkcookieowner()) {
+
+			//delete old receptionist
+			$data = $this->get_receptionist_by_hotel($this->input->post('id_hotel'),true);
+			if (!empty($data)) {
+				$deleteStatus = $this->Default_model->delete_receptionist($data[0]['username_receptionist']);
+			}
+
+			//insert
 			$data = array(
 				'username_receptionist' => $this->input->post('username'),
 				'password_receptionist' => md5($this->input->post('password')),
