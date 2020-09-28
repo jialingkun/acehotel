@@ -520,6 +520,11 @@ class Default_model extends CI_Model {
 				$statusbooking = 'upcoming';
 			}
 
+			foreach ($row->invoice as &$row2) {
+				$row2->price = $row2->price * $row2->qty;
+				$row2->qty = "1";
+			}
+
 			$insertdata = array(
 				'id_order' => $row->bookId,
 				'id_hotel' => $row->propId,

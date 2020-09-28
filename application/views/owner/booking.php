@@ -410,7 +410,7 @@
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-								<button type="submit" id="checkinButton"
+								<button type="button" id="checkinButton"
 									class="btn btn-primary btn-md float-right"><span id="submit">Tambah
 										Booking</span></button>
 							</div>
@@ -804,7 +804,7 @@
 				},
 				error: function (e) {
 					console.log(e.responseText);
-					alert(response);
+					alert(e.responseText);
 					$("#checkinButton").prop("disabled", false);
 				}
 			});
