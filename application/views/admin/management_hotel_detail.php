@@ -74,34 +74,18 @@
 		border-radius: 50px;
 		text-align: center;
 		box-shadow: 2px 2px 3px #999;
-		z-index: 1;
+		z-index: 100;
 	}
 
 	.my-float {
 		margin-top: 22px;
 	}
 
-	.loading-back{
-		position:fixed;
-		background-color:rgba(255, 255, 255, 0.5); 
-		height:100vh; 
-		width:100%; 
-		z-index:10;
-	}
-
 </style>
 
-<body >
+<body>
 	<?php $this->load->view("admin/header");?>
-	<div class="loading-back">
-		<div class="lds-ring" >
-			<div></div>
-			<div></div>
-			<div></div>
-			<div></div>
-		</div>
-	</div>
-	<div class="container" >
+	<div class="container">
 		<div class="row" style="margin-top:20%; margin-bottom:20%;">
 			<div class="col-sm-12  mt-3">
 				<h5 class="mb-1" id="nama_hotel">...</h5>
@@ -120,10 +104,90 @@
 				</div>
 			</div>
 		</div>
-		<a class="float bg-success" onclick="syncHotel()">
-			<i class="fa fa-refresh my-float text-white" aria-hidden="true"></i>
+		<a class="float" data-toggle="modal" data-target="#inputTransaksi">
+			<i class="fa fa-plus my-float text-white" aria-hidden="true"></i>
 		</a>
-		
+		<div class="modal fade" id="inputTransaksi" tabindex="-1" role="dialog" aria-labelledby="inputTransaksiLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="inputTransaksiLabel">Tambah Hotel</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="col-12 no-padding">
+							<form id="insert_kamar" onsubmit="insertKamar(event)">
+								<div class="form-group">
+									<input type="hidden" id="id_hotel" name="id_hotel" class="form-control"
+										pattern="^[A-Za-z0-9-_]+$" required>
+								</div>
+								<div class="form-group">
+									<label for="username_owner">Nama Kamar</label>
+									<input type="text" name="nama" class="form-control" required>
+								</div>
+
+								<div class="form-group">
+									<label for="nama">Max Guest</label>
+									<input type="text" name="max_guest" class="form-control" pattern="^[0-9]+$"
+										required>
+								</div>
+								<div class="form-group">
+									<button type="submit" id="submitButton" class="btn btn-primary btn-md float-right">
+										<span id="submit">Submit</span></button>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="editTransaksi" tabindex="-1" role="dialog" aria-labelledby="editTransaksiLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="editTransaksiLabel">Edit Kamar</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="col-12 no-padding">
+							<form id="edit_kamar" onsubmit="editKamar(event)">
+								<div class="form-group">
+									<label for="alamat">Nama Kamar</label>
+									<input type="text" id="eNama" name="nama" class="form-control"
+										pattern="^[A-Za-z ,.'-]+$" required>
+								</div>
+								<div class="form-group">
+									<label for="alamat">Max Guest</label>
+									<input type="text" id="eGuest" name="max_guest" class="form-control"
+										pattern="^[0-9]+$" required>
+								</div>
+								<div class="form-group">
+									<button type="button" id="eDelete" class="btn btn-danger btn-md float-left">
+										<span onclick="deleteKamar(getCookie('edit_kamar'))">Delete
+											Kamar</span></button>
+									<button type="submit" id="eButton" class="btn btn-primary btn-md float-right">
+										<span id="submit">Submit</span></button>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div class="modal fade" id="editHotel" tabindex="-1" role="dialog" aria-labelledby="editHotelLabel"
 			aria-hidden="true">
 			<div class="modal-dialog" role="document">
@@ -138,9 +202,13 @@
 						<div class="col-12 no-padding">
 							<form id="edit_hotel" onsubmit="editHotel(event)">
 								<div class="form-group">
-									<label for="alamat">Owner Hotel</label>
-									<select class="form-control" id="eOwner" name="username_owner">
-									</select>
+									<label for="alamat">Nama Hotel</label>
+									<input type="text" id="eNamaHotel" name="nama" class="form-control"
+										pattern="^[A-Za-z ,.'-]+$" required>
+								</div>
+								<div class="form-group">
+									<label for="alamat">Alamat Hotel</label>
+									<input type="text" id="eAlamatHotel" name="alamat" class="form-control" required>
 								</div>
 								<div class="form-group">
 									<label for="alamat">Telepon</label>
@@ -148,6 +216,9 @@
 										pattern="^[0-9]+$" required>
 								</div>
 								<div class="form-group">
+									<button type="button" id="eDelete" class="btn btn-danger btn-md float-left">
+										<span onclick="deleteHotel(getCookie('manajemen_id_hotel'))">Delete
+											Hotel</span></button>
 									<button type="submit" id="eButton" class="btn btn-primary btn-md float-right">
 										<span id="submit">Submit</span></button>
 								</div>
@@ -173,11 +244,23 @@
 					</div>
 					<div class="modal-body">
 						<div class="col-12 no-padding">
+							<form class="d-flex justify-content-around" id="tambah_no_kamar">
+								<input type="text" id="tambahLantai" class="form-control" pattern="^[A-Za-z0-9 ,.'-]+$"
+									style="width: 28%" placeholder="Lantai" required>
+								<input type="text" id="tambahNomor" class="form-control" pattern="^[A-Za-z0-9 ,.'-]+$"
+									style="width: 28%" pattern="^[A-Za-z0-9 ,.'-]+$" placeholder="Nomor" required>
+								<button type="button" id="tambahLantaiNomor" class="btn btn-success btn-md" style="width: 28%">
+									<span id="tambahLantaiNomorText" onclick="insertNoKamar()">Tambah</span></button>
+							</form>
+							<hr>
+
 							<div class="d-flex justify-content-around">
-								<span>No Kamar</span>
-								<span>Nama Kamar</span>
+								<span>Lantai</span>
+								<span>Nomor</span>
+								<span class="text-white">Nomor</span>
 							</div>
 							<div id="list_no_kamar">
+
 							</div>
 						</div>
 					</div>
@@ -187,6 +270,7 @@
 				</div>
 			</div>
 		</div>
+
 	</div>
 	<?php $this->load->view("admin/footer");?>
 </body>
@@ -197,10 +281,12 @@
 
 <script id="template_no_kamar" type="text/HTML">
 	<form class="d-flex justify-content-around pt-3">
+		<input type="text" id="lantaiKamar" name="nomorKamar" class="form-control"
+			pattern="^[A-Za-z ,.'-]+$" style="width: 30%" placeholder="Lantai" readonly>
 		<input type="text" id="nomorKamar" name="nomorKamar" class="form-control"
 			style="width: 30%" placeholder="Nomor" readonly>
-		<input type="text" id="namaNoKamar" name="nomorKamar" class="form-control"
-			pattern="^[A-Za-z ,.'-]+$" style="width: 30%" placeholder="Lantai" readonly>
+		<button type="button" id="noKamarHapus" class="btn btn-danger btn-md" style="width: 30%">
+			<span >Hapus</span></button>
 	</form>
 </script>
 
@@ -222,6 +308,9 @@
             </div>
         </div>
         <div class="col-4 py-0 pl-0 m-0 d-flex flex-column justify-content-around" style="margin:auto; color:#1C7CD5">
+			<div id="btn_edit_kamar" class="d-flex justify-content-center align-items-center bg-primary text-white" data-toggle="modal" data-target="#editTransaksi" style="height:50%; background-color:gray;">
+				Edit
+			</div>
 			<div id="btn_no_kamar" class="d-flex justify-content-center align-items-center bg-light text-dark" data-toggle="modal" data-target="#editNoKamar" style="height:50%">No Kamar</div>
         </div>
     </div>
@@ -233,15 +322,14 @@
 		$("#management_footer").addClass('is-active');
 		$("#header_title").text('Management Hotel');
 	});
-	$('.loading-back').show();
-	$('.container').hide();
 
 	var idHotel = getCookie("manajemen_id_hotel");
 	// console.log(idHotel);
+	$('.lds-ring').show();
+	$('.container').hide();
 
-	$.when(getAllKamar(idHotel), getAllOwner(), getHotel(idHotel)).done(function (getKamar, getAllOwner, getHotel) {
-		$('.loading-back').hide();
-		$('.container').show();
+	$.when(getAllKamar(idHotel), getHotel(idHotel)).done(function (getKamar, getHotel) {
+
 		$('#nama_hotel').text(getHotel[0][0].nama_hotel);
 		$('#alamat_hotel').text(getHotel[0][0].alamat_hotel);
 		$('#tlp_hotel').text(getHotel[0][0].telepon_hotel);
@@ -250,23 +338,12 @@
 		$('#eAlamatHotel').val(getHotel[0][0].alamat_hotel);
 		$('#eTeleponHotel').val(getHotel[0][0].telepon_hotel);
 
+		$('.lds-ring').hide();
+		$('.container').show();
 		$('#id_hotel').val(idHotel);
 
-		let temp ="";
-		if(getHotel[0][0].username_owner == null){
-			temp += "<option ></option>";
-		}
-		for (let i = 0; i < getAllOwner[0].length; i++) {
-			if(getHotel[0][0].username_owner == getAllOwner[0][i].username_owner){
-				temp += "<option value="+getAllOwner[0][i].username_owner+" selected>"+getAllOwner[0][i].nama_owner+"</option>";
-			}else{
-				temp += "<option value="+getAllOwner[0][i].username_owner+">"+getAllOwner[0][i].nama_owner+"</option>";
-			}
-		}
-		$(temp).appendTo('#eOwner');
-
-		for (let i = 0; i < getKamar[0].length; i++) {
-			let tmp = $('#list_kamar')[0].innerHTML;
+		for (var i = 0; i < getKamar[0].length; i++) {
+			var tmp = $('#list_kamar')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
 
 			$(tmp).find('#id_kamar').text(getKamar[0][i].id_kamar);
@@ -301,14 +378,6 @@
 		);
 	}
 
-	function getAllOwner() {
-		return $.ajax(
-			"<?php echo base_url() ?>index.php/get_all_owner/", {
-				dataType: 'json'
-			}
-		);
-	}
-
 	function getNokamarByKamar(idKamar) {
 		$.ajax({
 			url: "<?php echo base_url() ?>index.php/get_nokamar_by_kamar/" + idKamar,
@@ -323,11 +392,43 @@
 					tmp = $.parseHTML(tmp);
 
 					$(tmp).find('#nomorKamar').val(response[i].no_kamar);
-					$(tmp).find('#namaNoKamar').val(response[i].nama_no_kamar);
+					$(tmp).find('#lantaiKamar').val(response[i].lantai);
+					$(tmp).find('#noKamarHapus').data('id', response[i].no_kamar);
 					$(tmp).appendTo('#list_no_kamar');
 				}
 			}
 		});
+	}
+
+	function insertNoKamar() {
+		if (confirm('Apakah anda yakin ?')) {
+			urls = "insert_nokamar";
+			var dataString = {
+				'id_kamar': getCookie('id_kamar'),
+				'no_kamar': $('#tambahNomor').val(),
+				'lantai': $('#tambahLantai').val()
+			};
+
+			$("#tambahLantaiNomorText").html("tunggu..");
+			$("#tambahLantaiNomor").prop("disabled", true);
+
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls,
+				type: 'POST',
+				data: dataString,
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						getNokamarByKamar(getCookie('id_kamar'));
+						$("#tambahLantaiNomorText").html("Tambah");
+						$("#tambahLantaiNomor").prop("disabled", false);
+					} else {
+						alert(response);
+						$("#tambahLantaiNomorText").html("Tambah");
+						$("#tambahLantaiNomor").prop("disabled", false);
+					}
+				}
+			});
+		} else {}
 	}
 
 	$(document).on('click', '#noKamarHapus', function () {
@@ -377,6 +478,47 @@
 		} else {}
 	}
 
+	function editKamar(e) {
+		if (confirm("Apakah anda yakin ?")) {
+			e.preventDefault();
+			urls = "update_kamar/";
+			var dataString = $("#edit_kamar").serialize();
+			var id = getCookie('edit_kamar');
+
+			$("#submit").html("tunggu..");
+			$("#eButton").prop("disabled", true);
+
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls + id,
+				type: 'POST',
+				data: dataString,
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						location.reload();
+					} else {
+						$("#submit").html("Submit");
+						$("#eButton").prop("disabled", false);
+					}
+				},
+				error: function () {
+					alert(response);
+					$("#eButton").prop("disabled", false);
+				}
+			});
+		} else {}
+	}
+
+	function deleteKamar(id) {
+		$.ajax({
+			url: "<?php echo base_url() ?>index.php/delete_kamar/" + id,
+			success: function (response) {
+				if (response === "success") {
+					location.reload();
+				}
+			}
+		});
+	}
+
 	function editHotel(e) {
 		if (confirm("Apakah anda yakin ?")) {
 			e.preventDefault();
@@ -406,7 +548,18 @@
 			});
 		} else {}
 	}
-	
+
+	function deleteHotel(id) {
+		$.ajax({
+			url: "<?php echo base_url() ?>index.php/delete_hotel/" + id,
+			success: function (response) {
+				if (response === "success") {
+					window.location = "<?php echo base_url() ?>index.php/managementhotel/";
+				}
+			}
+		});
+	}
+
 	$(document).on('click', '#listKamar', function () {
 		let id_kamar = $(this).find('#id_kamar').text();
 		let nama = $(this).find('#namaKamar').text();
@@ -422,30 +575,5 @@
 		let id = $(this).data('id');
 		getNokamarByKamar(id);
 	});
-	
-	function syncHotel(){
-		$('.loading-back').show();
-		
-		$.ajax({
-			url: "<?php echo base_url() ?>index.php/syncProperty/"+idHotel,
-			type: 'GET',
-			success: function (response) {
-				if (response.startsWith("success", 0)) {
-					alert("Berhasil!");
-					location.reload();
-				} else {
-					if (response.startsWith("failed", 0)) {
-						alert("Tidak ada data yang berubah");
-					}else{
-						alert(response);
-					}
-					$('.loading-back').hide();
-				}
-			},
-			error: function () {
-				alert(response);
-				$('.loading-back').hide();
-			}
-		});
-	}
+
 </script>

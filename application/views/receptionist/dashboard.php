@@ -284,7 +284,7 @@
 
 	function detail(active) {
 		setCookie('booking_section', active);
-		window.location = "<?=base_url('index.php/bookingreceptionist');?>";
+		window.location = "<?=base_url(" / index.php / bookingreceptionist ");?>";
 	}
 
 </script>
