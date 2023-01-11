@@ -10,5 +10,7 @@
 	<a href="<?php echo base_url() ?>index.php/loginowner">LOGIN OWNER</a>
 	<br>
 	<a href="<?php echo base_url() ?>index.php/loginreceptionist">LOGIN RECEPTIONIST</a>
+	<br>
+	<a href="<?php echo base_url() ?>index.php/loginuser">LOGIN User</a>
 </body>
 </html>

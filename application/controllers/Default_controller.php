@@ -552,6 +552,52 @@ class Default_controller extends Loadview {
 		}
 	}
 
+	//get fasilitas hotel
+	//parameter: id hotel
+	//note: ambil data fasilitas hotel berdasarkan hotel
+	public function get_fasilitas_by_hotel($id, $return_var = NULL){
+		$filter = array('fasilitas.id_hotel'=> $id);
+		$data = $this->Default_model->get_data_fasilitas($filter);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+	
+	//get foto hotel
+	//parameter: id hotel
+	//note: ambil data foto hotel berdasarkan hotel
+	public function get_foto_by_hotel($id, $return_var = NULL){
+		$filter = array('fotohotel.id_hotel'=> $id);
+		$data = $this->Default_model->get_data_foto($filter);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+	
+	//get master kota
+	//note: ambil data kota
+	public function get_master_kota($return_var = NULL){
+		$data = $this->Default_model->get_data_kota();
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
 
 
 
@@ -701,6 +747,70 @@ class Default_controller extends Loadview {
 				'status_order' => "upcoming"
 			);
 			$insertStatus = $this->Default_model->insert_order($data);
+			echo $insertStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	//Tambah data fasilitas hotel
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function insert_fasilitas(){
+		if ($this->checkcookieadmin()) {
+			$data = array(
+				'id_hotel' => $this->input->post('id_hotel_fasilitas'),
+				'nama_fasilitas' => $this->input->post('nama_fasilitas'),
+				'ket_fasilitas' => $this->input->post('ket_fasilitas')
+			);
+			$insertStatus = $this->Default_model->insert_fasilitas($data);
+			echo $insertStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+	
+
+	//Tambah data foto hotel
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function insert_foto_desc_hotel(){
+		if ($this->checkcookieadmin()) {
+			// $status = $_POST['status'];
+			// $status = $_POST['status'];
+			$date = date("ymd");	
+			$jam = date("Hi");		
+			$file1 = '';
+
+			if (isset($_FILES['file_1']['name']) && $_FILES['file_1']['name'] != '') {
+				$configFoto['upload_path'] = './upload/hotel_description_photo';
+				// $configFoto['upload_path'] = $path;				
+				$configFoto['max_size'] = '60000';
+				$configFoto['allowed_types'] = 'gif|jpg|png';
+				$configFoto['overwrite'] = FALSE; 
+				$configFoto['remove_spaces'] = TRUE;
+				$foto_name = $date.'_'.$jam.'_gambar_iklan';
+				$configFoto['file_name'] = $foto_name;
+		
+				$this->load->library('upload', $configFoto);
+				$this->upload->initialize($configFoto);
+	
+				if(!$this->upload->do_upload('file_1')) {
+					// echo $this->upload->display_errors();
+				}else{
+					$FotoDetails = $this->upload->data();		
+					$file1 = $FotoDetails['file_name'];			
+				}
+				
+			}
+
+			$data = array(
+				// 'id_kamar' => $this->input->post('id_kamar'),
+				'id_hotel' => $this->input->post('id_hotel_foto'),
+				'nama_foto' => $this->input->post('nama_foto'),
+				'src_foto' => $file1,
+			);
+			$insertStatus = $this->Default_model->insert_foto($data);
 			echo $insertStatus;
 		}else{
 			echo "access denied";

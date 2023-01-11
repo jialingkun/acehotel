@@ -81,12 +81,167 @@
 		margin-top: 22px;
 	}
 
+/* 
+	.floating-button-menu {
+  z-index: 5;
+  position: fixed;
+  bottom: 40px;
+  right: 40px; 
+  cursor: pointer;
+  background: #F35A5A;
+  border-radius: 50%;
+  min-width: 80px;
+  max-width: 0px;
+  min-height: 80px;
+  max-height: 0px;
+  box-shadow: 2px 2px 8px 2px rgba(0,0,0,.6);
+  transition: all ease-in-out .3s;
+  &:hover {
+    background: #fff;
+  } 
+.floating-button-menu-links {
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all .4s;
+    a {
+      position: relative;
+       color: #454545;
+         text-transform: uppercase;
+         text-decoration: none;
+         line-height: 50px;
+         display: block;
+      display: block;
+      border-bottom: 1px solid #ccc;
+      width: 100%;
+      height: 50px;
+      padding: 0 20px;
+      border-bottom: 1px solid #ccc;
+      transition: background ease-in-out .3s;
+      background: rgba(0,0,0,0);
+         &:hover {
+           background: rgba(0,0,0,.1)
+         }
+      &:last-child {
+        border-bottom: 0px solid #fff; 
+      }
+    }
+    &.menu-on {
+      background: #fff;
+      width: 450px;
+      height: 400px;
+      border-radius: 10px;
+      opacity: 1;
+      transition: all ease-in-out .5s;
+      }
+   
+   }
+   .floating-button-menu-label {
+      text-align: center;
+      line-height: 74px;
+      font-size: 50px;
+      color: #fff;
+      opacity: 1;
+      transition: opacity .3s;
+   }
+   &.menu-on {
+      background: #fff;
+      max-width: 340px;
+      max-height: 3300px;
+      border-radius: 10px;
+     .floating-button-menu-links {
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+      transition: all ease-in-out 1s;
+     }
+     .floating-button-menu-label {
+       height: 0px;
+       overflow: hidden;
+     }
+    }
+}
+.floating-button-menu-close {
+  position: fixed;
+  z-index: 2;
+  width: 0%;
+  height: 0%;
+  &.menu-on {
+       width: 100%;
+       height: 100%;  
+       background: rgba(0,0,0,.1);
+  }
+} */
+
+.plus {
+  transition: .5s all ease-out;
+}
+.flBtnCntr {
+  display: inline-flex;
+  position: absolute;
+  top: 50px;
+  left: 50px
+}
+.flBtnBox {
+  outline: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: #2978d3;
+  color: #fff;
+  cursor: pointer
+}
+.flBtnBox.big {
+  background-color: #2978d3;
+  font-size: 30px;
+  height: 50px;
+  width: 50px
+}
+.flBtnBox.small {
+  animation: showBtn 200ms cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  transform: scale(0);
+  background-color: #363636;
+  margin: 0 5px;
+  font-size: 20px;
+  height: 30px;
+  width: 30px;
+}
+.flBtnBox.small:nth-child(2) {
+  animation-delay: 200ms
+}
+.flBtnBox.small:nth-child(3) {
+  animation-delay: 400ms
+}
+@keyframes showBtn {
+  0% {
+    transform: scale(0)
+  }
+  100% {
+    transform: scale(1)
+  }
+}
+.flBtnBox.big:hover {
+  box-shadow: 0 0 10px rgba(41,120,211,0.4)
+}
+.flBtnBox.small:hover {
+  box-shadow: 0 0 10px rgba(0,0,0,0.3)
+}
+.flBtns {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  bottom: 0;
+  display: none;
+  padding: 0 5px;
+  align-items: center
+}
+
 </style>
 
 <body>
 	<?php $this->load->view("admin/header");?>
 	<div class="container">
-		<div class="row" style="margin-top:20%; margin-bottom:20%;">
+	<div class="row" style="margin-top:20%; margin-bottom:20%;">
 			<div class="col-sm-12  mt-3">
 				<h5 class="mb-1" id="nama_hotel">...</h5>
 				<span>Alamat : </span>
@@ -98,15 +253,76 @@
 					data-target="#editHotel">Edit</button>
 			</div>
 			<div class="col-sm-12 ">
-				<div id="all_kamar" class="tab-pane active">
-					<br>
-					<div class="list-group"></div>
+				<div style="margin:auto; width:100%; font-size:0.9em;padding-top:20px;">
+					<ul class="nav nav-tabs text-center">
+						<li class="nav-item" style="width:33.4%;">
+							<a class="nav-link active" id="up" data-toggle="tab" href="#list_kamar_hotel" style="padding:8px 0;">List Kamar</a>
+						</li>
+						<li class="nav-item" style="width:33.3%;">
+							<a class="nav-link" id="in" data-toggle="tab" href="#fasilitas_hotel" style="padding:8px 0;">Fasilitas</a>
+						</li>
+						<li class="nav-item" style="width:33.3%;">
+							<a class="nav-link" id="comp" data-toggle="tab" href="#foto_desc_hotel" style="padding:8px 0;">Foto</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="tab-content">
+					<div id="list_kamar_hotel" class="tab-pane active"><br>
+						<div id="all_kamar" class="tab-pane active" style="padding-bottom:60px;">
+							<div class="list-group"></div>
+						</div>
+					</div>
+					<div id="fasilitas_hotel" class="tab-pane fade"><br>
+						<button type="button" class="btn btn-primary d-block pl-3 pr-3 mt-2" data-toggle="modal"
+						data-target="#inputFasilitas">Add fasilitas</button><br>
+						
+						<div id="all_fasilitas" class="tab-pane active" style="padding-bottom:60px;">
+							<div class="list-group"></div>
+						</div>
+					</div>
+					<div id="foto_desc_hotel" class="tab-pane fade"><br>
+						<button type="button" class="btn btn-primary d-block pl-3 pr-3 mt-2" data-toggle="modal"
+						data-target="#inputFoto">Add Image</button><br>
+						
+						<div id="all_foto" class="tab-pane active" style="padding-bottom:60px;">
+							<div class="list-group"></div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-		<a class="float" data-toggle="modal" data-target="#inputTransaksi">
-			<i class="fa fa-plus my-float text-white" aria-hidden="true"></i>
+		<a class="float btn_input">
+			<i class="fa fa-plus my-float text-white plus" aria-hidden="true"></i>
+			<!-- <div class="flBtns">
+    <button class="flBtnBox small">+</button>
+    <button class="flBtnBox small">+</button>
+    <button class="flBtnBox small">+</button>
+  </div> -->
 		</a>
+		
+<div class="flBtnCntr">
+  <button class="flBtnBox big plus">+</button>
+  <div class="flBtns">
+    <button class="flBtnBox small">+</button>
+    <button class="flBtnBox small">+</button>
+    <button class="flBtnBox small">+</button>
+  </div>
+</div>
+
+		<!-- <div class="floating-button-menu menu-off"> -->
+			<!-- <div class="floating-button-menu-links">
+				<a href="#one">link one</a>
+				<a href="#two">link two</a>
+				<a href="#three">link three</a>
+				<a href="#four">link four</a>
+			</div> -->
+			<!-- <div class="floating-button-menu-label"><i class="fa fa-plus my-float text-white" aria-hidden="true"></i>
+		</a></div>
+		</div>
+		<div class="floating-button-menu-close"></div> -->
+
+
 		<div class="modal fade" id="inputTransaksi" tabindex="-1" role="dialog" aria-labelledby="inputTransaksiLabel"
 			aria-hidden="true">
 			<div class="modal-dialog" role="document">
@@ -133,6 +349,88 @@
 									<label for="nama">Max Guest</label>
 									<input type="text" name="max_guest" class="form-control" pattern="^[0-9]+$"
 										required>
+								</div>
+								<div class="form-group">
+									<button type="submit" id="submitButton" class="btn btn-primary btn-md float-right">
+										<span id="submit">Submit</span></button>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="inputFasilitas" tabindex="-1" role="dialog" aria-labelledby="inputFasilitasLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="inputFasilitasLabel">Tambah Fasilitas</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="col-12 no-padding">
+							<form id="insert_fasilitas" onsubmit="insertFasilitas(event)">
+								<div class="form-group">
+									<input type="hidden" id="id_hotel_fasilitas" name="id_hotel_fasilitas" class="form-control"
+										pattern="^[A-Za-z0-9-_]+$" required>
+								</div>
+								<div class="form-group">
+									<label>Nama Fasilitas</label>
+									<input type="text" name="nama_fasilitas" class="form-control" required>
+								</div>
+
+								<div class="form-group">
+									<label>Keterangan Fasilitas</label>
+									<input type="text" name="ket_fasilitas" class="form-control" required>
+								</div>
+								<div class="form-group">
+									<button type="submit" id="submitButton" class="btn btn-primary btn-md float-right">
+										<span id="submit">Submit</span></button>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="inputFoto" tabindex="-1" role="dialog" aria-labelledby="inputFotoLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="inputFotoLabel">Tambah Foto Hotel</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="col-12 no-padding">
+							<form id="insert_foto" onsubmit="insertFoto(event)">
+								<div class="form-group">
+									<input type="hidden" id="id_hotel_foto" name="id_hotel_foto" class="form-control"
+										pattern="^[A-Za-z0-9-_]+$" required>
+								</div>
+								<div class="form-group">
+									<label>Nama Foto</label>
+									<input type="text" id="nama_foto" name="nama_foto" class="form-control" required>
+								</div>
+
+								<div class="form-group">
+									<label>Upload Foto</label>
+									<input id="inputFileToLoad" type="file" accept="image/jpeg,image/png" style="padding-top:5px;" max-file-size="320" onchange="encodeImageFileAsURL();"/>
+                          			<div id="imgTest" style="padding-top:15px;"></div>
+									<!-- <input type="text" name="ket_fasilitas" class="form-control" required> -->
 								</div>
 								<div class="form-group">
 									<button type="submit" id="submitButton" class="btn btn-primary btn-md float-right">
@@ -271,6 +569,44 @@
 			</div>
 		</div>
 
+		<div class="modal fade" id="editFasilitas" tabindex="-1" role="dialog" aria-labelledby="editFasilitasLabel"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="editFasilitasLabel">Edit Fasilitas</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="col-12 no-padding">
+							<form id="edit_fasilitas" onsubmit="editFasilitas(event)">
+								<div class="form-group">
+									<label>Nama Fasilitas</label>
+									<input type="text" id="eNamaFasilitas" name="eNamaFasilitas" class="form-control" required>
+								</div>
+								<div class="form-group">
+									<label>Keterangan Fasilitas</label>
+									<input type="text" id="eKetFasilitas" name="eKetFasilitas" class="form-control" required>
+								</div>
+								<div class="form-group">
+									<button type="button" id="eDelete" class="btn btn-danger btn-md float-left">
+										<span onclick="deleteFasilitas(getCookie('edit_fasilitas'))">Delete
+										Fasilitas</span></button>
+									<button type="submit" id="eButton" class="btn btn-primary btn-md float-right">
+										<span id="submit">Submit</span></button>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 	</div>
 	<?php $this->load->view("admin/footer");?>
 </body>
@@ -317,6 +653,53 @@
     </a>
 </script>
 
+<script id="list_fasilitas" type="text/HTML">
+	<a href="#" class="list-group-item list-group-item-action mgn-list p-0">
+    <div class="row "  id="listFasilitas">
+        <div class="col-8 px-4 py-3" >
+        <input type="hidden" id="id_fasilitas">
+            <div class="d-block">
+                <h6 class="mb-1" id="namaFasilitas"></h6>
+            </div>
+            <div class="d-block">
+                <span class="sm-font">Keterangan : </span>
+                <span id="ketFasilitas"></span>    
+            </div>
+        </div>
+        <div class="col-4 py-0 pl-0 m-0 d-flex flex-column justify-content-around" style="margin:auto; color:#1C7CD5">
+			<div id="btn_edit_fasilitas" class="d-flex justify-content-center align-items-center bg-primary text-white" data-toggle="modal" data-target="#editFasilitas" style="height:50%; background-color:gray;">
+				Edit
+			</div>
+			<!-- <div id="btn_no_kamar" class="d-flex justify-content-center align-items-center bg-light text-dark" data-toggle="modal" data-target="#editNoKamar" style="height:50%">No Kamar</div> -->
+        </div>
+    </div>
+    </a>
+</script>
+
+<script id="list_Foto" type="text/HTML">
+	<a href="#" class="list-group-item list-group-item-action mgn-list p-0">
+    <div class="row "  id="listFoto">
+        <div class="col-8 px-4 py-3" >
+        <input type="hidden" id="id_foto">
+            <div class="d-block">
+                <h6 class="mb-1" id="namaFoto"></h6>
+            </div>
+            <div class="d-block">
+                <span class="sm-font">Keterangan : </span>
+                <!-- <span id="ketFasilitas"></span>     -->
+				<div id="FotoHotel" style="padding-top:15px;"></div>
+            </div>
+        </div>
+        <div class="col-4 py-0 pl-0 m-0 d-flex flex-column justify-content-around" style="margin:auto; color:#1C7CD5">
+			<div id="btn_edit_foto" class="d-flex justify-content-center align-items-center bg-primary text-white" data-toggle="modal" data-target="#editFoto" style="height:50%; background-color:gray;">
+				Edit
+			</div>
+			<!-- <div id="btn_no_kamar" class="d-flex justify-content-center align-items-center bg-light text-dark" data-toggle="modal" data-target="#editNoKamar" style="height:50%">No Kamar</div> -->
+        </div>
+    </div>
+    </a>
+</script>
+
 <script>
 	$(document).ready(function () {
 		$("#management_footer").addClass('is-active');
@@ -327,6 +710,59 @@
 	// console.log(idHotel);
 	$('.lds-ring').show();
 	$('.container').hide();
+
+
+	$('#inputFoto').on('show.bs.modal', function() {
+		document.getElementById("imgTest").innerHTML = "";
+		document.getElementById("inputFileToLoad").value = '';
+    });
+
+	// $( ".menu-off" ).click(function() {
+	// 	console.log('--mneu')
+	// 	$( this ).removeClass( "menu-off" );
+	// 	$( this ).addClass( "menu-on" );
+	// 	$('.floating-button-menu-close').addClass('menu-on');
+	// 	});
+	// 	$('.floating-button-menu-close').click(function(){
+	// 	$( this ).addClass( "menu-off" );
+	// 	$( this ).removeClass( "menu-on" );
+	// 	$('.floating-button-menu').toggleClass('menu-on');
+	// 	});
+
+		
+    $('.btn_input').on("click", function(){
+        $(this).toggleClass('active');
+
+		$('.flBtns').css("display", "inline-flex");
+        if($(".btn_input").hasClass("active") == false){
+            $('.plus').css('transform','rotate(-90deg)' )
+			
+        } else {
+            $('.plus').css('transform','rotate(135deg)' )
+        }
+
+});
+
+$(document).on('click', '.flBtnCntr', function () {
+    // ( ".flBtnCntr" ).click(function() {
+
+        
+        $(this).toggleClass('active');
+        console.log('jalan')
+        $('.flBtns').css("display", "inline-flex");
+        $('.flBtnCntr').css("transition", " all ease-in-out .5s");
+        $('.flBtnCntr').css("opacity", "1");
+
+        
+        if($(".btn_input").hasClass("active") == false){
+            $('.plus').css('transform','rotate(-90deg)' )
+        } else {
+            $('.plus').css('transform','rotate(135deg)' )
+        }
+    // $( this ).removeClass( "menu-off" );
+    // $( this ).addClass( "menu-on" );
+    // $('.floating-button-menu-close').addClass('menu-on');
+    });
 
 	$.when(getAllKamar(idHotel), getHotel(idHotel)).done(function (getKamar, getHotel) {
 
@@ -341,6 +777,8 @@
 		$('.lds-ring').hide();
 		$('.container').show();
 		$('#id_hotel').val(idHotel);
+		$('#id_hotel_fasilitas').val(idHotel);
+		$('#id_hotel_foto').val(idHotel);
 
 		for (var i = 0; i < getKamar[0].length; i++) {
 			var tmp = $('#list_kamar')[0].innerHTML;
@@ -357,8 +795,59 @@
 		}
 	});
 
+	
+	$.when(getAllFasilitas(idHotel)).done(function (getFasilitas) {
+
+
+		for (var i = 0; i < getFasilitas.length; i++) {
+			var tmp = $('#list_fasilitas')[0].innerHTML;
+			tmp = $.parseHTML(tmp);
+			
+		// console.log('------------')
+		// console.log($('#list_fasilitas')[0].innerHTML)
+
+			$(tmp).find('#id_fasilitas').text(getFasilitas[i].id_fasilitas)
+			$(tmp).find('#namaFasilitas').text(getFasilitas[i].nama_fasilitas)
+			$(tmp).find('#ketFasilitas').text(getFasilitas[i].ket_fasilitas)
+			$(tmp).appendTo('#all_fasilitas');
+
+		}
+
+
+	});
+
+	
+	$.when(getAllFoto(idHotel)).done(function (getFoto) {
+
+		// console.log('------------')
+		// console.log(getFoto)
+		// console.log(getFoto.length)
+
+		for (var i = 0; i < getFoto.length; i++) {
+			console.log('---------' + $('#list_foto')[0].innerHTML)
+			var tmp = $('#list_foto')[0].innerHTML;
+			tmp = $.parseHTML(tmp);
+
+			
+			console.log('---------' + i)
+			
+			$(tmp).find('#id_foto').text(getFoto[i].id_foto_hotel)
+			$(tmp).find('#namaFoto').text(getFoto[i].nama_foto)
+			// $(tmp).find('#FotoHotel').src(getFoto[i].src_foto)
+			$(tmp).appendTo('#all_foto');
+
+			
+
+		}
+
+
+	});
+
+
 	$(document).on('click', '.data-kamar', function () {
 		var idKamar = $(this).data('id');
+		console.log($(this))
+		console.log($(this).data)
 		setCookie('id_kamar', idKamar);
 	});
 
@@ -399,6 +888,23 @@
 			}
 		});
 	}
+
+	function getAllFasilitas(idHotel) {
+		return $.ajax(
+			"<?php echo base_url() ?>index.php/get_fasilitas_by_hotel/" + idHotel, {
+				dataType: 'json'
+			}
+		);
+	}
+	
+	function getAllFoto(idHotel) {
+		return $.ajax(
+			"<?php echo base_url() ?>index.php/get_foto_by_hotel/" + idHotel, {
+				dataType: 'json'
+			}
+		);
+	}
+
 
 	function insertNoKamar() {
 		if (confirm('Apakah anda yakin ?')) {
@@ -571,9 +1077,187 @@
 		setCookie('edit_kamar', id_kamar);
 	});
 
+	
+	$(document).on('click', '#listFasilitas', function () {
+		let id_fasilitas = $(this).find('#id_fasilitas').text();
+		let nama = $(this).find('#namaFasilitas').text();
+		let ket = $(this).find('#ketFasilitas').text();
+
+		$('#eNamaFasilitas').val(nama);
+		$('#eKetFasilitas').val(ket);
+
+		setCookie('edit_fasilitas', id_fasilitas);
+	});
+
 	$(document).on('click', '#btn_no_kamar', function () {
 		let id = $(this).data('id');
 		getNokamarByKamar(id);
 	});
+
+	function insertFasilitas(e) {
+		if (confirm("Apakah anda yakin ?")) {
+			e.preventDefault();
+			urls = "insert_fasilitas";
+			var dataString = $("#insert_fasilitas").serialize();
+
+			$("#submit").html("tunggu..");
+			$("#submitButton").prop("disabled", true);
+
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls,
+				type: 'POST',
+				data: dataString,
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						location.reload();
+					} else {
+						alert(response);
+						$("#submit").html("Submit");
+						$("#submitButton").prop("disabled", false);
+					}
+				},
+				error: function () {
+					alert(response);
+					$("#submitButton").prop("disabled", false);
+				}
+			});
+		} else {}
+	}
+
+	
+	function editFasilitas(e) {
+		if (confirm("Apakah anda yakin ?")) {
+			e.preventDefault();
+			urls = "update_fasilitas/";
+			var dataString = $("#edit_fasilitas").serialize();
+			var id = getCookie('edit_fasilitas');
+
+			$("#submit").html("tunggu..");
+			$("#eButton").prop("disabled", true);
+
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls + id,
+				type: 'POST',
+				data: dataString,
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						location.reload();
+					} else {
+						$("#submit").html("Submit");
+						$("#eButton").prop("disabled", false);
+					}
+				},
+				error: function () {
+					alert(response);
+					$("#eButton").prop("disabled", false);
+				}
+			});
+		} else {}
+	}
+
+	function deleteFasilitas(id) {
+		$.ajax({
+			url: "<?php echo base_url() ?>index.php/delete_fasilitas/" + id,
+			success: function (response) {
+				if (response === "success") {
+					location.reload();
+				}
+			}
+		});
+	}
+
+	function insertFoto(e) {
+		
+		var myFileGambar = $('#inputFileToLoad').prop('files');
+
+		if(myFileGambar.length == 0){
+          alert("Silahkan Pilih File!")
+          return false;
+        }
+        
+
+		if (confirm("Apakah anda yakin ?")) {
+			e.preventDefault();
+			urls = "insert_foto_desc_hotel";
+			var dataString = $("#insert_foto").serialize();
+			
+			let formData = new FormData();
+			var inputid = document.getElementById("id_hotel_foto").value;
+			var inputnama = document.getElementById("nama_foto").value;
+			const fileupload_1 = $('#inputFileToLoad').prop('files')[0];
+			
+				
+			formData.append('file_1', fileupload_1);
+			formData.append('id_hotel_foto', inputid);
+			formData.append('nama_foto', inputnama);
+
+
+			
+
+			$("#submit").html("tunggu..");
+			$("#submitButton").prop("disabled", true);
+
+			$.ajax({
+				url: "<?php echo base_url() ?>index.php/" + urls,
+				type: 'POST',
+        		timeout: 1800000,
+				data: formData,
+				cache: false,
+				processData: false,
+				contentType: false,
+				success: function (response) {
+					if (response.startsWith("success", 0)) {
+						location.reload();
+					} else {
+						alert(response);
+						$("#submit").html("Submit");
+						$("#submitButton").prop("disabled", false);
+					}
+				},
+				error: function () {
+					alert(response);
+					$("#submitButton").prop("disabled", false);
+				}
+			});
+		} else {}
+	}
+
+	function deleteFoto(id) {
+		$.ajax({
+			url: "<?php echo base_url() ?>index.php/delete_foto_hotel/" + id,
+			success: function (response) {
+				if (response === "success") {
+					location.reload();
+				}
+			}
+		});
+	}
+
+
+	function encodeImageFileAsURL() {
+		var status_allow = '';
+		var filesSelected = document.getElementById("inputFileToLoad").files;
+		var test = filesSelected && filesSelected[0];
+		var img = new Image();
+		img.src = window.URL.createObjectURL(test);
+		var fileToLoad = filesSelected[0];
+		var fileReader = new FileReader();
+
+      	fileReader.onload = function(fileLoadedEvent) {
+			img.onload = function() {
+				var width = img.naturalWidth,
+				height = img.naturalHeight;
+				window.URL.revokeObjectURL(img.src);
+								
+				var srcData = fileLoadedEvent.target.result; // <--- data: base64
+				var newImage = document.createElement('img');
+				newImage.src = srcData; 
+				newImage.width = '200';
+				document.getElementById("imgTest").innerHTML = newImage.outerHTML;
+				
+			};
+		}	
+      	fileReader.readAsDataURL(fileToLoad);
+    }
 
 </script>

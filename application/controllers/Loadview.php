@@ -21,6 +21,10 @@ class Loadview extends CI_Controller {
 		$this->load->view('receptionist/login');
 	}
 
+	public function loginuser(){
+		$this->load->view('user/login');
+	}
+
 	//Dashboard
 	public function dashboardadmin(){
 		if ($this->checkcookieadmin()) {
@@ -48,6 +52,16 @@ class Loadview extends CI_Controller {
 			die();
 		}
 	}
+	
+	public function dashboarduser(){
+		// if ($this->checkcookiereceptionist()) {
+			$this->load->view('user/dashboard');
+		// }else{
+		// 	header("Location: ".base_url()."index.php/loginreceptionist");
+		// 	die();
+		// }
+	}
+	
 	
 	//Bookings
 	public function bookingadmin(){
@@ -158,6 +172,20 @@ class Loadview extends CI_Controller {
 
 	public function test_function(){
 		$this->load->view('testpage/testfunction');
+	}
+
+	//User
+	public function kataloghotel(){
+		$this->load->view('user/katalog_hotel');
+	}
+
+	public function katalogkamar(){
+		$this->load->view('user/katalog_kamar');
+	}
+
+	
+	public function bookingdetails(){
+		$this->load->view('user/booking');
 	}
 	
 }

@@ -107,6 +107,37 @@ class Default_model extends CI_Model {
 		return $count;
 	}
 
+	public function get_data_fasilitas($filter = NULL){
+		$this->db->select('*');
+		$this->db->from('fasilitas');
+		if ($filter != NULL){
+			$this->db->where($filter);
+		}
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+	
+	public function get_data_foto($filter = NULL){
+		$this->db->select('*');
+		$this->db->from('fotohotel');
+		if ($filter != NULL){
+			$this->db->where($filter);
+		}
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	
+	public function get_data_kota($filter = NULL){
+		$this->db->select('*');
+		$this->db->from('master_kota');
+		if ($filter != NULL){
+			$this->db->where($filter);
+		}
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
 
 	//INSERT DATABASE
 	public function insert_admin($data){
@@ -179,6 +210,25 @@ class Default_model extends CI_Model {
 		return $return_message;
 	}
 
+	public function insert_fasilitas($data){
+		$this->db->insert('fasilitas', $data);
+		if ($this->db->affected_rows() > 0 ) {
+			$return_message = 'success';
+		}else{
+			$return_message = 'failed';
+		}
+		return $return_message;
+	}
+
+	public function insert_foto($data){
+		$this->db->insert('fotohotel', $data);
+		if ($this->db->affected_rows() > 0 ) {
+			$return_message = 'success';
+		}else{
+			$return_message = 'failed';
+		}
+		return $return_message;
+	}
 
 
 
@@ -260,6 +310,17 @@ class Default_model extends CI_Model {
 		}
 		return $return_message;
 	}
+	
+	public function update_fasilitas($id, $data){
+		$this->db->where('id_fasilitas', $id);
+		$this->db->update('fasilitas', $data);
+		if ($this->db->affected_rows() > 0 ) {
+			$return_message = 'success';
+		}else{
+			$return_message = 'failed';
+		}
+		return $return_message;
+	}
 
 
 	//DELETE DATABASE
@@ -333,6 +394,17 @@ class Default_model extends CI_Model {
 	public function delete_order($id){
 		$this->db->where('id_order', $id);
 		$this->db->delete('orders');
+		if ($this->db->affected_rows() > 0 ) {
+			$return_message = 'success';
+		}else{
+			$return_message = 'failed';
+		}
+		return $return_message;
+	}
+	
+	public function delete_fasilitas($id){
+		$this->db->where('id_fasilitas', $id);
+		$this->db->delete('fasilitas');
 		if ($this->db->affected_rows() > 0 ) {
 			$return_message = 'success';
 		}else{
