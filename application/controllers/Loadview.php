@@ -184,8 +184,20 @@ class Loadview extends CI_Controller {
 	}
 
 	
-	public function bookingdetails(){
+	public function bookinguser(){
 		$this->load->view('user/booking');
+	}
+	
+	public function bookingdetails(){
+		$this->load->view('user/booking_details');
+	}
+	
+	public function orderuser(){
+		$this->load->view('user/histori_booking');
+	}
+	
+	public function profileuser(){
+		$this->load->view('user/profile');
 	}
 	
 }

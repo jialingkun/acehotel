@@ -198,6 +198,64 @@ class Default_controller extends Loadview {
 		}
 	}
 
+	public function get_kamar_by_id_user($id, $tglcheckout,$return_var = NULL){
+		$filter = array('kamar.id_kamar'=> $id);
+		$datakamar = $this->Default_model->get_data_kamar($filter);
+		$arr_order = [];
+
+		$tersediakamar = 0;
+		$jmlkamarterisi = 0;
+		$jmlkamarkosong = 0;
+		$totalkamar = 0;
+		$hargaakhir = 0;
+		$data = $this->get_nokamar_by_kamar($id, true);
+		foreach ($data as &$row){
+			$filter = array(
+				'orders.id_kamar'=> $id,
+				'orders.no_kamar REGEXP '=> "(^|,)".$row['no_kamar']."($|,)", 
+				'orders.status_order !='=> 'completed', 
+				'orders.tanggal_check_in <=' =>date("Y-m-d", strtotime($tglcheckout))
+			);
+			$dataorder = $this->Default_model->get_data_order($filter);
+			if (empty($dataorder)){
+				$row['ketersediaan'] = 'tersedia';
+				$tersediakamar= 1;
+				$jmlkamarkosong = $jmlkamarkosong + 1;
+			}else{
+				$row['ketersediaan'] = 'tidak tersedia';
+				$jmlkamarterisi = $jmlkamarterisi + 1;
+			}
+			$totalkamar = $totalkamar + 1;
+		}
+		
+		$selisih = $datakamar[0]['harga_max'] - $datakamar[0]['harga_min'];
+		$sisakamar = $totalkamar - $jmlkamarterisi;
+
+		$harganaik = $selisih / $totalkamar;
+		
+		$total = $harganaik * $jmlkamarterisi;
+
+		if ($jmlkamarterisi == 0){
+			$hargaakhir = $datakamar[0]['harga_min'];
+		} else {
+			$hargaakhir = $datakamar[0]['harga_min'] + $total;
+
+		}
+
+		array_push($arr_order, array('id_kamar' => $datakamar[0]['id_kamar'], 'id_hotel' => $datakamar[0]['id_hotel'], 'nama_kamar' => $datakamar[0]['nama_kamar'], 'max_guest' => $datakamar[0]['max_guest'], 'type_bed' => $datakamar[0]['type_bed'], 'jml_kamar_kosong' => $jmlkamarkosong, 'harga_kamar' => $hargaakhir, 'id_master_kota' => $datakamar[0]['id_master_kota'], 'username_owner' => $datakamar[0]['username_owner'], 'nama_hotel' => $datakamar[0]['nama_hotel'], 'alamat_hotel' => $datakamar[0]['alamat_hotel'], 'telepon_hotel' => $datakamar[0]['telepon_hotel']));
+
+		echo json_encode($arr_order);
+
+		// if (empty($data)){
+		// 	$data = [];
+		// }
+		// if ($return_var == true) {
+		// 	return $data;
+		// }else{
+		// 	echo json_encode($data);
+		// }
+	}
+
 	public function get_nokamar_by_id($idkamar, $nokamar, $return_var = NULL){
 		$filter = array('nokamar.id_kamar'=> $idkamar, 'no_kamar'=> $nokamar);
 		$data = $this->Default_model->get_data_nokamar($filter);
@@ -360,6 +418,23 @@ class Default_controller extends Loadview {
 		}
 	}
 
+	
+	//get order by user
+	//parameter: id user
+	//note: ambil data order berdasarkan user
+	public function get_order_by_user($id, $return_var = NULL){
+		$filter = array('orders.id_user'=> $id);
+		$data = $this->Default_model->get_data_order_user($filter,'id_order');
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
 
 	//get summary check in hari ini untuk dashboard
 	//parameter: id hotel
@@ -466,6 +541,115 @@ class Default_controller extends Loadview {
 		}else{
 			echo json_encode($data);
 		}
+	}
+
+	public function get_ketersediaan_nokamar_2($id, $tglcheckout, $return_var = NULL){
+
+		
+		$datakamar = $this->get_kamar_by_hotel($id,true);
+		$arr_data = [];
+		
+		foreach ($datakamar as &$abc){
+			$tersediakamar = 0;
+			$data = $this->get_nokamar_by_kamar($abc['id_kamar'], true);
+			foreach ($data as &$row){
+				$filter = array(
+					'orders.id_kamar'=> $abc['id_kamar'],
+					'orders.no_kamar REGEXP '=> "(^|,)".$row['no_kamar']."($|,)", 
+					'orders.status_order !='=> 'completed', 
+					'orders.tanggal_check_in <=' =>date("Y-m-d", strtotime($tglcheckout))
+				);
+				$dataorder = $this->Default_model->get_data_order($filter);
+				if (empty($dataorder)){
+					$row['ketersediaan'] = 'tersedia';
+					$tersediakamar= 1;
+				}else{
+					$row['ketersediaan'] = 'tidak tersedia';
+				}
+			}
+			
+			if($tersediakamar == 0){
+				array_push($arr_data, array('id_kamar' => $abc['id_kamar'], 'status' => 'tidak tersedia'));
+
+			} else {
+				array_push($arr_data, array('id_kamar' => $abc['id_kamar'], 'status' => 'tersedia'));
+
+			}
+		}
+
+		// if ($return_var == true) {
+		// 	return $data;
+		// }else{
+			echo json_encode($arr_data);
+		// }
+	}
+
+	
+	public function get_harga_kamar_by_hotel($id, $tglcheckout, $return_var = NULL){
+		$datakamar = $this->get_kamar_by_hotel($id,true);
+		$arr_data = [];
+		$arr_order = [];
+		
+		foreach ($datakamar as &$abc){
+			$tersediakamar = 0;
+			$jmlkamarterisi = 0;
+			$jmlkamarkosong = 0;
+			$totalkamar = 0;
+			$hargaakhir = 0;
+			$data = $this->get_nokamar_by_kamar($abc['id_kamar'], true);
+			foreach ($data as &$row){
+				$filter = array(
+					'orders.id_kamar'=> $abc['id_kamar'],
+					'orders.no_kamar REGEXP '=> "(^|,)".$row['no_kamar']."($|,)", 
+					'orders.status_order !='=> 'completed', 
+					'orders.tanggal_check_in <=' =>date("Y-m-d", strtotime($tglcheckout))
+				);
+				$dataorder = $this->Default_model->get_data_order($filter);
+				if (empty($dataorder)){
+					$row['ketersediaan'] = 'tersedia';
+					$tersediakamar= 1;
+					$jmlkamarkosong = $jmlkamarkosong + 1;
+				}else{
+					$row['ketersediaan'] = 'tidak tersedia';
+					$jmlkamarterisi = $jmlkamarterisi + 1;
+				}
+				$totalkamar = $totalkamar + 1;
+			}
+			
+			$selisih = $abc['harga_max'] - $abc['harga_min'];
+			$sisakamar = $totalkamar - $jmlkamarterisi;
+
+			if($totalkamar != 0){
+				$harganaik = $selisih / $totalkamar;
+				
+				$total = $harganaik * $jmlkamarterisi;
+
+				if ($jmlkamarterisi == 0){
+					$hargaakhir = $abc['harga_min'];
+				} else {
+					$hargaakhir = $abc['harga_min'] + $total;
+
+				}
+			}
+				array_push($arr_order, array('id_kamar' => $abc['id_kamar'], 'id_hotel' => $abc['id_hotel'], 'nama_kamar' => $abc['nama_kamar'], 'max_guest' => $abc['max_guest'], 'type_bed' => $abc['type_bed'], 'jml_kamar_kosong' => $jmlkamarkosong, 'harga_kamar' => $hargaakhir, 'totalkamar' => $totalkamar));
+
+			// array_push($arr_order, array('jmlkamarterisi' => $jmlkamarterisi, 'jmlkamarkosong' => $jmlkamarkosong, 'harga' => $abc['harga_max'],'sisakamar' => $harganaik, 'total' => $hargaakhir));
+			
+			if($tersediakamar == 0){
+				array_push($arr_data, array('id_kamar' => $abc['id_kamar'], 'status' => 'tidak tersedia'));
+
+			} else {
+				array_push($arr_data, array('id_kamar' => $abc['id_kamar'], 'status' => 'tersedia'));
+
+			}
+		}
+		array_push($arr_data, $arr_order);
+
+		// if ($return_var == true) {
+		// 	return $data;
+		// }else{
+			echo json_encode($arr_order);
+		// }
 	}
 
 	//get revenue hotel by range tanggal order
@@ -600,6 +784,83 @@ class Default_controller extends Loadview {
 
 
 
+	//get harga kamar termurah per hotel
+	//note: ambil data harga kamar hotel
+	public function get_harga_kamar_hotel_display($idkota, $tglcheckout, $return_var = NULL){
+		
+		$filter = array('id_master_kota'=> $idkota);
+		$datahotel = $this->Default_model->get_data_hotel($filter);
+
+		$arr_data = [];
+		$arr_order = [];
+
+		foreach ($datahotel as $hotel){
+			$datakamar = $this->get_kamar_by_hotel($hotel['id_hotel'],true);
+			$hargatermurah = 999999999;
+			$totalkamar = 0;
+		
+			foreach ($datakamar as $abc){
+				$tersediakamar = 0;
+				$jmlkamarterisi = 0;
+				$jmlkamarkosong = 0;
+				$totalkamar = 0;
+				$hargaakhir = 0;
+				$data = $this->get_nokamar_by_kamar($abc['id_kamar'], true);
+				foreach ($data as &$row){
+					$filter = array(
+						'orders.id_kamar'=> $abc['id_kamar'],
+						'orders.no_kamar REGEXP '=> "(^|,)".$row['no_kamar']."($|,)", 
+						'orders.status_order !='=> 'completed', 
+						'orders.tanggal_check_in <=' =>date("Y-m-d", strtotime($tglcheckout))
+					);
+					$dataorder = $this->Default_model->get_data_order($filter);
+					if (empty($dataorder)){
+						$row['ketersediaan'] = 'tersedia';
+						$tersediakamar= 1;
+						$jmlkamarkosong = $jmlkamarkosong + 1;
+					}else{
+						$row['ketersediaan'] = 'tidak tersedia';
+						$jmlkamarterisi = $jmlkamarterisi + 1;
+					}
+					$totalkamar = $totalkamar + 1;
+				}
+				
+				$selisih = $abc['harga_max'] - $abc['harga_min'];
+				$sisakamar = $totalkamar - $jmlkamarterisi;
+
+				if ($totalkamar != 0) {
+					$harganaik = $selisih / $totalkamar;
+					
+					$total = $harganaik * $jmlkamarterisi;
+
+					if ($jmlkamarterisi == 0){
+						$hargaakhir = $abc['harga_min'];
+					} else {
+						$hargaakhir = $abc['harga_min'] + $total;
+
+					}
+
+					
+					if($hargaakhir < $hargatermurah){
+						$hargatermurah = $hargaakhir;
+					}
+				}
+
+
+			}
+
+			array_push($arr_order, array('id_hotel' => $hotel['id_hotel'], 'id_master_kota' => $hotel['id_master_kota'], 'username_owner' => $hotel['username_owner'], 'nama_hotel' => $hotel['nama_hotel'], 'alamat_hotel' => $hotel['alamat_hotel'], 'telepon_hotel' => $hotel['telepon_hotel'], 'nama_owner' => $hotel['nama_owner'], 'telepon_owner' => $hotel['telepon_owner'], 'harga_kamar' => $hargatermurah, 'total_kamar' => $totalkamar));
+
+		}
+		// array_push($arr_data, $arr_order);
+
+
+
+		// if ($return_var == true) {
+		// 	return $data;
+		// }else{
+			echo json_encode($arr_order);
+	}
 
 
 
@@ -689,7 +950,10 @@ class Default_controller extends Loadview {
 				// 'id_kamar' => $this->input->post('id_kamar'),
 				'id_hotel' => $this->input->post('id_hotel'),
 				'nama_kamar' => $this->input->post('nama'),
-				'max_guest' => $this->input->post('max_guest')
+				'max_guest' => $this->input->post('max_guest'),
+				'harga_min' => $this->input->post('min_harga'),
+				'harga_max' => $this->input->post('max_harga'),
+				'type_bed' => $this->input->post('fasilitas')
 			);
 			$insertStatus = $this->Default_model->insert_kamar($data);
 			echo $insertStatus;
@@ -721,6 +985,12 @@ class Default_controller extends Loadview {
 	public function insert_order(){
 		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
 			$datakamar = $this->get_kamar_by_id($this->input->post('id_kamar'),true);
+			if($this->input->post('sumber_order') == 'on_process'){
+				$status_order = 'waiting_payment';
+			}else {
+				$status_order = 'upcoming';
+			}
+
 			$data = array(
 				'id_hotel' => $this->input->post('id_hotel'),
 				'id_kamar' => $this->input->post('id_kamar'),
@@ -744,7 +1014,7 @@ class Default_controller extends Loadview {
 				'total_harga' => $this->input->post('total_harga'),
 				'tanggal_order' => date('Y-m-d'),
 				'sumber_order' => $this->input->post('sumber_order'),
-				'status_order' => "upcoming"
+				'status_order' => $status_order
 			);
 			$insertStatus = $this->Default_model->insert_order($data);
 			echo $insertStatus;
@@ -779,7 +1049,7 @@ class Default_controller extends Loadview {
 			// $status = $_POST['status'];
 			// $status = $_POST['status'];
 			$date = date("ymd");	
-			$jam = date("Hi");		
+			$jam = date("His");		
 			$file1 = '';
 
 			if (isset($_FILES['file_1']['name']) && $_FILES['file_1']['name'] != '') {
@@ -789,7 +1059,7 @@ class Default_controller extends Loadview {
 				$configFoto['allowed_types'] = 'gif|jpg|png';
 				$configFoto['overwrite'] = FALSE; 
 				$configFoto['remove_spaces'] = TRUE;
-				$foto_name = $date.'_'.$jam.'_gambar_iklan';
+				$foto_name = $date.'_'.$jam.'_foto_hotel';
 				$configFoto['file_name'] = $foto_name;
 		
 				$this->load->library('upload', $configFoto);
@@ -1008,6 +1278,68 @@ class Default_controller extends Loadview {
 				'lantai' => $this->input->post('lantai')
 			);
 			$updateStatus = $this->Default_model->update_nokamar($idkamar,$nokamar,$data);
+			echo $updateStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+	
+	//edit fasilitas hotel
+	//parameter: id fasilitas
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function update_fasilitas($id){
+		if ($this->checkcookieadmin()) {
+			$data = array(
+				// 'id_hotel' => $this->input->post('id_hotel'),
+				'nama_fasilitas' => $this->input->post('eNamaFasilitas'),
+				'ket_fasilitas' => $this->input->post('eKetFasilitas')
+			);
+			$updateStatus = $this->Default_model->update_fasilitas($id,$data);
+			echo $updateStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+	
+	//edit foto hotel
+	//parameter: id foto
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function update_foto($id){
+		if ($this->checkcookieadmin()) {
+			$date = date("ymd");	
+			$jam = date("His");		
+			$file1 = '';
+
+			if (isset($_FILES['file_1']['name']) && $_FILES['file_1']['name'] != '') {
+				$configFoto['upload_path'] = './upload/hotel_description_photo';
+				// $configFoto['upload_path'] = $path;				
+				$configFoto['max_size'] = '60000';
+				$configFoto['allowed_types'] = 'gif|jpg|png';
+				$configFoto['overwrite'] = FALSE; 
+				$configFoto['remove_spaces'] = TRUE;
+				$foto_name = $date.'_'.$jam.'_foto_hotel';
+				$configFoto['file_name'] = $foto_name;
+		
+				$this->load->library('upload', $configFoto);
+				$this->upload->initialize($configFoto);
+	
+				if(!$this->upload->do_upload('file_1')) {
+					// echo $this->upload->display_errors();
+				}else{
+					$FotoDetails = $this->upload->data();		
+					$file1 = $FotoDetails['file_name'];			
+				}
+				
+			}
+
+			$data = array(
+				// 'id_hotel' => $this->input->post('id_hotel'),
+				'nama_foto' => $this->input->post('eNamaFoto'),
+				'src_foto' => $file1
+			);
+			$updateStatus = $this->Default_model->update_foto($id,$data);
 			echo $updateStatus;
 		}else{
 			echo "access denied";

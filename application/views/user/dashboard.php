@@ -94,7 +94,7 @@
 </style>
 
 <body>
-	<!-- <?php $this->load->view("receptionist/header");?> -->
+	<?php $this->load->view("user/header");?>
 	<div class="lds-ring">
 		<div></div>
 		<div></div>
@@ -102,7 +102,7 @@
 		<div></div>
 	</div>
 	<div class="container">
-		<div class="row" style="margin-top:20%; margin-left:1%; margin-right:1%;">
+		<div class="row" style="margin-top:20%; margin-left:1%; margin-right:1%; margin-bottom:20%;">
 			<div style="margin-left:5%; margin-right:5%;">
 				<label>Ace Hotel</label>
 				<label>Temukan Hotel yang sesuai kebutuhan Anda.</label>
@@ -125,82 +125,23 @@
 						<div class="form-group">
 							<label>Lama menginap</label>
 							<input type="number" id="lama_menginap" name="lama_menginap" class="form-control"
-								placeholder="Contoh : 2 Hari" required>
+								min="1" placeholder="Contoh : 2 Hari" required>
 						</div>
 						<div class="form-group">
 							<label>Jumlah Tamu</label>
 							<input type="number" id="jml_tamu" name="jml_tamu" class="form-control"
-								placeholder="Contoh : 2 Orang" required>
+							min="1" placeholder="Contoh : 2 Orang" required>
 						</div>
 
 						<div class="form-group" style="align-items:">
-							<button type="button" id="submitButton" class="btn btn-primary btn-md"><span id="submit">Temukan Hotel</span></button>
+							<button type="submit" id="submitButton" class="btn btn-primary btn-md"><span id="submit">Temukan Hotel</span></button>
 						</div>
 					</form>
 				</div>
 			</div>
-			<!-- <div class="col-6 text-center">
-				<p>Today Report</p>
-			</div>
-			<div class="col-6 text-center">
-				<div class="btn-group">
-					<button type="button" class="btn btn-sm btn-primary" id="nama_hotel">Loading</button>
-					<button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split"
-						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<span class="sr-only"></span>
-					</button>
-					<div class="dropdown-menu dropdown-menu-right" id="list_hotel"></div>
-				</div>
-			</div>
-
-			<div class="col-12" style="margin-top:5%;">
-				<div class="square-box" onclick="detail('upcoming')">
-					<div class="square-content">
-						<div class="text-center">
-							<h5 class="text-success">To Check In</h5>
-							<span class="dashboard-big-font">01</span>
-							<span class="text-secondary">/</span>
-							<span class="text-secondary">04</span>
-							<p>Bookings</p>
-						</div>
-					</div>
-				</div>
-				<div class="square-box" onclick="detail('inhouse')">
-					<div class="square-content">
-						<div class="text-center">
-							<h5 class="text-danger">To Check Out</h5>
-							<span class="dashboard-big-font">01</span>
-							<span class="text-secondary">/</span>
-							<span class="text-secondary">04</span>
-							<p>Bookings</p>
-						</div>
-					</div>
-				</div>
-				<div class="square-box" onclick="detail('inhouse')">
-					<div class="square-content">
-						<div class="text-center">
-							<h5 class="text-warning">In House</h5>
-							<span class="dashboard-big-font">01</span>
-							<span class="text-secondary">/</span>
-							<span class="text-secondary">04</span>
-							<p>Bookings</p>
-						</div>
-					</div>
-				</div>
-				<div class="square-box">
-					<div class="square-content">
-						<div class="text-center">
-							<h5 class="text-primary">EOD Occ.</h5>
-							<span class="dashboard-big-font">4</span>
-							<span class="text-secondary">%</span>
-							<p>Bookings</p>
-						</div>
-					</div>
-				</div>
-			</div> -->
 		</div>
 	</div>
-	<!-- <?php $this->load->view("receptionist/footer");?> -->
+	<?php $this->load->view("user/footer");?>
 	<?php $this->load->view("function");?>
 
 </body>
@@ -289,8 +230,8 @@
 	// }
 
 	$(document).ready(function () {
-		$("#dashboard_footer").addClass('is-active');
-		$("#header_title").text('Dashboard');
+		$("#explore_footer").addClass('is-active');
+		$("#header_title").text('Cari Hotel');
 
 	});
 
@@ -353,6 +294,7 @@
 			startDate: new Date(),
 			singleDatePicker: true,
 			showDropdowns: true,
+     		minDate: new Date(),
 			locale: {
 				cancelLabel: 'Clear'
 			} 
@@ -401,6 +343,21 @@
 		);
 	}
 
+	$("#lama_menginap").change(function() {
+		var min = parseInt($(this).attr('min'));
+		if ($(this).val() < min){
+			$(this).val(min);
+		}       
+	}); 
+
+
+	$("#jml_tamu").change(function() {
+		var min = parseInt($(this).attr('min'));
+		if ($(this).val() < min){
+			$(this).val(min);
+		}       
+	}); 
+
 	
 	$('#submitButton').on('click', function () {
 		// let namaHotel = $(this).data('nama');
@@ -409,9 +366,36 @@
 		// $('#nama_hotel').text(namaHotel);
 		// getData(idHotel, namaHotel);
 		setCookie('data_booking', 'null');
+		var status_pass = '';
 
-		console.log('tgl_skrng')
+		if($("#kota_tujuan").val() == 'default'){
+		// 	status_pass = status_pass + '1';
+		// } else {
+			
+			console.log('++++++++++++ kota kosong')
+			alert('Kota tujuan kosong, silahkan diisi terlebih dahulu.')
+			return false;
+		}
+
+		if($("#lama_menginap").val() == ''){
+		// 	status_pass = status_pass + '1';
+		// }else {
+			console.log('++++++++++++ lama kosong')
+			alert('Lama menginap kosong, silahkan diisi terlebih dahulu.')
+			return false;
+		} 
+
+		if($("#jml_tamu").val() == ''){
+			alert('Jumlah tamu kosong, silahkan diisi terlebih dahulu.')
+			return false;
+			
+		}
+
+		console.log(status_pass)
+		console.log('--------------tgl_skrng')
 		console.log($("#kota_tujuan").val())
+		console.log($("#lama_menginap").val())
+		console.log($("#jml_tamu").val())
 		var sel = document.getElementById("kota_tujuan");
 		var kota= sel.options[sel.selectedIndex].text;
 
@@ -423,30 +407,34 @@
 		console.log(document.getElementById("jml_tamu").value)
 		console.log(tgl_skrng)
 
+
+		// id_kota, nama_kota, tgl_check_in, lama menginap, jml guest
 		data = $("#kota_tujuan").val() + ',' + kota + ',' + tgl_skrng + ',' + document.getElementById("lama_menginap").value + ',' + document.getElementById("jml_tamu").value + ','
 		
 		console.log(data)
 		setCookie('data_booking', data);
 		setCookie('status_data_booking', 'active');
 
-		var_lokasi = '';
-		word_aktif = '';
-		pos_awal = 0;
+		// var_lokasi = '';
+		// word_aktif = '';
+		// pos_awal = 0;
 		
-		if(data != null){
-			for(var i=0; i<data.length;i++) {
-				if (data[i] === ",") {
-					var_lokasi = var_lokasi +data.slice(pos_awal, (i)) + '<br>';
-					pos_awal = i+1;
-				}
-			}
-		} else {
-			var_lokasi = 'Kosong';
-		}
+		// if(data != null){
+		// 	for(var i=0; i<data.length;i++) {
+		// 		if (data[i] === ",") {
+		// 			var_lokasi = var_lokasi +data.slice(pos_awal, (i)) + '<br>';
+		// 			pos_awal = i+1;
+		// 		}
+		// 	}
+		// } else {
+		// 	var_lokasi = 'Kosong';
+		// }
 		
-		console.log(var_lokasi)
+		// console.log(var_lokasi)
 		// console.log($("#jml_tamu").value)
+		// return false;
 		window.location = "<?=base_url("/index.php/kataloghotel");?>";
+		return false;
 	});
 	
 	// function search_hotel(){

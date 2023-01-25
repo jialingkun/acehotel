@@ -143,20 +143,13 @@
                         
                         <h3><span class="badge badge-white">Isi Data Pemesan</span></h3>
                         <form id="insert_booking" onsubmit="insertOrder(event)">
-                            <div class="form-group">
-                                <label>Nama Pemesan</label>
-                                <input type="text" id="nama_pemesan" name="nama_pemesan" class="form-control"
-                                    pattern="^[A-Za-z ,.'-]+$" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Telepon</label>
-                                <input type="tel" id="telepon_pemesan" name="telepon_pemesan" class="form-control"
-                                    required>
-                            </div>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="text" id="email_pemesan" name="email_pemesan" class="form-control"
-                                    required>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Nama Pemesan</label><br>
+                                <label id="nama_pemesan"></label><br>
+                                <label>Telepon</label><br>
+                                <label id="telepon_pemesan"></label><br>
+                                <label>Email</label><br>
+                                <label id="email_pemesan"></label>
                             </div>
                         </form>
 					</div>
@@ -172,10 +165,10 @@
 			</div>
             
 			<div class="col-sm-12">
-				<div class="card" style="border-radius: 5px;margin-top:20px;margin-bottom:40px;">
+				<div class="card" style="border-radius: 5px;margin-top:20px;margin-bottom:50px;">
 					<div class="card-body">
                         <button type="submit" id="submitButton" class="btn btn-primary btn-md float-right" style="width:100%;">
-                            <span id="submit">Lanjutkan Pembayaran</span>
+                            <span id="submit">Download Invoice</span>
                         </button>
 					</div>
 				</div>
@@ -203,14 +196,15 @@
 
 <script>
 	$(document).ready(function () {
-		$("#explore_footer").addClass('is-active');
-		$("#header_title").text('Booking');
+		$("#order_footer").addClass('is-active');
+		$("#header_title").text('Booking Details');
 		// getData(idHotelC, namaHotelC, dateFilter, today);
 	});
 
 </script>
 <script>
 	$('.lds-ring').hide();
+    var idBooking = getCookie('id_booking_kamar');
 	var idKamarCheckIn = getCookie('id_kamar_check_in');
 	var total_harga = 0;
 	var idHotel = getCookie('open_kamar');
@@ -271,64 +265,57 @@
 
 
 
-	text_booking = text_booking + '<li>'+arr_data_booking[4]+' Tamu</li>'
-	text_booking = text_booking + '<li> Check In : '+arr_data_booking[2]+'</li>'
-	text_booking = text_booking + '<li> Check Out : '+check_out+'</li>'
+	// text_booking = text_booking + '<li>'+arr_data_booking[4]+' Tamu</li>'
+	// text_booking = text_booking + '<li> Check In : '+arr_data_booking[2]+'</li>'
+	// text_booking = text_booking + '<li> Check Out : '+check_out+'</li>'
 
-	$('#list_data_booking').append(text_booking)
+	// $('#list_data_booking').append(text_booking)
 
 
 	console.log('tambahan')
 	// console.log(tgl_mulai.addDays(5));
 
 	
-	$('#nama_pemesan').val('data')
-	$('#telepon_pemesan').val('123')
-	$('#email_pemesan').val('data')
+	// $('#nama_pemesan').text('data')
+    // $('#telepon_pemesan').text('123')
+	// $('#email_pemesan').text('data')
 	// $('#total_bayar').text('Total : Rp. ' + total_harga)
 	
 
 	$.when(getKamar()).done(function (getKamar) {
 
+        console.log('getKamar[0][i].total_harga');
+        console.log(getKamar[0].total_harga);
+        
+		$('#nama_hotel').text(getKamar[0].nama_hotel)
+	    $('#total_bayar').text('Total : ' + pembulatan(parseInt(getKamar[0].total_harga)))
 
-		for (var i = 0; i < getKamar.length; i++) {
-			// var tmp = $('#list_hotel')[0].innerHTML;
-			// tmp = $.parseHTML(tmp);
-			
-			console.log('------------')
-			console.log(getKamar[i]);
-			arr_data_kamar = getKamar[i];
+        text_booking = text_booking + '<li>'+ getKamar[0].jumlah_guest +' Tamu</li>'
+        text_booking = text_booking + '<li> Check In : '+ getKamar[0].tanggal_check_in +'</li>'
+        text_booking = text_booking + '<li> Check Out : '+ getKamar[0].tanggal_check_out +'</li>'
 
-			type = getKamar[i].type_bed;
-			fas = '';
-			fas = fas + '<li>' + getKamar[i].max_guest + ' Tamu </li>' 
-			pos_awal = 0;
-			
-			if(type != null){
-				for(var j=0; j<type.length;j++) {
-					if (type[j] == ",") {
-						// var_lokasi = var_lokasi +getKamar[0][i].type_bed.slice(pos_awal, (i)) + '<br>';
-						var_lokasi = type.slice(pos_awal, (j));
-						// arr_data_booking.push(var_lokasi);   
-						fas = fas + '<li>' + var_lokasi + '</li>' 
-						pos_awal = j+1;
-						console.log('ini')
-					}
+        $('#list_data_booking').append(text_booking)
+        
+        $('#nama_pemesan').append('<ul style="list-style-type:disc; margin-left: 40px; color:gray; width: 100%;"><li>'+ getKamar[0].nama_pemesan +'</li></ul>')
+        $('#telepon_pemesan').append('<ul style="list-style-type:disc; margin-left: 40px; color:gray; width: 100%;"><li>'+ getKamar[0].telepon_pemesan +'</li></ul>')
+        $('#email_pemesan').append('<ul style="list-style-type:disc; margin-left: 40px; color:gray; width: 100%;"><li>'+ getKamar[0].email_pemesan +'</li></ul>')
+
+		type = getKamar[0].type_bed;
+		fas = '';
+		fas = fas + '<li>' + getKamar[0].max_guest + ' Tamu </li>' 
+		pos_awal = 0;
+		
+		if(type != null){
+			for(var j=0; j<type.length;j++) {
+				if (type[j] == ",") {
+					var_lokasi = type.slice(pos_awal, (j));
+					fas = fas + '<li>' + var_lokasi + '</li>' 
+					pos_awal = j+1;
 				}
 			}
-
-
-			total_harga = parseInt(getKamar[i].harga_kamar) * parseInt(arr_data_booking[3])
-
-			console.log('total_harga')
-			console.log(getKamar[i].harga_kamar)
-			console.log(arr_data_booking[3])
-			$('#total_bayar').text('Total : ' + pembulatan(total_harga))
-			
-			$('#nama_hotel').text(getKamar[i].nama_hotel)
-			$('#listFasilitasKamar').append(fas);
-
 		}
+
+		$('#listFasilitasKamar').append(fas);
 
 
 	});
@@ -336,79 +323,78 @@
 	
     // $(document).on('submit', '#submitButton', function (event) {
 	$(document).on('click', '#submitButton', function () {
-		if (confirm("Apakah anda yakin ?")) {
 	
-			let formData = new FormData();
-			// var inputid = document.getElementById("id_akun").value;
-			var inputnama = document.getElementById("nama_pemesan").value;
-			var inputtelp = document.getElementById("telepon_pemesan").value;
-			var inputemail = document.getElementById("email_pemesan").value;
-			// var inputktp = document.getElementById("id_akun").value;
-			// var inputcheckin = document.getElementById("id_akun").value;
-			// var inputcheckout = document.getElementById("id_akun").value;
-			// var inputjmlguest = document.getElementById("id_akun").value;
-			// var inputjmlroom = document.getElementById("id_akun").value;
-			// var inputreqcheckin = document.getElementById("id_akun").value;
-			// var inputreqcheckout = document.getElementById("id_akun").value;
-			// var inputreqmkn = document.getElementById("id_akun").value;
-			// var inputreqcar = document.getElementById("id_akun").value;
-			// var inputharga = document.getElementById("id_akun").value;
-			// var inputsumber = document.getElementById("id_akun").value;
-			ksng = '';
+		let formData = new FormData();
+		// var inputid = document.getElementById("id_akun").value;
+		// var inputnama = document.getElementById("id_akun").value;
+		// var inputtel = document.getElementById("id_akun").value;
+		// var inputemail = document.getElementById("id_akun").value;
+		// var inputktp = document.getElementById("id_akun").value;
+		// var inputcheckin = document.getElementById("id_akun").value;
+		// var inputcheckout = document.getElementById("id_akun").value;
+		// var inputjmlguest = document.getElementById("id_akun").value;
+		// var inputjmlroom = document.getElementById("id_akun").value;
+		// var inputreqcheckin = document.getElementById("id_akun").value;
+		// var inputreqcheckout = document.getElementById("id_akun").value;
+		// var inputreqmkn = document.getElementById("id_akun").value;
+		// var inputreqcar = document.getElementById("id_akun").value;
+		// var inputharga = document.getElementById("id_akun").value;
+		// var inputsumber = document.getElementById("id_akun").value;
+		ksng = '';
 
-			formData.append('id_kamar', arr_data_kamar.id_kamar);
-			formData.append('id_hotel', arr_data_kamar.id_hotel);
-			formData.append('nama_pemesan', inputnama);
-			formData.append('telepon_pemesan', inputtelp);
-			formData.append('email_pemesan', inputemail);
-			formData.append('no_ktp_pemesan', 'inputid');
-			formData.append('tanggal_check_in', arr_data_booking[2]);
-			formData.append('tanggal_check_out',check_out);
-			formData.append('jumlah_guest', arr_data_booking[4]);
-			formData.append('jumlah_room', 1);
-			formData.append('request_jam_check_in_awal', ksng);
-			formData.append('request_jam_check_in_akhir', ksng);
-			formData.append('request_breakfast', ksng);
-			formData.append('request_rent_car', ksng);
-			formData.append('total_harga', total_harga);
-			formData.append('sumber_order', 'on_process');
+		formData.append('id_kamar', arr_data_kamar.id_kamar);
+		formData.append('id_hotel', arr_data_kamar.id_hotel);
+		formData.append('nama_pemesan', 'test');
+		formData.append('telepon_pemesan', 'inputid');
+		formData.append('email_pemesan', 'inputid');
+		formData.append('no_ktp_pemesan', 'inputid');
+		formData.append('tanggal_check_in', arr_data_booking[2]);
+		formData.append('tanggal_check_out',check_out);
+		formData.append('jumlah_guest', arr_data_booking[4]);
+		formData.append('jumlah_room', 1);
+		formData.append('request_jam_check_in_awal', ksng);
+		formData.append('request_jam_check_in_akhir', ksng);
+		formData.append('request_breakfast', ksng);
+		formData.append('request_rent_car', ksng);
+		formData.append('total_harga', total_harga);
+		formData.append('sumber_order', 'on_process');
 
-			console.log(arr_data_kamar)
-			console.log(arr_data_kamar.id_kamar)
+		console.log(arr_data_kamar)
+		console.log(arr_data_kamar.id_kamar)
 
-			$.ajax({
-				url: "<?php echo base_url()?>index.php/insert_order/",
-				type: 'POST',
-				timeout: 1800000,
-				data: formData,
-				cache: false,
-				processData: false,
-				contentType: false,
-				beforeSend: function(){			
-					// $("#submit_add").prop("disabled", true);				
-				},
-				success: function (json) {
-					alert(json);
-					console.log(json);
-					// send_email();
+		$.ajax({
+            url: "<?php echo base_url()?>index.php/insert_order/",
+            type: 'POST',
+            timeout: 1800000,
+            data: formData,
+            cache: false,
+            processData: false,
+            contentType: false,
+            beforeSend: function(){			
+              	// $("#submit_add").prop("disabled", true);				
+            },
+            success: function (json) {
+				alert(json);
+				console.log(json);
+				// send_email();
 
-					// alert('Data Berhasil Ditambahkan!');
-					window.location = "<?php echo base_url() ?>index.php/orderuser";
+				// alert('Data Berhasil Ditambahkan!');
+				// window.location = "<?php echo base_url() ?>index.php/saldo";
 
-				},
-				error: function () {
-					$("#submit_add").prop("disabled", false);
-					console.log('gagal')	
-				}
-			});
+            },
+            error: function () {
+              	$("#submit_add").prop("disabled", false);
+				console.log('gagal')	
+            }
+        });
 
-		}
+	
 	});
 	
 	
 	function getKamar() {
 		return $.ajax(
-			"<?php echo base_url() ?>index.php/get_kamar_by_id_user/" + idKamarCheckIn + "/" + arr_data_booking[2], {
+			"<?php echo base_url() ?>index.php/get_order_by_id/" + idBooking, {
 				dataType: 'json'
 			}
 		);

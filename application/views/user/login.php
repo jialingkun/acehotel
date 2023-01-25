@@ -90,14 +90,16 @@
 				<p class="text-center grey-text"><small>As User</small></p>
 				<form id="form" method="POST">
 					<div class="form-group margin-top">
-						<label for="usr">Username:</label>
-						<input type="text" class="form-control" name="username">
+						<span class="signbox"><a href="<?=base_url()?>googlelogin/login"><img src="<?=base_url()?>upload/foto/google-btn.png" alt=""/></a></span>
+
+						<!-- <label for="usr">Username:</label>
+						<input type="text" class="form-control" name="username"> -->
 					</div>
-					<div class="form-group">
+					<!-- <div class="form-group">
 						<label for="usr">Password:</label>
 						<input type="password" class="form-control" name="password">
-					</div>
-					<button id="submit" type="submit" class="btn btn-primary center-item">Sign In</button>
+					</div> -->
+					<!-- <button id="submit" type="submit" class="btn btn-primary center-item">Sign In</button> -->
 				</form>
 			</div>
 		</div>

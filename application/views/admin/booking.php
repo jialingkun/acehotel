@@ -637,6 +637,8 @@
 	function listKamar(id_kamar) {
 		urls = "get_ketersediaan_nokamar/";
 		$('#kamar').empty();
+		console.log('tgl')
+		console.log(tanggalCheckOut)
 		$.ajax({
 			url: "<?php echo base_url() ?>index.php/" + urls + id_kamar + "/" + tanggalCheckOut,
 			type: 'GET',

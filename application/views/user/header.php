@@ -8,7 +8,7 @@
         <a href="#" class="logo" id="header_title"></a>
         <!-- Hamburger icon -->
         <input class="side-menu" type="checkbox" id="side-menu"/>
-        <label class="hamb" for="side-menu"><span class="hamb-line"></span></label>
+        <!-- <label class="hamb" for="side-menu"><span class="hamb-line"></span></label> -->
         <!-- Menu -->
         <nav class="nav">
             <ul class="menu">

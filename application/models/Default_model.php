@@ -98,6 +98,24 @@ class Default_model extends CI_Model {
 		return $query->result_array();
 	}
 
+	
+	public function get_data_order_user($filter = NULL, $orderby = NULL, $sort = "desc"){
+		// $this->db->select('*');
+		$this->db->select('orders.*,master_kota.nama_kota');
+		$this->db->from('orders');
+		$this->db->join('hotel', 'orders.id_hotel = hotel.id_hotel', 'left');
+		$this->db->join('master_kota', 'hotel.id_master_kota = master_kota.id_master_kota', 'left');
+
+		if ($filter != NULL){
+			$this->db->where($filter);
+		}
+		if ($orderby != NULL) {
+			$this->db->order_by($orderby, $sort);
+		}
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
 	public function get_count_order($filter = NULL){
 		$this->db->from('orders');
 		if ($filter != NULL){
@@ -314,6 +332,17 @@ class Default_model extends CI_Model {
 	public function update_fasilitas($id, $data){
 		$this->db->where('id_fasilitas', $id);
 		$this->db->update('fasilitas', $data);
+		if ($this->db->affected_rows() > 0 ) {
+			$return_message = 'success';
+		}else{
+			$return_message = 'failed';
+		}
+		return $return_message;
+	}
+	
+	public function update_foto($id, $data){
+		$this->db->where('id_foto_hotel', $id);
+		$this->db->update('fotohotel', $data);
 		if ($this->db->affected_rows() > 0 ) {
 			$return_message = 'success';
 		}else{

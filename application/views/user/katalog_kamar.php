@@ -334,46 +334,52 @@
 	
 	$.when(getKamar(idHotel), getHotel(idHotel)).done(function (getKamar, getHotel) {
 
+		console.log('---data')
+		console.log(getKamar)
+
 
 		for (var i = 0; i < getKamar[0].length; i++) {
-			var tmp = $('#list_kamar')[0].innerHTML;
-			tmp = $.parseHTML(tmp);
-			
-			console.log('------------id_kamar')
-			console.log(getKamar[0][i])
-			console.log(getKamar[0][i].id_kamar)
-			console.log(getKamar[0][i].type_bed.length)
 
-			type = getKamar[0][i].type_bed;
-			fas = '';
-			fas = fas + '<li>' + getKamar[0][i].max_guest + ' Tamu </li>' 
-			pos_awal = 0;
-			
-			if(type != null){
-				for(var j=0; j<type.length;j++) {
-					if (type[j] == ",") {
-						// var_lokasi = var_lokasi +getKamar[0][i].type_bed.slice(pos_awal, (i)) + '<br>';
-						var_lokasi = type.slice(pos_awal, (j));
-						// arr_data_booking.push(var_lokasi);   
-						fas = fas + '<li>' + var_lokasi + '</li>' 
-						pos_awal = j+1;
-						console.log('ini')
+			if (parseInt(getKamar[0][i].jml_kamar_kosong) > 0){
+				var tmp = $('#list_kamar')[0].innerHTML;
+				tmp = $.parseHTML(tmp);
+				
+				console.log('------------id_kamar')
+				console.log(getKamar[0][i])
+				console.log(getKamar[0][i].id_kamar)
+				console.log(getKamar[0][i].type_bed)
+
+				type = getKamar[0][i].type_bed;
+				fas = '';
+				fas = fas + '<li>' + getKamar[0][i].max_guest + ' Tamu </li>' 
+				pos_awal = 0;
+				
+				if(type != null){
+					for(var j=0; j<type.length;j++) {
+						if (type[j] == ",") {
+							// var_lokasi = var_lokasi +getKamar[0][i].type_bed.slice(pos_awal, (i)) + '<br>';
+							var_lokasi = type.slice(pos_awal, (j));
+							// arr_data_booking.push(var_lokasi);   
+							fas = fas + '<li>' + var_lokasi + '</li>' 
+							pos_awal = j+1;
+							console.log('ini')
+						}
 					}
 				}
+
+				console.log('fas')
+				console.log(fas)
+				
+
+				// $(tmp).find('#idKamarList').text(getKamar[0][i].id_kamar);
+				$(tmp).find('#namaKamar').append('<b>'+ getKamar[0][i].nama_kamar +'</b>');
+				$(tmp).find('#listFasilitasKamar').append(fas);
+				$(tmp).find('#hargaKamar').append('<b><i>' + pembulatan(parseInt(getKamar[0][i].harga_kamar)) + ' </i></b>');
+				$(tmp).find('#idKamarList').data('id', getKamar[0][i].id_kamar);
+				$(tmp).find('#oke').append('<button type="button" class="btn btn-block btn-primary btn-lg" id="btn_pilih_kamar" onclick="pilihkamar('+getKamar[0][i].id_kamar+')" style=" width:100px; font-size: 20px;float:right;">Pilih</button>');
+				
+				$(tmp).appendTo('#all_kamar');
 			}
-
-			console.log('fas')
-			console.log(fas)
-			
-
-			// $(tmp).find('#idKamarList').text(getKamar[0][i].id_kamar);
-			$(tmp).find('#namaKamar').append('<b>'+ getKamar[0][i].nama_kamar +'</b>');
-			$(tmp).find('#listFasilitasKamar').append(fas);
-			$(tmp).find('#hargaKamar').append('<b><i>' + pembulatan(getKamar[0][i].harga_awal) + ' </i></b>');
-			$(tmp).find('#idKamarList').data('id', getKamar[0][i].id_kamar);
-			$(tmp).find('#oke').append('<button type="button" class="btn btn-block btn-primary btn-lg" id="btn_pilih_kamar" onclick="pilihkamar('+getKamar[0][i].id_kamar+')" style=" width:100px; font-size: 20px;float:right;">Pilih</button>');
-			
-			$(tmp).appendTo('#all_kamar');
 
 		}
 		
@@ -383,6 +389,7 @@
 			$('#alamat_hotel').append('<i class="fa fa-map-marker" aria-hidden="true"></i> ' + getHotel[0][0].alamat_hotel);
 		}
 
+		$('.lds-ring').hide();
 	});
 
 	
@@ -390,6 +397,7 @@
 
 		var fas_hotel = '';
 		var fas_foto = '';
+		var src_default_foto = 'http://localhost/acehotel/upload/hotel_description_photo/default_hotel.jpg';
 
 		for (var i = 0; i < getFasilitas[0].length; i++) {
 			fas_hotel = fas_hotel + '<button type="button" class="btn btn-block btn-outline-primary btn-lg" style="height:40px; width:auto; font-size: 20px;display:inline-block;  margin-right: 5px;">'+ getFasilitas[0][i].nama_fasilitas +'</button>';
@@ -412,8 +420,16 @@
 			
 		}
 		
+		if(fas_foto == ''){
+			fas_foto =  '<div class="carousel-item active">'+
+							'<img class="d-block w-100" src="'+ src_default_foto +'" alt="First slide">' +
+						'</div>';
+
+		}
+
 		$('#list_fasilitas').append(fas_hotel);
 		$('#src_foto_hotel').append(fas_foto);
+
 
 	});
 
@@ -430,7 +446,7 @@
 	
 	function getKamar(idHotel) {
 		return $.ajax(
-			"<?php echo base_url() ?>index.php/get_kamar_by_hotel/" + idHotel, {
+			"<?php echo base_url() ?>index.php/get_harga_kamar_by_hotel/" + idHotel + "/" + arr_data_booking[2] , {
 				dataType: 'json'
 			}
 		);
@@ -468,7 +484,7 @@
 		console.log('ini')
 		console.log(active)
 		setCookie('id_kamar_check_in', active);
-		window.location = "<?=base_url("/index.php/bookingdetails");?>";
+		window.location = "<?=base_url("/index.php/bookinguser");?>";
 	}
 	
 	// $(document).on('click', '#listHotel', function () {

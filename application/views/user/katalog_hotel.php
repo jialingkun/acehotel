@@ -151,7 +151,7 @@
 				<div class="card-footer">
 					<input type="hidden" id="idHotelList">
 					<label style="color:black;" id="namaHotel"></label><br>
-					<label style="float:right;" id="hargaHotel">Rp. 300.000 / room / night</label>
+					<label style="float:right;" id="hargaHotel"></label>
 				</div>
 			</div>
 		</div>
@@ -218,36 +218,96 @@
 
 	$.when(getAllHotel()).done(function (getHotel) {
 
+		console.log('yes')
+		console.log(getHotel)
 
-		for (var i = 0; i < getHotel.length; i++) {
-			var tmp = $('#list_hotel')[0].innerHTML;
-			tmp = $.parseHTML(tmp);
+		if( getHotel.length == 0){
 			
-			console.log('------------')
-			console.log(getHotel[i])
-			console.log(arr_data_booking[0])
+			$('#all_hotel').append('<div class="card" style="border-radius:5px; margin-top:20px; width:100%; margin-left:10px; margin-right:10px;"><div class="card-body"><b> Tidak ada hotel untuk daerah ini. </b></div></div>')
 
-			if(getHotel[i].id_master_kota == arr_data_booking[0]){
-				$(tmp).find('#idHotelList').text(getHotel[i].id_hotel)
-				$(tmp).find('#namaHotel').append('<b>'+getHotel[i].nama_hotel+'</b><br> ' + arr_data_booking[1])
-				// $(tmp).find('#hargaHotel').text(getHotel[i].ket_fasilitas)
-				$(tmp).appendTo('#all_hotel');
+		}else {
 
+			for (var i = 0; i < getHotel.length; i++) {
+				var tmp = $('#list_hotel')[0].innerHTML;
+				tmp = $.parseHTML(tmp);
+				
+				console.log('------------ hotel')
+				console.log(getHotel[i])
+				console.log(arr_data_booking[0])
+
+				if(getHotel[i].id_master_kota == arr_data_booking[0]){
+					$(tmp).find('#idHotelList').text(getHotel[i].id_hotel)
+					$(tmp).find('#namaHotel').append('<b>'+getHotel[i].nama_hotel+'</b><br> ' + arr_data_booking[1])
+					$(tmp).find('#hargaHotel').text(pembulatan(parseInt(getHotel[i].harga_kamar)) + ' / room / night')
+					$(tmp).appendTo('#all_hotel');
+
+
+				}
 
 			}
-
 		}
 
+		$('.lds-ring').hide();
 
 	});
 	
 	function getAllHotel() {
+		console.log('j')
 		return $.ajax(
-			"<?php echo base_url() ?>index.php/get_all_hotel/", {
+			"<?php echo base_url() ?>index.php/get_harga_kamar_hotel_display/"+ arr_data_booking[0] + '/' + arr_data_booking[2], {
 				dataType: 'json'
 			}
 		);
 	}
+
+	// function listKamar(id_kamar) {
+	// 	urls = "get_ketersediaan_nokamar/";
+	// 	$('#kamar').empty();
+	// 	console.log('tgl')
+	// 	console.log(tanggalCheckOut)
+	// 	$.ajax({
+	// 		url: "<?php echo base_url() ?>index.php/" + urls + id_kamar + "/" + tanggalCheckOut,
+	// 		type: 'GET',
+	// 		dataType: 'json',
+	// 		beforeSend: function () {
+	// 			// $('#wait_kamar').show();
+
+	// 		},
+	// 		success: function (response) {
+	// 			var lantai_kamar = "0";
+	// 			$('#wait_kamar').hide();
+	// 			$('#inputTransaksi').modal('hide');
+	// 			$('#checkIn').modal('show');
+	// 			$('#jml_kmr_dipesan').text(jumlahRoom);
+	// 			// console.log(response);
+
+	// 			for (var i = 0; i < response.length; i++) {
+
+	// 				if (lantai_kamar != response[i].lantai) {
+	// 					lantai_kamar = response[i].lantai;
+	// 					var tmp = $('#list_lantai_kamar')[0].innerHTML;
+	// 					tmp = $.parseHTML(tmp);
+	// 					$(tmp).find('#lantai_kamar').text(response[i].lantai);
+	// 					$(tmp).appendTo('#kamar');
+	// 				}
+	// 				if (response[i].ketersediaan == "tidak tersedia") {
+	// 					$(tmp).find('#nomor_kamar, button').css({
+	// 						'box-shadow': '',
+	// 						'background-color': 'red',
+	// 						'color': 'white'
+	// 					});
+	// 					$(tmp).find('#nomor_kamar, button').prop('disabled', true);
+	// 				}
+	// 				var tmp = $('#list_kamar')[0].innerHTML;
+	// 				tmp = $.parseHTML(tmp);
+	// 				$(tmp).find('#no_kamar').text(response[i].no_kamar);
+	// 				$(tmp).find('#nomor_kamar, button').data('no_kamar', response[i].no_kamar);
+
+	// 				$(tmp).appendTo('#kamar');
+	// 			}
+	// 		}
+	// 	});
+	// }
 
 
 	
@@ -262,6 +322,16 @@
 		window.location = "<?=base_url("/index.php/katalogkamar");?>";
 	});
 
+	
+    function pembulatan(harga){      
+		var	reverse = harga.toString().split('').reverse().join(''),
+			ribuan 	= reverse.match(/\d{1,3}/g);
+			ribuan	= ribuan.join('.').split('').reverse().join('');
+
+			
+		var harga = 'Rp. ' + ribuan;
+		return harga;
+    }
 
 </script>
 
