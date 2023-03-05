@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
 
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap.min.css");?>">
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap-grid.min.css");?>">
@@ -143,7 +144,11 @@
 			<div class="card" style="border-radius: 5px;margin-top:20px;" id="listHotel">
 
 				<div class="card-body">
-				<img src="http://localhost/acehotel/upload/photo_room_hotel/test.png"  width="100%" height="auto" >
+					<!-- <img src="http://abcprivilegeclub.com/testing_acehotel/upload/photo_room_hotel/test.png"  width="100%" height="auto" > -->
+					<!-- <img src="http://localhost/acehotel/upload/photo_room_hotel/test.png"  width="100%" height="auto" >
+					<img src="" id="img_hotel" width="100%" height="auto" > -->
+
+					<div id="divFotoHotel"></div>
 
 					<!-- <img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600"> -->
 				</div>
@@ -175,6 +180,8 @@
 	// var dateFilter = lastWeek();
 	var data_booking = getCookie('data_booking');
     var arr_data_booking = [];
+	// var path = 'abcprivilegeclub.com/testing_acehotel';
+	var path = 'localhost/acehotel';
 
 	
 		
@@ -235,7 +242,17 @@
 				console.log(getHotel[i])
 				console.log(arr_data_booking[0])
 
+				
+				if(getHotel[i].img_hotel == null){
+					src_foto = 'http://'+ path +'/upload/image_not_found.jpg';
+				} else {
+					src_foto = 'http://'+ path +'/upload/photo_room_hotel/' + getHotel[i].img_hotel;
+				}
+
+
 				if(getHotel[i].id_master_kota == arr_data_booking[0]){
+					
+					$(tmp).find('#divFotoHotel').append('<img src="'+ src_foto +'"  width="100%" height="auto" >');
 					$(tmp).find('#idHotelList').text(getHotel[i].id_hotel)
 					$(tmp).find('#namaHotel').append('<b>'+getHotel[i].nama_hotel+'</b><br> ' + arr_data_booking[1])
 					$(tmp).find('#hargaHotel').text(pembulatan(parseInt(getHotel[i].harga_kamar)) + ' / room / night')

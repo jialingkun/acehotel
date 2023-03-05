@@ -1,12 +1,20 @@
 <?php
 include_once ("Loadview.php");
 
+header('Access-Control-Allow-Origin: *'); //for allow any domain, insecure
+header('Access-Control-Allow-Headers: *'); //for allow any headers, insecure
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');  
+
 class Default_controller extends Loadview {
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('Default_model');
+		$this->load->library('pdf');
 		$this->load->helper('url_helper');
 		date_default_timezone_set('Asia/Jakarta');
+		// require_once APPPATH.'third_party/src/Google_Client.php';
+		// require_once APPPATH.'third_party/src/contrib/Google_Oauth2Service.php';
+		include_once APPPATH . "../vendor/autoload.php";
 	}
 	
 	//GET DATA
@@ -171,6 +179,24 @@ class Default_controller extends Loadview {
 	public function get_receptionist_by_id($id, $return_var = NULL){
 		$filter = array('username_receptionist'=> $id);
 		$data = $this->Default_model->get_data_receptionist($filter);
+		if (empty($data)){
+			$data = [];
+		}else{
+			foreach ($data as &$row){
+				unset($row['password_receptionist']);
+			}
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	
+	public function get_user_by_id($id, $return_var = NULL){
+		$filter = array('id_user'=> $id);
+		$data = $this->Default_model->get_data_user($filter);
 		if (empty($data)){
 			$data = [];
 		}else{
@@ -423,7 +449,13 @@ class Default_controller extends Loadview {
 	//parameter: id user
 	//note: ambil data order berdasarkan user
 	public function get_order_by_user($id, $return_var = NULL){
-		$filter = array('orders.id_user'=> $id);
+
+		
+		$filter = array('oauth_uid'=>$id);
+		$datauser = $this->Default_model->get_data_user($filter);
+
+
+		$filter = array('orders.id_user'=> $datauser[0]['id_user']);
 		$data = $this->Default_model->get_data_order_user($filter,'id_order');
 		if (empty($data)){
 			$data = [];
@@ -631,15 +663,15 @@ class Default_controller extends Loadview {
 
 				}
 			}
-				array_push($arr_order, array('id_kamar' => $abc['id_kamar'], 'id_hotel' => $abc['id_hotel'], 'nama_kamar' => $abc['nama_kamar'], 'max_guest' => $abc['max_guest'], 'type_bed' => $abc['type_bed'], 'jml_kamar_kosong' => $jmlkamarkosong, 'harga_kamar' => $hargaakhir, 'totalkamar' => $totalkamar));
+				array_push($arr_order, array('id_kamar' => $abc['id_kamar'], 'id_hotel' => $abc['id_hotel'], 'nama_kamar' => $abc['nama_kamar'], 'max_guest' => $abc['max_guest'], 'type_bed' => $abc['type_bed'], 'src_foto_kamar' => $abc['src_foto_kamar'], 'jml_kamar_kosong' => $jmlkamarkosong, 'harga_kamar' => $hargaakhir, 'totalkamar' => $totalkamar));
 
 			// array_push($arr_order, array('jmlkamarterisi' => $jmlkamarterisi, 'jmlkamarkosong' => $jmlkamarkosong, 'harga' => $abc['harga_max'],'sisakamar' => $harganaik, 'total' => $hargaakhir));
 			
 			if($tersediakamar == 0){
-				array_push($arr_data, array('id_kamar' => $abc['id_kamar'], 'status' => 'tidak tersedia'));
+				array_push($arr_data, array('id_kamar' => $abc['id_kamar'], 'status' => 'tidak tersedia', 'jmlkamarkosong' => $jmlkamarkosong));
 
 			} else {
-				array_push($arr_data, array('id_kamar' => $abc['id_kamar'], 'status' => 'tersedia'));
+				array_push($arr_data, array('id_kamar' => $abc['id_kamar'], 'status' => 'tersedia', 'jmlkamarkosong' => $jmlkamarkosong));
 
 			}
 		}
@@ -793,6 +825,7 @@ class Default_controller extends Loadview {
 
 		$arr_data = [];
 		$arr_order = [];
+		$src_foto = '';
 
 		foreach ($datahotel as $hotel){
 			$datakamar = $this->get_kamar_by_hotel($hotel['id_hotel'],true);
@@ -843,13 +876,14 @@ class Default_controller extends Loadview {
 					
 					if($hargaakhir < $hargatermurah){
 						$hargatermurah = $hargaakhir;
+						$src_foto = $abc['src_foto_kamar'];
 					}
 				}
 
 
 			}
 
-			array_push($arr_order, array('id_hotel' => $hotel['id_hotel'], 'id_master_kota' => $hotel['id_master_kota'], 'username_owner' => $hotel['username_owner'], 'nama_hotel' => $hotel['nama_hotel'], 'alamat_hotel' => $hotel['alamat_hotel'], 'telepon_hotel' => $hotel['telepon_hotel'], 'nama_owner' => $hotel['nama_owner'], 'telepon_owner' => $hotel['telepon_owner'], 'harga_kamar' => $hargatermurah, 'total_kamar' => $totalkamar));
+			array_push($arr_order, array('id_hotel' => $hotel['id_hotel'], 'id_master_kota' => $hotel['id_master_kota'], 'username_owner' => $hotel['username_owner'], 'nama_hotel' => $hotel['nama_hotel'], 'alamat_hotel' => $hotel['alamat_hotel'], 'telepon_hotel' => $hotel['telepon_hotel'], 'nama_owner' => $hotel['nama_owner'], 'telepon_owner' => $hotel['telepon_owner'], 'img_hotel' => $src_foto, 'harga_kamar' => $hargatermurah, 'total_kamar' => $totalkamar));
 
 		}
 		// array_push($arr_data, $arr_order);
@@ -863,6 +897,19 @@ class Default_controller extends Loadview {
 	}
 
 
+
+	public function get_user_by_email($email, $return_var = NULL){
+		$filter = array('oauth_uid'=> $email);
+		$data = $this->Default_model->get_data_user($filter);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
 
 
 	
@@ -946,6 +993,33 @@ class Default_controller extends Loadview {
 	//output: success/failed/access denied
 	public function insert_kamar(){
 		if ($this->checkcookieadmin()) {
+
+			$date = date("ymd");	
+			$jam = date("His");		
+			$file1 = '';
+
+			if (isset($_FILES['file_1']['name']) && $_FILES['file_1']['name'] != '') {
+				$configFoto['upload_path'] = './upload/photo_room_hotel';
+				// $configFoto['upload_path'] = $path;				
+				$configFoto['max_size'] = '60000';
+				$configFoto['allowed_types'] = 'gif|jpg|png';
+				$configFoto['overwrite'] = FALSE; 
+				$configFoto['remove_spaces'] = TRUE;
+				$foto_name = $date.'_'.$jam.'_foto_kamar';
+				$configFoto['file_name'] = $foto_name;
+		
+				$this->load->library('upload', $configFoto);
+				$this->upload->initialize($configFoto);
+	
+				if(!$this->upload->do_upload('file_1')) {
+					// echo $this->upload->display_errors();
+				}else{
+					$FotoDetails = $this->upload->data();		
+					$file1 = $FotoDetails['file_name'];			
+				}
+				
+			}
+
 			$data = array(
 				// 'id_kamar' => $this->input->post('id_kamar'),
 				'id_hotel' => $this->input->post('id_hotel'),
@@ -953,7 +1027,8 @@ class Default_controller extends Loadview {
 				'max_guest' => $this->input->post('max_guest'),
 				'harga_min' => $this->input->post('min_harga'),
 				'harga_max' => $this->input->post('max_harga'),
-				'type_bed' => $this->input->post('fasilitas')
+				'type_bed' => $this->input->post('fasilitas'),
+				'src_foto_kamar' => $file1
 			);
 			$insertStatus = $this->Default_model->insert_kamar($data);
 			echo $insertStatus;
@@ -983,7 +1058,7 @@ class Default_controller extends Loadview {
 	//note: API hanya bisa diakses saat ada cookie admin atau owner atau receptionist
 	//output: success/failed/access denied
 	public function insert_order(){
-		if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist()) {
+		// if ($this->checkcookieadmin() || $this->checkcookieowner() || $this->checkcookiereceptionist() || $this->checkcookieuser()) {
 			$datakamar = $this->get_kamar_by_id($this->input->post('id_kamar'),true);
 			if($this->input->post('sumber_order') == 'on_process'){
 				$status_order = 'waiting_payment';
@@ -991,9 +1066,19 @@ class Default_controller extends Loadview {
 				$status_order = 'upcoming';
 			}
 
+			$filter = array('email_user'=>$this->input->post('email_pemesan'));
+			$datauser = $this->Default_model->get_data_user($filter);
+			$id_user = '';
+			
+			
+			if (!empty($datauser)){
+				$id_user = $datauser[0]['id_user'];
+			}
+
 			$data = array(
 				'id_hotel' => $this->input->post('id_hotel'),
 				'id_kamar' => $this->input->post('id_kamar'),
+				'id_user' => $id_user,
 				'nama_pemesan' => $this->input->post('nama_pemesan'),
 				'telepon_pemesan' => $this->input->post('telepon_pemesan'),
 				'email_pemesan' => $this->input->post('email_pemesan'),
@@ -1018,9 +1103,19 @@ class Default_controller extends Loadview {
 			);
 			$insertStatus = $this->Default_model->insert_order($data);
 			echo $insertStatus;
-		}else{
-			echo "access denied";
-		}
+
+			//call ipaymu
+			$arr_product = [];
+			$arr_jml = [];
+			$arr_harga = [];
+			array_push($arr_product, $datakamar[0]['nama_kamar']);
+			array_push($arr_jml, $this->input->post('jumlah_room'));
+			array_push($arr_harga, $this->input->post('total_harga'));
+
+			// $this->apisendbox($arr_product, $arr_jml, $arr_harga);
+		// }else{
+		// 	echo "access denied";
+		// }
 	}
 
 	//Tambah data fasilitas hotel
@@ -1253,11 +1348,70 @@ class Default_controller extends Loadview {
 	//output: success/failed/access denied
 	public function update_kamar($id){
 		if ($this->checkcookieadmin()) {
+
+			
+			$date = date("ymd");	
+			$jam = date("His");		
+			$status = $this->input->post('status_ganti');
+			$file1 = $this->input->post('file_before_1');
+			
+			if($status == '1'){
+				// if (isset($_FILES['file_1']['name']) && $_FILES['file_1']['name'] != '') {
+				// 	$configFoto['upload_path'] = './upload/photo_room_hotel';
+				// 	// $configFoto['upload_path'] = $path;				
+				// 	$configFoto['max_size'] = '60000';
+				// 	$configFoto['allowed_types'] = 'gif|jpg|png';
+				// 	$configFoto['overwrite'] = FALSE; 
+				// 	$configFoto['remove_spaces'] = TRUE;
+				// 	$foto_name = $date.'_'.$jam.'_foto_kamar';
+				// 	$configFoto['file_name'] = $foto_name;
+			
+				// 	$this->load->library('upload', $configVideo);
+				// 	$this->upload->initialize($configVideo);
+	
+				// 	if(!$this->upload->do_upload('file_1')) {
+				// 		// echo $this->upload->display_errors();
+				// 	}else{
+				// 		$videoDetails = $this->upload->data();		
+				// 		$file1 = $videoDetails['file_name'];			
+				// 	}
+					
+				// }
+
+				if (isset($_FILES['file_1']['name']) && $_FILES['file_1']['name'] != '') {
+					$configFoto['upload_path'] = './upload/photo_room_hotel';
+					// $configFoto['upload_path'] = $path;				
+					$configFoto['max_size'] = '60000';
+					$configFoto['allowed_types'] = 'gif|jpg|png';
+					$configFoto['overwrite'] = FALSE; 
+					$configFoto['remove_spaces'] = TRUE;
+					$foto_name = $date.'_'.$jam.'_foto_kamar';
+					$configFoto['file_name'] = $foto_name;
+			
+					$this->load->library('upload', $configFoto);
+					$this->upload->initialize($configFoto);
+		
+					if(!$this->upload->do_upload('file_1')) {
+						// echo $this->upload->display_errors();
+					}else{
+						$FotoDetails = $this->upload->data();		
+						$file1 = $FotoDetails['file_name'];			
+					}
+					
+				}
+			}
+
+			
 			$data = array(
 				// 'id_hotel' => $this->input->post('id_hotel'),
 				'nama_kamar' => $this->input->post('nama'),
-				'max_guest' => $this->input->post('max_guest')
+				'max_guest' => $this->input->post('max_guest'),
+				'harga_min' => $this->input->post('min_harga'),
+				'harga_max' => $this->input->post('max_harga'),
+				'type_bed' => $this->input->post('fasilitas'),
+				'src_foto_kamar' => $file1
 			);
+
 			$updateStatus = $this->Default_model->update_kamar($id,$data);
 			echo $updateStatus;
 		}else{
@@ -1421,6 +1575,25 @@ class Default_controller extends Loadview {
 	}
 
 
+	//edit data user
+	//parameter: id user
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function update_user($id){
+		if ($this->checkcookieadmin()) {
+			$data = array(
+				'nama_user' => $this->input->post('nama_pemesan'),
+				'telepon_user' => $this->input->post('telepon_pemesan'),
+				// 'ket_fasilitas' => $this->input->post('eKetFasilitas')
+			);
+			$updateStatus = $this->Default_model->update_user_by_id($id,$data);
+			echo $updateStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+
 	//DELETE
 
 	//Delete admin
@@ -1501,6 +1674,31 @@ class Default_controller extends Loadview {
 	public function delete_order($id){
 		if ($this->checkcookieadmin()) {
 			$deleteStatus = $this->Default_model->delete_order($id);
+			echo $deleteStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+	
+	//Delete Fasilitas
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function delete_fasilitas($id){
+		if ($this->checkcookieadmin()) {
+			$deleteStatus = $this->Default_model->delete_fasilitas($id);
+			echo $deleteStatus;
+		}else{
+			echo "access denied";
+		}
+	}
+
+	
+	//Delete Foto
+	//note: API hanya bisa diakses saat ada cookie admin
+	//output: success/failed/access denied
+	public function delete_foto_hotel($id){
+		if ($this->checkcookieadmin()) {
+			$deleteStatus = $this->Default_model->delete_foto_hotel($id);
 			echo $deleteStatus;
 		}else{
 			echo "access denied";
@@ -1620,6 +1818,21 @@ class Default_controller extends Loadview {
 			return false;
 		}
 	}
+
+	public function checkcookieuser(){
+		$this->load->helper('cookie');
+		if ($this->input->cookie('userCookie',true)!=NULL) {
+			$value = $this->str_rot($this->input->cookie('userCookie',true)); //decrypt first
+			if (empty($this->get_user_by_id($value,true))) {
+				return false;
+			}else{
+				return true;
+			}
+		}else{
+			return false;
+		}
+	}
+
 
 	//Logout
 	//note: menghapus cookie dan langsung redirect ke halaman login
@@ -1766,6 +1979,484 @@ class Default_controller extends Loadview {
 			}
 		}
 		return $s;
+	}
+
+
+	public function googlelogin($return_var = NULL){
+		
+		
+	
+        $google_client = new Google_Client();
+        $google_client->setClientId('714419741147-sgfpefrm28nktit1v1fgqstf005o42dp.apps.googleusercontent.com'); //masukkan ClientID anda 
+        $google_client->setClientSecret('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'); //masukkan Client Secret Key anda
+        $google_client->setRedirectUri('http://localhost/acehotel/index.php/loginuser'); //Masukkan Redirect Uri anda
+        // $google_client->setClientId('166111118733-9u055jkuq1ald16q76o6053vk0qs5ged.apps.googleusercontent.com'); //masukkan ClientID anda 
+        // $google_client->setClientSecret('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'); //masukkan Client Secret Key anda
+        // $google_client->setRedirectUri('https://abcprivilegeclub.com/testing_acehotel/index.php/loginuser'); //Masukkan Redirect Uri anda
+        $google_client->addScope('email');
+        $google_client->addScope('profile');
+        // $google_client->setAccessType('offline');
+        // $google_client->setLoginHint('octa.riadi1412@gmail.com');
+        // $google_client->addScope(Google\Service\Drive::DRIVE_METADATA_READONLY);
+
+        if(isset($_GET["code"]))
+        {
+            $token = $google_client->fetchAccessTokenWithAuthCode($_GET["code"]);
+			
+            if(!isset($token["error"]))
+            {
+                $google_client->setAccessToken($token['access_token']);
+                $this->session->set_userdata('access_token', $token['access_token']);
+                $google_service = new Google_Service_Oauth2($google_client);
+                $data = $google_service->userinfo->get();
+                $current_datetime = date('Y-m-d H:i:s');
+                $user_data = array(
+                'first_name' => $data['given_name'],
+                'last_name'  => $data['family_name'],
+                'email_address' => $data['email'],
+                'profile_picture'=> $data['picture'],
+                'updated_at' => $current_datetime
+                );
+                $this->session->set_userdata('user_data', $data);
+				$this->session->set_userdata('login_oauth', $data['id']);
+				$this->session->set_userdata('login_nama', $data['name']);
+				$this->session->set_userdata('login_email', $data['email']);
+                // $this->session->set_userdata('login_button', $data);
+
+				// // create cookie user
+				$this->create_cookie_encrypt("userCookie",$data['id']);
+
+				/// check user
+				$filter = array('oauth_uid'=> $data['id']);
+				$data_status_user = $this->Default_model->get_data_user($filter);
+
+				$this->session->set_userdata('login_id', $data_status_user[0]['id_user']);
+				
+				if(count($data_status_user) != 0){
+					$current_datetime = date('Y-m-d H:i:s');
+					$datas_user = array(
+						// 'oauth_uid' => $hsl['id'],
+						// 'nama_user' => $hsl['given_name'],
+						// 'email_user' => $hsl['email'],
+						'last_login' => $current_datetime,
+						// 'email_user' => $this->input->post('username'),
+					);
+					$this->Default_model->update_user($data_status_user[0]['id_user'], $datas_user);
+					
+					// $datass = array(
+					// 	'value' => json_decode($data_status_user)
+					// );
+					// $insertStatus = $this->Default_model->insert_error_log($datass);
+
+				} else {
+					
+					$current_datetime = date('Y-m-d H:i:s');
+					$datas_user = array(
+						'oauth_uid' => $data['id'],
+						'nama_user' => $data['given_name'],
+						'email_user' => $data['email'],
+						'created' => $current_datetime,
+						'last_login' => $current_datetime,
+					);
+					$this->Default_model->insert_user($datas_user);
+
+				}
+
+				// $data = array(
+				// 	'oauth_id' => $data['id'],
+				// 	'nama_user' => $data['given_name'],
+				// 	'email_user' => $data['email'],
+				// 	'created' => $current_datetime,
+				// 	// 'email_user' => $this->input->post('username'),
+				// );
+				// $insertStatus = $this->Default_model->insert_user($data);
+            }									
+        }
+
+        $login_button = '';
+        if(!$this->session->userdata('access_token'))
+        {
+		  	
+            $login_button = '<a href="'.$google_client->createAuthUrl().'"><img src="https://1.bp.blogspot.com/-gvncBD5VwqU/YEnYxS5Ht7I/AAAAAAAAAXU/fsSRah1rL9s3MXM1xv8V471cVOsQRJQlQCLcBGAsYHQ/s320/google_logo.png" /></a>';
+            $data['login_button'] = $login_button;
+            $this->load->view('user/login', $data);
+        }
+        else
+        {
+		  	// uncomentar kode dibawah untuk melihat data session email
+            // echo json_encode($this->session->userdata('access_token')); 
+            $this->session->set_userdata('login_button', 'ada data');
+			$hsl = $this->session->userdata('user_data');
+			
+			// $this->create_cookie_encrypt("userCookie",$data['id']);
+            // echo ($hsl['email']);
+            // echo "Login success";
+            // header("Location: "."http://localhost/bekkologin/index.php/loginadmin");
+			// $this->create_cookie_encrypt("loginUserCookie",'username');
+			
+
+			
+			// $filter = array('user.oauth_uid'=> $hsl['id']);
+			// $data_status_user = $this->Default_model->get_data_user($filter);
+
+			// if(count($data_status_user) != 0){
+                $current_datetime = date('Y-m-d H:i:s');
+				$data = array(
+					// 'oauth_uid' => $hsl['id'],
+					// 'nama_user' => $hsl['given_name'],
+					// 'email_user' => $hsl['email'],
+					'last_login' => $current_datetime,
+					// 'email_user' => $this->input->post('username'),
+				);
+				// $insertStatus = $this->Default_model->update_user($hsl['id'], $data);
+
+			// } else {
+			
+			// 	$data = array(
+			// 		'oauth_uid' => $hsl['id'],
+			// 		'nama_user' => $hsl['given_name'],
+			// 		'email_user' => $hsl['email'],
+			// 		'created' => $current_datetime,
+			// 		'last_login' => $current_datetime,
+			// 		// 'email_user' => $this->input->post('username'),
+			// 	);
+			// 	$insertStatus = $this->Default_model->insert_user($data);
+
+			// }
+			
+            // header("Location: "."http://abcprivilegeclub.com/testing_acehotel/index.php/dashboarduser");
+            header("Location: "."http://localhost/acehotel/index.php/dashboarduser");
+           
+        }
+
+        // if ($this->session->userdata('access_token') != '') 
+        // {
+        //     header("Location: "."http://abcprivilegeclub.com/testing_acehotel/index.php/dashboarduser");
+            // redirect('login/frontpage');
+
+        // }
+	}
+
+	public function logoutsession(){
+	  $this->session->unset_userdata('access_token');
+
+	  $this->session->unset_userdata('user_data');
+	  echo "Logout berhasil";
+	}
+
+	 
+
+
+	public function sesiondata($return_var = NULL){
+	
+		
+		$filter = array('oauth_uid'=> '111995045432633637179');
+		$data_status_user = $this->Default_model->get_data_user($filter);
+
+		
+		echo json_encode($data_status_user);
+		echo count($data_status_user);
+	}
+
+	
+
+	public function testdatanya($return_var = NULL){
+		$arr_product = [];
+		$arr_jml = [];
+		$arr_harga = [];
+		array_push($arr_product, 'kamar mahal');
+		array_push($arr_jml, 2);
+		array_push($arr_harga, 10000);
+
+		$this->apisendbox($arr_product, $arr_jml, $arr_harga);
+
+	}
+
+	
+	public function testdatanya2($nama, $jml, $price, $return_var = NULL){
+		$arr_product = [];
+		$arr_jml = [];
+		$arr_harga = [];
+		array_push($arr_product, urldecode($nama));
+		array_push($arr_jml, $jml);
+		array_push($arr_harga, $price);
+
+		$this->apisendbox($arr_product, $arr_jml, $arr_harga);
+
+	}
+	
+	public function apisendbox($arr_product, $arr_jml, $arr_harga){
+
+
+		$va           = '0000005397163756'; //get on iPaymu dashboard
+		$apiKey       = 'SANDBOXC8C6DE72-F4CE-489C-B620-4EADE7A7C001'; //get on iPaymu dashboard
+
+		$url          = 'https://sandbox.ipaymu.com/api/v2/payment'; // for development mode
+		// $url          = 'https://my.ipaymu.com/api/v2/payment'; // for production mode
+		
+		$method       = 'POST'; //method
+		
+		//Request Body//
+		$body['product']    = $arr_product;
+		$body['qty']        = $arr_jml;
+		$body['price']      = $arr_harga;
+		$body['returnUrl']  = 'http://localhost/acehotel/index.php/orderuser'; //yg ini
+		$body['cancelUrl']  = 'http://localhost/acehotel/index.php/dashboarduser';
+		$body['notifyUrl']  = 'http://localhost/acehotel/index.php/dashboarduser';
+		// $body['returnUrl']  = 'http://abcprivilegeclub.com/testing_acehotel/index.php/orderuser'; //yg ini
+		// $body['cancelUrl']  = 'http://abcprivilegeclub.com/testing_acehotel/index.php/dashboarduser';
+		// $body['notifyUrl']  = 'http://abcprivilegeclub.com/testing_acehotel/index.php/dashboarduser';
+		$body['referenceId'] = '1234'; //your reference id
+		//End Request Body//
+
+		//Generate Signature
+		// *Don't change this
+		$jsonBody     = json_encode($body, JSON_UNESCAPED_SLASHES);
+		$requestBody  = strtolower(hash('sha256', $jsonBody));
+		$stringToSign = strtoupper($method) . ':' . $va . ':' . $requestBody . ':' . $apiKey;
+		$signature    = hash_hmac('sha256', $stringToSign, $apiKey);
+		$timestamp    = Date('YmdHis');
+		//End Generate Signature
+
+		$ch = curl_init($url);
+
+		$headers = array(
+			'Accept: application/json',
+			'Content-Type: application/json',
+			'va: ' . $va,
+			'signature: ' . $signature,
+			'timestamp: ' . $timestamp
+		);
+
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+		curl_setopt($ch, CURLOPT_POST, count($body));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonBody);
+
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+		$err = curl_error($ch);
+		$ret = curl_exec($ch);
+		curl_close($ch);
+
+		if($err) {
+			echo $err;
+		} else {
+
+			//Response
+			$awal = $ret;
+			$ret = json_decode($ret);
+			if($ret->Status == 200) {
+				$sessionId  = $ret->Data->SessionID;
+				$url        =  $ret->Data->Url;
+				
+				// $datas = array(
+				// 	'value' => $awal
+				// );
+				// $insertStatus = $this->Default_model->insert_error_log($datas);
+
+				$datas = array(
+					'url_payment' =>$ret->Data->Url,
+					'session_id' => $ret->Data->SessionID
+				);
+				
+				$updateStatus = $this->Default_model->update_order($id,$datas);
+
+
+				header('Location:' . $url);
+			} else {
+				print_r ($ret);
+			}
+			//End Response
+		}
+
+	}
+
+
+	public function apicheckbox(){
+
+
+		$va           = '0000005397163756'; //get on iPaymu dashboard
+		$apiKey       = 'SANDBOXC8C6DE72-F4CE-489C-B620-4EADE7A7C001'; //get on iPaymu dashboard
+
+		$url 		  = 'https://sandbox.ipaymu.com/api/v2/transaction';
+		// $url          = 'https://my.ipaymu.com/api/v2/payment'; // for production mode
+		
+		$method       = 'POST'; //method
+		
+		//Request Body//
+		$body['transactionId']    = '88222';
+		//End Request Body//
+
+		//Generate Signature
+		// *Don't change this
+		$jsonBody     = json_encode($body, JSON_UNESCAPED_SLASHES);
+		$requestBody  = strtolower(hash('sha256', $jsonBody));
+		$stringToSign = strtoupper($method) . ':' . $va . ':' . $requestBody . ':' . $apiKey;
+		$signature    = hash_hmac('sha256', $stringToSign, $apiKey);
+		$timestamp    = Date('YmdHis');
+		//End Generate Signature
+
+
+		$ch = curl_init($url);
+
+		$headers = array(
+			'Accept: application/json',
+			'Content-Type: application/json',
+			'va: ' . $va,
+			'signature: ' . $signature,
+			'timestamp: ' . $timestamp,
+			'transactionId:' . '88222'
+		);
+
+		
+
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+		curl_setopt($ch, CURLOPT_POST, count($body));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonBody);
+
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+		$err = curl_error($ch);
+		$ret = curl_exec($ch);
+		curl_close($ch);
+
+		if($err) {
+			echo $err;
+		} else {
+
+			//Response
+			$ret = json_decode($ret);
+			if($ret->Status == 200) {
+				// $sessionId  = $ret->Data->SessionID;
+				// $url        =  $ret->Data->Url;
+				// header('Location:' . $url);
+				// print_r ($ret);
+				echo json_encode($ret);
+			} else {
+				print_r ($ret);
+			}
+			//End Response
+		}
+
+	}
+
+	public function invoice_pdf(){		
+		// $data = $this->Default_model->get_data_admin();
+		
+		$id = $this->input->get('id');
+		// $klik = $this->Default_model->get_iklan_klik($id);
+		// $view = $this->Default_model->get_iklan_view($id);
+		// $saldo = $this->Default_model->get_histori_saldo($id);
+		// $iklan = $this->Default_model->get_iklan($id); 
+		$nama_hotel = 'test';
+
+		$dt = new DateTime(null, new DateTimeZone('Asia/Jakarta')); 
+		$c_pdf = $this->pdf->getInstance();
+		// $arr_klik = [];
+		// $arr_view = [];
+		$hasil = [];
+		$arr_tgl = [];
+		$jmlklik = 0;
+		$jmlview = 0;
+		$jmlsaldo = 0;
+
+		
+
+
+		$judul = "INVOICE HOTEL ".strtoupper($nama_hotel);
+		$header = array(
+				array("label"=>"Nama Kamar", "length"=>40, "align"=>"L"),
+				array("label"=>"Jumlah Kamar", "length"=>50, "align"=>"L"),
+				array("label"=>"Lama Menginap", "length"=>50, "align"=>"L"),
+				array("label"=>"Harga Kamar", "length"=>50, "align"=>"L")
+			);
+
+
+        $c_pdf = new FPDF('P', 'mm', 'A4');		
+		$c_pdf->AddPage();
+
+		#tampilkan judul laporan
+		$c_pdf->SetFont('Arial','B','16');
+		$c_pdf->Cell(0,20, $judul, '0', 1, 'C');
+
+		$c_pdf->SetFont('Arial','','10');
+		$c_pdf->SetFillColor(51, 133, 255);
+		$c_pdf->SetTextColor(255);
+		$c_pdf->SetDrawColor(128,0,0);
+		foreach ($header as $kolom) {
+			$c_pdf->Cell($kolom['length'], 5, $kolom['label'], 1, '0', $kolom['align'], true);
+		}
+		$c_pdf->Ln();
+
+		$c_pdf->SetFillColor(224,235,255);
+		$c_pdf->SetTextColor(0);
+		$c_pdf->SetFont('');
+		// $fill=false;
+		// foreach ($hasil as $baris) {
+		// 	$i = 0;
+		// 	foreach ($baris as $cell) {
+		// 		$c_pdf->Cell($header[$i]['length'], 5, $cell, 1, '0', $kolom['align'], $fill);
+		// 		$i++;
+		// 	}
+		// 	$fill = !$fill;
+		// 	$c_pdf->Ln();
+		// }
+		
+		// if($hasil == NULL){
+		// 	$c_pdf->Cell($header[0]['length'] +$header[1]['length'] +$header[2]['length'] +$header[3]['length'], 5, 'Tidak Ada Data Histori', 1, '0', 'C', $fill);
+		// }
+		
+		// $c_pdf->Output();
+		$filename = 'Invoice Hotel '.$nama_hotel.'.pdf';
+		$c_pdf->Output($filename, 'D');
+
+	}
+	
+
+	public function yourcallbackurl(){
+		
+		// $datas = array(
+		// 	'value' => $awal
+		// );
+		// $insertStatus = $this->Default_model->insert_error_log($datas);
+
+		
+		try {				
+			$obj = file_get_contents('php://input'); 			
+			$edata = json_decode($obj);
+			// $ref = $edata->data->ref_id; // kode paket/pulsa
+			// $status = $edata->data->status;		
+			// $jenis = substr($ref,0,5);			
+
+			$this->insert_error_log('value : '.$edata);	
+		
+		} catch (Exception $e) {
+			// exception is raised and it'll be handled here
+			$string = $e->getMessage();
+			
+			$this->insert_error_log($string);
+		}
+		
+		// $filter = array('oauth_uid'=>$id);
+		// $datauser = $this->Default_model->get_data_user($filter);
+
+
+		// $filter = array('orders.id_user'=> $datauser[0]['id_user']);
+		// $data = $this->Default_model->get_data_order_user($filter,'id_order');
+		// if (empty($data)){
+		// 	$data = [];
+		// }
+		// if ($return_var == true) {
+		// 	return $data;
+		// }else{
+		// 	echo json_encode($data);
+		// }
 	}
 
 

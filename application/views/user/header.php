@@ -10,14 +10,14 @@
         <input class="side-menu" type="checkbox" id="side-menu"/>
         <!-- <label class="hamb" for="side-menu"><span class="hamb-line"></span></label> -->
         <!-- Menu -->
-        <nav class="nav">
+        <!-- <nav class="nav">
             <ul class="menu">
                 <li><a href="#">Dasboard</a></li>
                 <li><a href="#">Explore Hotel</a> </li>
                 <li><a href="#">Pesanan</a> </li>
                 <li><a href="#">Akun</a></li>
             </ul>
-        </nav>
+        </nav> -->
     </header>
 </nav>
 </header>

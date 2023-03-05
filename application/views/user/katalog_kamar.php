@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
 
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap.min.css");?>">
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap-grid.min.css");?>">
@@ -129,15 +130,6 @@
 								<li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
 							</ol>
 							<div class="carousel-inner" id="src_foto_hotel">
-								<!-- <div class="carousel-item active">
-									<img class="d-block w-100" src="http://localhost/acehotel/upload/photo_room_hotel/test.png" alt="First slide">
-								</div>
-								<div class="carousel-item">
-									<img class="d-block w-100" src="http://localhost/acehotel/upload/photo_room_hotel/test.png" alt="Second slide">
-								</div>
-								<div class="carousel-item">
-									<img class="d-block w-100" src="http://localhost/acehotel/upload/photo_room_hotel/test.png" alt="Third slide">
-								</div> -->
 							</div>
 							<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
 								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -149,23 +141,12 @@
 							</a>
 						</div>
 						
-						<!-- <img src="http://localhost/acehotel/upload/photo_room_hotel/test.png"  width="100%" height="auto" > -->
-
-						<!-- <label style="color:black;"><b>Surabaya</b>  2 Tamu<br> 14-09-2022, 2 Hari</label>
-                        <button type="button" class="btn btn-block btn-outline-primary btn-lg" style="height:50px; width:100px; float:right;"><a  href="<?=base_url("/index.php/dashboarduser");?>">Ubah </a></button> -->
-                        
 					</div>
     				<div class="card-footer">
 						<label style="color:black;" id="nama_hotel_kamar"></label><br>
 						<div id="list_fasilitas">
-							<!-- <button type="button" class="btn btn-block btn-outline-primary btn-lg" style="height:40px; width:100px; font-size: 20px;display:inline-block;  margin-right: 5px;">AC</button>
-							<button type="button" class="btn btn-block btn-outline-primary btn-lg" style="height:40px; width:100px; font-size: 20px;display:inline-block;  margin-right: 5px;">AC</button>
-							<button type="button" class="btn btn-block btn-outline-primary btn-lg" style="height:40px; width:100px; font-size: 20px;display:inline-block; margin-right: 5px;">AC</button>
-							<button type="button" class="btn btn-block btn-outline-primary btn-lg" style="height:40px; width:100px; font-size: 20px;display:inline-block;  margin-right: 5px;">AC</button>
-							<button type="button" class="btn btn-block btn-outline-primary btn-lg" style="height:40px; width:100px; font-size: 20px;display:inline-block; margin-right: 5px;">AC</button> -->
 						</div>
 						<label style="color:black; margin-top:10px;" id="alamat_hotel"></label><br>
-						<!-- <label style="float:right;">Rp. 300.000 / room / night</label> -->
 					</div>
 				</div>
 			</div>
@@ -174,25 +155,6 @@
 		
 		<div class="row " style="margin-bottom:20%;" id="all_kamar">
 		</div>
-
-		<!-- <div class="row " style="margin-bottom:20%;">
-			<div class="col-sm-12">
-				<div class="card" style="border-radius: 5px;margin-top:20px;">
-
-					<div class="card-body">
-						<img src="http://localhost/acehotel/upload/photo_room_hotel/test.png"  width="100%" height="auto" >
-
-					</div>
-					
-    				<div class="card-footer">
-						<label style="color:black;"><b>Oakwood Hotel</b><br> Surabaya Center</label><br>
-						<label style="float:right;">Rp. 300.000 / room / night</label>
-					</div>
-				</div>
-			</div>
-		</div> -->
-			
-			
 		
 		<div class="modal fade" id="revenueModal" tabindex="-1" role="dialog" aria-labelledby="revenueModalLabel"
 			aria-hidden="true">
@@ -240,10 +202,7 @@
 		<div class="col-sm-12">
 			<div class="card" style="border-radius: 5px;margin-top:20px;">
 
-				<div class="card-body">
-				<img src="http://localhost/acehotel/upload/photo_room_hotel/test.png"  width="100%" height="auto" >
-
-					<!-- <img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600"> -->
+				<div class="card-body" id="divFotoKamar">
 				</div>
 				
 				<div class="card-footer">
@@ -284,6 +243,8 @@
 	
 	var data_booking = getCookie('data_booking');
     var arr_data_booking = [];
+	// var path = 'abcprivilegeclub.com/testing_acehotel';
+	var path = 'localhost/acehotel';
 
 	
 		
@@ -372,6 +333,17 @@
 				
 
 				// $(tmp).find('#idKamarList').text(getKamar[0][i].id_kamar);
+
+				if(getKamar[0][i].src_foto_kamar == null){
+					console.log('ksng')
+					src_foto = 'http://'+ path +'/upload/image_not_found.jpg';
+				} else {
+					src_foto = 'http://'+ path +'/upload/photo_room_hotel/' + getKamar[0][i].src_foto_kamar;
+				}
+
+
+				
+				$(tmp).find('#divFotoKamar').append('<img src="'+ src_foto +'"  width="100%" height="auto" >');
 				$(tmp).find('#namaKamar').append('<b>'+ getKamar[0][i].nama_kamar +'</b>');
 				$(tmp).find('#listFasilitasKamar').append(fas);
 				$(tmp).find('#hargaKamar').append('<b><i>' + pembulatan(parseInt(getKamar[0][i].harga_kamar)) + ' </i></b>');
@@ -397,15 +369,15 @@
 
 		var fas_hotel = '';
 		var fas_foto = '';
-		var src_default_foto = 'http://localhost/acehotel/upload/hotel_description_photo/default_hotel.jpg';
+		var src_default_foto = 'http://'+ path +'/upload/hotel_description_photo/default_hotel.jpg';
 
 		for (var i = 0; i < getFasilitas[0].length; i++) {
-			fas_hotel = fas_hotel + '<button type="button" class="btn btn-block btn-outline-primary btn-lg" style="height:40px; width:auto; font-size: 20px;display:inline-block;  margin-right: 5px;">'+ getFasilitas[0][i].nama_fasilitas +'</button>';
+			fas_hotel = fas_hotel + '<button type="button" class="btn btn-outline-primary btn-lg" style="height:40px; width:auto; font-size: 20px;display:inline-block; margin-right: 5px; margin-bottom: 10px;"">'+ getFasilitas[0][i].nama_fasilitas +'</button>';
 
 		}
 		
 		for (var i = 0; i < getFoto[0].length; i++) {
-			src_foto = 'http://localhost/acehotel/upload/hotel_description_photo/' + getFoto[0][i].src_foto;
+			src_foto = 'http://'+ path +'/upload/hotel_description_photo/' + getFoto[0][i].src_foto;
 
 			if (i == 0){
 				fas_foto = fas_foto + '<div class="carousel-item active">'+

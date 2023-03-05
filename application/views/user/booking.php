@@ -4,6 +4,9 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+	<meta http-equiv="Access-Control-Allow-Origin" content="*" />
+	<meta http-equiv="Access-Control-Allow-Headers" content="*" />
 
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap.min.css");?>">
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap-grid.min.css");?>">
@@ -218,7 +221,19 @@
 	var data_booking = getCookie('data_booking');
     var arr_data_booking = [];
     var arr_data_kamar = [];
+	var nama_kamar = '';
+	var harga_kamnar = '';
 
+	
+	// var loginuserid = "<?php echo $_SESSION['login_id'] ?>";
+	var loginuserid = ''
+	var loginuseroauth = "<?php echo $_SESSION['login_oauth'] ?>";
+	var loginuserName = "<?php echo $_SESSION['login_nama'] ?>";
+	var loginuseremail = "<?php echo $_SESSION['login_email'] ?>";
+	
+	console.log('userid')
+	console.log(loginuserid)
+	console.log(loginuserName)
 	
     // var hari = new Date();
     // var dd = (hari.getDate() < 10 ? '0' : '') + hari.getDate();
@@ -282,10 +297,11 @@
 	// console.log(tgl_mulai.addDays(5));
 
 	
-	$('#nama_pemesan').val('data')
-	$('#telepon_pemesan').val('123')
-	$('#email_pemesan').val('data')
+	$('#nama_pemesan').val(loginuserName)
+	// $('#telepon_pemesan').val('123')
+	$('#email_pemesan').val(loginuseremail)
 	// $('#total_bayar').text('Total : Rp. ' + total_harga)
+	
 	
 
 	$.when(getKamar()).done(function (getKamar) {
@@ -298,6 +314,9 @@
 			console.log('------------')
 			console.log(getKamar[i]);
 			arr_data_kamar = getKamar[i];
+
+			nama_kamar = getKamar[i].nama_kamar;
+			harga_kamar = getKamar[i].harga_kamar
 
 			type = getKamar[i].type_bed;
 			fas = '';
@@ -334,9 +353,28 @@
 	});
 
 	
+	$.when(getProfile()).done(function (getProfile) {
+
+		console.log('----------- getProfile-')
+		console.log(getProfile[0]);
+		console.log(getProfile[0]['telepon_user']);
+		console.log(getProfile[0]['nama_user']);
+
+		loginuserid = getProfile[0]['id_user'];
+
+		if(getProfile[0]['telepon_user'] == null){
+			$('#telepon_pemesan').val('00')
+
+		}else {
+			$('#telepon_pemesan').val(getProfile[0]['telepon_user'])
+		}
+
+	})
+
+	
     // $(document).on('submit', '#submitButton', function (event) {
 	$(document).on('click', '#submitButton', function () {
-		if (confirm("Apakah anda yakin ?")) {
+		// if (confirm("Apakah anda yakin ?")) {
 	
 			let formData = new FormData();
 			// var inputid = document.getElementById("id_akun").value;
@@ -357,11 +395,12 @@
 			ksng = '';
 
 			formData.append('id_kamar', arr_data_kamar.id_kamar);
+			formData.append('id_user', loginuserid);
 			formData.append('id_hotel', arr_data_kamar.id_hotel);
 			formData.append('nama_pemesan', inputnama);
 			formData.append('telepon_pemesan', inputtelp);
 			formData.append('email_pemesan', inputemail);
-			formData.append('no_ktp_pemesan', 'inputid');
+			formData.append('no_ktp_pemesan', '');
 			formData.append('tanggal_check_in', arr_data_booking[2]);
 			formData.append('tanggal_check_out',check_out);
 			formData.append('jumlah_guest', arr_data_booking[4]);
@@ -385,24 +424,48 @@
 				processData: false,
 				contentType: false,
 				beforeSend: function(){			
-					// $("#submit_add").prop("disabled", true);				
+					// $("#submit_add").prop("disabled", true);	
+					$('.lds-ring').show();			
 				},
 				success: function (json) {
-					alert(json);
+					// alert(json);
 					console.log(json);
-					// send_email();
+					setCookie('status_data_booking', 'non_active');
+					setCookie('data_booking', 'null');
 
+			// 		$.ajax({
+			// 			url: "<?php echo base_url() ?>index.php/testdatanya",
+			// 			headers: {
+			// 				'Access-Control-Allow-Credentials' : true,
+			// 				'Access-Control-Allow-Origin':'*',
+			// 				'Access-Control-Allow-Methods':'GET',
+			// 				'Access-Control-Allow-Headers':'application/json',
+			// 			},
+			// 			contentType: 'application/jsonp',
+			// 			type: 'POST',
+			// 			dataType: 'jsonp',
+            // cache: false,
+   			// 			crossDomain: true,
+			// 	processData: false,
+			// 	contentType: false,
+			// 			data:formData,
+			// 			success: function (response) {
+					// 	}
+					// });
 					// alert('Data Berhasil Ditambahkan!');
-					window.location = "<?php echo base_url() ?>index.php/orderuser";
+					// window.location = "<?php echo base_url() ?>index.php/orderuser";
+					window.location = "<?php echo base_url() ?>index.php/testdatanya2/"+ nama_kamar + "/" + arr_data_booking[3] + "/" + harga_kamar;
+
 
 				},
 				error: function () {
 					$("#submit_add").prop("disabled", false);
+					$('.lds-ring').hide();
 					console.log('gagal')	
 				}
 			});
 
-		}
+		// }
 	});
 	
 	
@@ -414,6 +477,14 @@
 		);
 	}
 
+	
+	function getProfile() {
+		return $.ajax(
+			"<?php echo base_url() ?>index.php/get_user_by_email/" + loginuseroauth , {
+				dataType: 'json'
+			}
+		);
+	}
 	
     function pembulatan(harga){      
 		var	reverse = harga.toString().split('').reverse().join(''),

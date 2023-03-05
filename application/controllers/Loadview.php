@@ -22,7 +22,12 @@ class Loadview extends CI_Controller {
 	}
 
 	public function loginuser(){
-		$this->load->view('user/login');
+		// $this->load->view('user/login');
+
+		$this->googlelogin();
+
+
+
 	}
 
 	//Dashboard

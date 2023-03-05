@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
 
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap.min.css");?>">
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap-grid.min.css");?>">
@@ -145,10 +146,6 @@
 			<div class="card" style="border-radius: 5px;margin-top:20px;" id="listHotel">
 
 				<div class="card-body">
-				<!-- <img src="http://localhost/acehotel/upload/photo_room_hotel/test.png"  width="100%" height="auto" > -->
-
-					<!-- <img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600"> -->
-                    
 					<input type="hidden" id="idHotelList">
 					<label style="color:black;" id="namaHotel"></label><br>
 					<label style="color:black;" id="tgl_check_in_out"></label><br>
@@ -183,6 +180,11 @@
     var arr_data_history = [];
 
 	
+	var loginuseroauth = "<?php echo $_SESSION['login_oauth'] ?>";
+	var loginuserName = "<?php echo $_SESSION['login_nama'] ?>";
+	var loginuseremail = "<?php echo $_SESSION['login_email'] ?>";
+
+	
 	// $(function () {
 	// 	$('input[name="daterange"]').daterangepicker({
 	// 		opens: 'left'
@@ -208,6 +210,7 @@
 				
 				tgl_check_in = new Date(getHotel[i].tanggal_check_in);
 				tgl_check_out = new Date(getHotel[i].tanggal_check_out);
+				btn_completed = '';
 
 				var Difference_In_Time = tgl_check_out.getTime() - tgl_check_in.getTime();
 
@@ -218,13 +221,20 @@
 				// console.log(arr_data_booking[0])
 				console.log(Difference_In_Days)
 
+				
+				if(getHotel[i].status_order == 'waiting_payment'){
+					btn_completed = '<button type="button" class="btn btn-sm btn-danger" id="nama_date" style="margin-left:10px;" >Belum Lunas</button>';
+				} else {
+					btn_completed = '<button type="button" class="btn btn-sm btn-primary" id="nama_date" style="margin-left:10px;" >Lunas</button>';
+				}
+
 
 				// if(getHotel[i].id_master_kota == arr_data_booking[0]){
 				$(tmp).find('#idHotelList').text(getHotel[i].id_order)
 				$(tmp).find('#namaHotel').append('<b>'+getHotel[i].nama_hotel+'</b> ' )
 				$(tmp).find('#tgl_check_in_out').append( getHotel[i].tanggal_check_in +' &#x2022; ' + Difference_In_Days+' nights &#x2022; ' + getHotel[i].nama_kota)
 				
-				$(tmp).find('#btn_details').append('<button type="button" class="btn btn-sm btn-outline-primary" id="nama_date" onclick="viewdetails('+getHotel[i].id_order+')" >View Detail</button>' )
+				$(tmp).find('#btn_details').append('<button type="button" class="btn btn-sm btn-outline-primary" id="nama_date" onclick="viewdetails('+getHotel[i].id_order+')" >View Detail</button>' + btn_completed)
 				// $(tmp).find('#hargaHotel').text(getHotel[i].ket_fasilitas)
 				$(tmp).appendTo('#all_hotel');
 
@@ -233,12 +243,16 @@
 
 		}
 
+		// if(getHotel.length == 0){
+			
+		// }
+
 
 	});
 	
 	function getAllHotel() {
 		return $.ajax(
-			"<?php echo base_url() ?>index.php/get_order_by_user/1", {
+			"<?php echo base_url() ?>index.php/get_order_by_user/" + loginuseroauth, {
 				dataType: 'json'
 			}
 		);
@@ -264,6 +278,13 @@
 				console.log('act');
 				if(arr_data_history[i].status_order != 'completed'){
 					status_pass = '1';
+					if(arr_data_history[i].status_order == 'waiting_payment'){
+						btn_completed = '<button type="button" class="btn btn-sm btn-danger" id="nama_date" style="margin-left:10px;" >Belum Lunas</button>';
+
+					} else {
+						btn_completed = '<button type="button" class="btn btn-sm btn-primary" id="nama_date" style="margin-left:10px;" >Lunas</button>';
+
+					}
 				}
 			} else if(filter == 'old_ticket'){
 				console.log('old');
@@ -277,6 +298,10 @@
 				status_pass = '1';
 				if(arr_data_history[i].status_order == 'completed'){
 					btn_completed = '<button type="button" class="btn btn-sm btn-success" id="nama_date" style="margin-left:10px;" >Complete</button>';
+				} else if(arr_data_history[i].status_order == 'waiting_payment'){
+					btn_completed = '<button type="button" class="btn btn-sm btn-danger" id="nama_date" style="margin-left:10px;" >Belum Lunas</button>';
+				} else {
+					btn_completed = '<button type="button" class="btn btn-sm btn-primary" id="nama_date" style="margin-left:10px;" >Lunas</button>';
 				}
 
 			}

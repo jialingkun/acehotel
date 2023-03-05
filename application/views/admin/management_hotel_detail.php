@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
 
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap.min.css");?>">
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap-grid.min.css");?>">
@@ -334,7 +335,7 @@
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="inputTransaksiLabel">Tambah Hotel</h5>
+						<h5 class="modal-title" id="inputTransaksiLabel">Tambah Kamar</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
@@ -357,13 +358,24 @@
 										required>
 								</div>
 								<div class="form-group">
-									<label for="alamat">Harga</label>
+									<label for="alamat">Harga Minimal</label>
 									<input type="text" id="min_harga" name="min_harga" class="form-control"
 										required>
-										-
+								</div>
+								
+								<div class="form-group">
+									<label for="alamat">Harga Maksimal</label>
 									<input type="text" id="max_harga" name="max_harga" class="form-control"
 										required>
 								</div>
+								
+								<div class="form-group">
+									<label>Upload Foto Kamar</label>
+									<input id="inputFotoKamar" type="file" accept="image/jpeg,image/png" style="padding-top:5px;" max-file-size="320" onchange="encodeImg('inputFotoKamar','imgFotoKamar')"/>
+                          			<div id="imgFotoKamar" style="padding-top:15px;"></div>
+									<!-- <input type="text" name="ket_fasilitas" class="form-control" required> -->
+								</div>
+
 								<div class="form-group">
 									<label for="alamat">Fasilitas</label>
 									<div class="d-flex justify-content-around">
@@ -458,11 +470,11 @@
 								</div>
 
 								<div class="form-group">
-									<label>Upload Foto</label>
-									<input id="inputFileToLoad" type="file" accept="image/jpeg,image/png" style="padding-top:5px;" max-file-size="320" onchange="encodeImageFileAsURL();"/>
-                          			<div id="imgTest" style="padding-top:15px;"></div>
-									<!-- <input type="text" name="ket_fasilitas" class="form-control" required> -->
+									<label>Upload Foto Hotel</label>
+									<input id="inputFileFoto" type="file" accept="image/jpeg,image/png" style="padding-top:5px;" max-file-size="320" onchange="encodeImg('inputFileFoto','imgFileFoto');"/>
+                          			<div id="imgFileFoto" style="padding-top:15px;"></div>
 								</div>
+
 								<div class="form-group">
 									<button type="submit" id="submitButton" class="btn btn-primary btn-md float-right">
 										<span id="submit">Submit</span></button>
@@ -490,6 +502,8 @@
 					<div class="modal-body">
 						<div class="col-12 no-padding">
 							<form id="edit_kamar" onsubmit="editKamar(event)">
+							
+								<input type="hidden" id="urlFotoKamarEdit">
 								<div class="form-group">
 									<label for="alamat">Nama Kamar</label>
 									<input type="text" id="eNama" name="nama" class="form-control"
@@ -501,12 +515,25 @@
 										pattern="^[0-9]+$" required>
 								</div>
 								<div class="form-group">
-									<label for="alamat">Harga</label>
+									<label for="alamat">Harga Minimal</label>
 									<input type="text" id="eMinHarga" name="eMinHarga" class="form-control"
 										required>
-										-
+								</div>
+								<div class="form-group">
+									<label for="alamat">Harga Maksimal</label>
 									<input type="text" id="eMaxHarga" name="eMaxHarga" class="form-control"
 										required>
+								</div>
+								
+								<div class="form-group" id="divimage_kamar" style="display:block">
+									<label>Foto Kamar</label><br>
+									<img id="eFotoKamar" src="#" width="200" height="auto"><br><br>
+									<button type="button" class="btn btn-outline-secondary" id="hpsfotokamar">Ganti File</button>
+								</div> 
+								<div class="form-group" id="divupload_kamar" style="display:none">
+									<label>Upload Foto</label><br>
+									<input id="inputFotoKamarEdit" type="file" accept="image/jpeg,image/png" style="padding-top:5px;" max-file-size="320" onchange="encodeImg('inputFotoKamarEdit','imgFotoKamarEdit');"/>
+                          			<div id="imgFotoKamarEdit" style="padding-top:15px;"></div>
 								</div>
 								
 								<div class="form-group">
@@ -684,22 +711,17 @@
 								</div>
 								
 								<div class="form-group" id="divimage_1" style="display:block">
-									<label>Foto Iklan</label><br>
+									<label>Foto Hotel</label><br>
 									<img id="eFotoHotel" src="#" width="200" height="auto"><br><br>
-									<!-- <button type="button" class="btn btn-outline-info"><a href="#" id="download_file_1" download>Download File</a></button> -->
 									<button type="button" class="btn btn-outline-secondary" id="hpsfoto">Ganti File</button>
 								</div> 
 
 								<div class="form-group" id="divupload_1" style="display:none">
 									<label>Upload Foto</label><br>
-									<input id="inputFileToLoad1" type="file" accept="image/jpeg,image/png" style="padding-top:5px;" max-file-size="320" onchange="encodeImageFileAsURLEdit();"/>
-                          			<div id="imgTest1" style="padding-top:15px;"></div>
+									<input id="inputFileFotoEdit" type="file" accept="image/jpeg,image/png" style="padding-top:5px;" max-file-size="320" onchange="encodeImg('inputFileFotoEdit','imgFileFotoEdit');"/>
+                          			<div id="imgFileFotoEdit" style="padding-top:15px;"></div>
 								</div>
 								
-								<!-- <div class="form-group">
-									<label>Foto</label>
-									<div id="eFotoHotel"></div>
-								</div> -->
 								<div class="form-group">
 									<button type="button" id="eDelete" class="btn btn-danger btn-md float-left">
 										<span onclick="deleteFoto(getCookie('edit_foto'))">Delete
@@ -755,6 +777,7 @@
     <div class="row "  id="listKamar">
         <div class="col-8 px-4 py-3" >
         <input type="hidden" id="id_kamar">
+		<input type="hidden" id="urlFotoKamar">
             <div class="d-block">
                 <h6 class="mb-1" id="namaKamar"></h6>
             </div>
@@ -838,18 +861,22 @@
 	var idHotel = getCookie("manajemen_id_hotel");
 	var arr_fasilitas_kamar = [];
 	var arr_data_fasilitas = [];
+	var arr_data_fasilitas_edit = [];
 	var arr_no = 0;
 	var temp_harga_min = 0;
 	var temp_harga_max = 0;
+	var status_edit = '0';
+	// var path = 'abcprivilegeclub.com/testing_acehotel';
+	var path = 'localhost/acehotel';
 
-	// console.log(idHotel);
+
 	$('.lds-ring').show();
 	$('.container').hide();
 
 
 	$('#inputFoto').on('show.bs.modal', function() {
-		document.getElementById("imgTest").innerHTML = "";
-		document.getElementById("inputFileToLoad").value = '';
+		document.getElementById("imgFileFoto").innerHTML = "";
+		document.getElementById("inputFileFoto").value = '';
     });
 
 	// $( ".menu-off" ).click(function() {
@@ -894,6 +921,38 @@
 	});
 	
 
+	$("#editTransaksi").on('show.bs.modal', function(){
+		arr_fasilitas_kamar = [];
+		arr_no = 0;
+		status_edit = '0';
+		
+		$('#list_fasilitas_kamar_edit').text('')
+	});
+	
+	function checkValues() {
+		input_harga_min = parseInt($("#min_harga").val().replaceAll('.',''))
+		input_harga_max = parseInt($("#max_harga").val().replaceAll('.',''))
+		
+        if (input_harga_min > input_harga_max) {
+			$('#min_harga').val($("#max_harga").val())
+        }
+    }
+	
+	function checkValuesEdit() {
+		input_harga_min = parseInt($("#eMinHarga").val().replaceAll('.',''))
+		input_harga_max = parseInt($("#eMaxHarga").val().replaceAll('.',''))
+		
+        if (input_harga_min > input_harga_max) {
+			$('#eMinHarga').val($("#eMaxHarga").val())
+        }
+    }
+
+	$('#min_harga').on('change', checkValues);
+	$('#max_harga').on('change', checkValues);
+	$('#eMinHarga').on('change', checkValuesEdit);
+	$('#eMaxHarga').on('change', checkValuesEdit);
+	
+
 	$.when(getAllKamar(idHotel), getHotel(idHotel)).done(function (getKamar, getHotel) {
 
 		$('#nama_hotel').text(getHotel[0][0].nama_hotel);
@@ -922,70 +981,45 @@
 			$(tmp).find('#maxGuest').text(getKamar[0][i].max_guest);
 			$(tmp).find('#minHarga').text(getKamar[0][i].harga_min);
 			$(tmp).find('#maxHarga').text(getKamar[0][i].harga_max);
+			$(tmp).find('#urlFotoKamar').val(getKamar[0][i].src_foto_kamar);
 			$(tmp).data('id', getKamar[0][i].id_kamar);
 			$(tmp).find('#btn_edit_kamar').data('id', getKamar[0][i].id_kamar);
 			$(tmp).find('#btn_no_kamar').data('id', getKamar[0][i].id_kamar);
 			$(tmp).appendTo('#all_kamar');
 		}
-
-		// console.log('---- darar')
-		// console.log(arr_data_fasilitas)
 	});
 
 	
 	$.when(getAllFasilitas(idHotel)).done(function (getFasilitas) {
-
-
 		for (var i = 0; i < getFasilitas.length; i++) {
-			// console.log('---------' + $('#list_fasilitas')[0])
 			var tmp = $('#list_fasilitas')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
-			
-			// console.log('------------')
-			// console.log(tmp)
 
 			$(tmp).find('#id_fasilitas').text(getFasilitas[i].id_fasilitas)
 			$(tmp).find('#namaFasilitas').text(getFasilitas[i].nama_fasilitas)
 			$(tmp).find('#ketFasilitas').text(getFasilitas[i].ket_fasilitas)
 			$(tmp).appendTo('#all_fasilitas');
-
 		}
-
-
 	});
 
 	
 	$.when(getAllFoto(idHotel)).done(function (getFoto) {
-
-		// console.log('------------getFoto')
-		// console.log(getFoto)
-		// console.log(getFoto.length)
-
 		for (var j = 0; j < getFoto.length; j++) {
 			var tmpfoto = $('#list_foto')[0].innerHTML;
 			tmpfoto = $.parseHTML(tmpfoto);
-			url_foto = '<img class="d-block w-100" src="http://localhost/acehotel/upload/hotel_description_photo/'+ getFoto[j].src_foto +'">'
+			url_foto = '<img class="d-block w-100" src="http://'+ path +'/upload/hotel_description_photo/'+ getFoto[j].src_foto +'">'
 			
 			$(tmpfoto).find('#id_foto').text(getFoto[j].id_foto_hotel)
 			$(tmpfoto).find('#namaFoto').text(getFoto[j].nama_foto)
 			$(tmpfoto).find('#urlFotoHotel').val(getFoto[j].src_foto)
 			$(tmpfoto).find('#FotoHotel').append(url_foto)
-			
-			console.log(getFoto[j].src_foto)
 			$(tmpfoto).appendTo('#all_foto');
-
-			
-
 		}
-
-
 	});
 
 
 	$(document).on('click', '.data-kamar', function () {
 		var idKamar = $(this).data('id');
-		console.log($(this))
-		console.log($(this).data)
 		setCookie('id_kamar', idKamar);
 	});
 
@@ -1035,7 +1069,6 @@
 			success: function (response) {
 				$('#list_no_kamar').empty();
 				let length = response.length;
-				// console.log(response[0]);
 				for (let i = 0; i < length; i++) {
 					var tmp = $('#template_no_kamar')[0].innerHTML;
 					tmp = $.parseHTML(tmp);
@@ -1064,7 +1097,6 @@
 			}
 		);
 	}
-
 
 	function insertNoKamar() {
 		if (confirm('Apakah anda yakin ?')) {
@@ -1124,19 +1156,20 @@
 			var inputid = document.getElementById("id_hotel").value;
 			var inputnama = document.getElementById("nama").value;
 			var inputguest = document.getElementById("max_guest").value;
+			const fileupload_1 = $('#inputFotoKamar').prop('files')[0];
 			var arr_fas = '';
 			
 			for (var i = 0; i < arr_fasilitas_kamar.length; i++) {
 				arr_fas = arr_fas + arr_fasilitas_kamar[i] + ', ';
 			}
 
+			formData.append('file_1', fileupload_1);
 			formData.append('id_hotel', inputid);
 			formData.append('nama', inputnama);
 			formData.append('max_guest', inputguest);
 			formData.append('min_harga', temp_harga_min);
 			formData.append('max_harga', temp_harga_max);
 			formData.append('fasilitas', arr_fas);
-
 
 			$("#submit").html("tunggu..");
 			$("#submitButton").prop("disabled", true);
@@ -1170,8 +1203,31 @@
 		if (confirm("Apakah anda yakin ?")) {
 			e.preventDefault();
 			urls = "update_kamar/";
-			var dataString = $("#edit_kamar").serialize();
+			// var dataString = $("#edit_kamar").serialize();
 			var id = getCookie('edit_kamar');
+			let formData = new FormData();
+			var inputid = document.getElementById("id_hotel").value;
+			var inputnama = document.getElementById("eNama").value;
+			var inputguest = document.getElementById("eGuest").value;
+			var inputurlfoto = document.getElementById("urlFotoKamarEdit").value;
+			var inputmin = parseInt($("#eMinHarga").val().replaceAll('.',''));
+			var inputmax = parseInt($("#eMaxHarga").val().replaceAll('.',''));
+			const fileupload_1 = $('#inputFotoKamarEdit').prop('files')[0];
+			var arr_fas = '';
+			
+			for (var i = 0; i < arr_fasilitas_kamar.length; i++) {
+				arr_fas = arr_fas + arr_fasilitas_kamar[i] + ', ';
+			}
+
+			formData.append('file_1', fileupload_1);
+			formData.append('id_hotel', inputid);
+			formData.append('nama', inputnama);
+			formData.append('max_guest', inputguest);
+			formData.append('min_harga', inputmin);
+			formData.append('max_harga', inputmax);
+			formData.append('fasilitas', arr_fas);
+			formData.append('file_before_1', inputurlfoto);
+			formData.append('status_ganti', status_edit);
 
 			$("#submit").html("tunggu..");
 			$("#eButton").prop("disabled", true);
@@ -1179,7 +1235,11 @@
 			$.ajax({
 				url: "<?php echo base_url() ?>index.php/" + urls + id,
 				type: 'POST',
-				data: dataString,
+				timeout: 1800000,
+				data: formData,
+				cache: false,
+				processData: false,
+				contentType: false,
 				success: function (response) {
 					if (response.startsWith("success", 0)) {
 						location.reload();
@@ -1188,8 +1248,8 @@
 						$("#eButton").prop("disabled", false);
 					}
 				},
-				error: function () {
-					alert(response);
+				error: function (xhr, status, error) {
+					alert('Data cant update, please contact admin.');
 					$("#eButton").prop("disabled", false);
 				}
 			});
@@ -1254,26 +1314,36 @@
 		let guest = $(this).find('#maxGuest').text();
 		let min = $(this).find('#minHarga').text();
 		let max = $(this).find('#maxHarga').text();
+		let urlfoto = $(this).find('#urlFotoKamar').val();
 
 		$('#eNama').val(nama);
 		$('#eGuest').val(guest);
 		$('#eMinHarga').val(formatRupiah(min));
 		$('#eMaxHarga').val(formatRupiah(max));
+		$('#urlFotoKamarEdit').val(urlfoto);
+		
+		if(urlfoto == ''){
+			console.log('ini')
+			document.getElementById("divupload_kamar").style.display = "block";
+			document.getElementById("divimage_kamar").style.display = "none";
+		} else {
+			document.getElementById("divupload_kamar").style.display = "none";
+			document.getElementById("divimage_kamar").style.display = "block";
+			console.log('tidak')
+			let url_foto = 'http://'+ path +'/upload/photo_room_hotel/' + urlfoto;
+			document.getElementById("eFotoKamar").src = url_foto;
+		}
 
-		console.log(id_kamar)
 		isi_data_arr_fasilitas = []
 		var_lokasi = '';
 		pos_awal = 0;
 		arr_fasilitas_kamar = [];
 
 		for (var i=0; i<arr_data_fasilitas.length; i++){
-			console.log(arr_data_fasilitas[i]['id'])
 			if(arr_data_fasilitas[i]['id'] == id_kamar){
-				console.log('--ketemu')
 				if(arr_data_fasilitas[i]['data'] != null){
 					for(var j=0; j<arr_data_fasilitas[i]['data'].length;j++) {
 						if (arr_data_fasilitas[i]['data'][j] === ",") {
-							// var_lokasi = var_lokasi +data_booking.slice(pos_awal, (i)) + '<br>';
 							var_lokasi = arr_data_fasilitas[i]['data'].slice(pos_awal, (j));
 							arr_fasilitas_kamar.push(var_lokasi);   
 							pos_awal = j+1;
@@ -1285,13 +1355,6 @@
 			}
 		}
 
-		// console.log('done')
-		// console.log(arr_fasilitas_kamar)
-
-		if (arr_fasilitas_kamar.length == 0){
-			console.log('-=kosong')
-		}
-		arr_fasilitas_kamar
 		for (var a = 0; a < arr_fasilitas_kamar.length; a++) {
 			var tmp = $('#template_fasilitas_kamar')[0].innerHTML;
 			tmp = $.parseHTML(tmp);
@@ -1301,8 +1364,6 @@
 			$(tmp).appendTo('#list_fasilitas_kamar_edit');
 		}
 
-		
-		console.log(id_kamar)
 		setCookie('edit_kamar', id_kamar);
 	});
 
@@ -1315,7 +1376,7 @@
 		$('#eNamaFasilitas').val(nama);
 		$('#eKetFasilitas').val(ket);
 
-		console.log(id_fasilitas)
+		// console.log(id_fasilitas)
 
 		setCookie('edit_fasilitas', id_fasilitas);
 	});
@@ -1325,9 +1386,8 @@
 		let id_foto = $(this).find('#id_foto').text();
 		let nama = $(this).find('#namaFoto').text();
 		let foto = $(this).find('#FotoHotel')[0];
-		let url_foto = 'http://localhost/acehotel/upload/hotel_description_photo/' + $(this).find('#urlFotoHotel').val();
+		let url_foto = 'http://'+ path +'/upload/hotel_description_photo/' + $(this).find('#urlFotoHotel').val();
 		
-
 		$('#eNamaFoto').val(nama);
 		document.getElementById("eFotoHotel").src = url_foto;
 
@@ -1440,9 +1500,6 @@
 	}
 
 	function deleteFasilitaskamar(id) {
-		console.log('hps')
-		console.log(id)
-
 		arr_fasilitas_kamar.splice(id, 1)
 		$('#list_fasilitas_kamar').text('')
 		arr_no = arr_no - 1;
@@ -1461,12 +1518,9 @@
 	function deleteFasilitaskamaredit(id) {
 		
 		if (confirm("Apakah anda yakin ?")) {
-			console.log('hps')
-			console.log(id)
-
 			arr_fasilitas_kamar.splice(id, 1)
 			$('#list_fasilitas_kamar_edit').text('')
-			arr_no = arr_fasilitas_kamar.length - 1;
+			arr_no = arr_fasilitas_kamar.length ;
 			
 			for (var i = 0; i < arr_fasilitas_kamar.length; i++) {
 				var tmp = $('#template_fasilitas_kamar')[0].innerHTML;
@@ -1481,14 +1535,11 @@
 	}
 
 	function insertFoto(e) {
-		
-		var myFileGambar = $('#inputFileToLoad').prop('files');
-
+		var myFileGambar = $('#inputFileFoto').prop('files');
 		if(myFileGambar.length == 0){
           alert("Silahkan Pilih File!")
           return false;
         }
-        
 
 		if (confirm("Apakah anda yakin ?")) {
 			e.preventDefault();
@@ -1498,15 +1549,11 @@
 			let formData = new FormData();
 			var inputid = document.getElementById("id_hotel_foto").value;
 			var inputnama = document.getElementById("nama_foto").value;
-			const fileupload_1 = $('#inputFileToLoad').prop('files')[0];
-			
+			const fileupload_1 = $('#inputFileFoto').prop('files')[0];
 				
 			formData.append('file_1', fileupload_1);
 			formData.append('id_hotel_foto', inputid);
 			formData.append('nama_foto', inputnama);
-
-
-			
 
 			$("#submit").html("tunggu..");
 			$("#submitButton").prop("disabled", true);
@@ -1542,13 +1589,10 @@
 			urls = "update_foto/";
 			// var dataString = $("#edit_fasilitas").serialize();
 			var id = getCookie('edit_foto');
-
-			
 			let formData = new FormData();
 			// var inputid = document.getElementById("id_hotel_foto").value;
 			var inputnama = document.getElementById("eNamaFoto").value;
-			const fileupload_1 = $('#inputFileToLoad1').prop('files')[0];
-			
+			const fileupload_1 = $('#inputFileFotoEdit').prop('files')[0];
 				
 			formData.append('file_1', fileupload_1);
 			// formData.append('id_hotel_foto', inputid);
@@ -1556,8 +1600,6 @@
 
 			$("#submit").html("tunggu..");
 			$("#eButton").prop("disabled", true);
-
-			console.log('nah')
 
 			$.ajax({
 				url: "<?php echo base_url() ?>index.php/" + urls + id,
@@ -1596,57 +1638,93 @@
 	}
 
 
-	function encodeImageFileAsURL() {
+	
+	function encodeImg(input_id, img_id) {
 		var status_allow = '';
-		var filesSelected = document.getElementById("inputFileToLoad").files;
+		var filesSelected = document.getElementById(input_id).files;
 		var test = filesSelected && filesSelected[0];
-		var img = new Image();
-		img.src = window.URL.createObjectURL(test);
-		var fileToLoad = filesSelected[0];
-		var fileReader = new FileReader();
 
-      	fileReader.onload = function(fileLoadedEvent) {
-			img.onload = function() {
-				var width = img.naturalWidth,
-				height = img.naturalHeight;
-				window.URL.revokeObjectURL(img.src);
-								
-				var srcData = fileLoadedEvent.target.result; // <--- data: base64
-				var newImage = document.createElement('img');
+		if(test != null){
+			var img = new Image();
+			img.src = window.URL.createObjectURL(test);
+			var fileToLoad = filesSelected[0];
+			var fileReader = new FileReader();
+			status_edit = '1';
+
+			fileReader.onload = function(fileLoadedEvent) {
+				img.onload = function() {
+					var width = img.naturalWidth,
+					height = img.naturalHeight;
+					window.URL.revokeObjectURL(img.src);
+									
+					var srcData = fileLoadedEvent.target.result; // <--- data: base64
+					var newImage = document.createElement('img');
+					newImage.src = srcData; 
 				newImage.src = srcData; 
-				newImage.width = '200';
-				document.getElementById("imgTest").innerHTML = newImage.outerHTML;
-				
-			};
-		}	
-      	fileReader.readAsDataURL(fileToLoad);
-    }
+					newImage.src = srcData; 
+					newImage.width = '200';
+					document.getElementById(img_id).innerHTML = newImage.outerHTML;
+					
+				};
+			}	
+			fileReader.readAsDataURL(fileToLoad);
+		} else {
+			document.getElementById(img_id).innerHTML = '';
+			status_edit = '0';
+		}
+	}
 
-	function encodeImageFileAsURLEdit() {
-		var status_allow = '';
-		var filesSelected = document.getElementById("inputFileToLoad1").files;
-		var test = filesSelected && filesSelected[0];
-		var img = new Image();
-		img.src = window.URL.createObjectURL(test);
-		var fileToLoad = filesSelected[0];
-		var fileReader = new FileReader();
+	// function encodeImageFileAsURL() {
+	// 	var status_allow = '';
+	// 	var filesSelected = document.getElementById("inputFileToLoad").files;
+	// 	var test = filesSelected && filesSelected[0];
+	// 	var img = new Image();
+	// 	img.src = window.URL.createObjectURL(test);
+	// 	var fileToLoad = filesSelected[0];
+	// 	var fileReader = new FileReader();
 
-      	fileReader.onload = function(fileLoadedEvent) {
-			img.onload = function() {
-				var width = img.naturalWidth,
-				height = img.naturalHeight;
-				window.URL.revokeObjectURL(img.src);
+    //   	fileReader.onload = function(fileLoadedEvent) {
+	// 		img.onload = function() {
+	// 			var width = img.naturalWidth,
+	// 			height = img.naturalHeight;
+	// 			window.URL.revokeObjectURL(img.src);
 								
-				var srcData = fileLoadedEvent.target.result; // <--- data: base64
-				var newImage = document.createElement('img');
-				newImage.src = srcData; 
-				newImage.width = '200';
-				document.getElementById("imgTest1").innerHTML = newImage.outerHTML;
+	// 			var srcData = fileLoadedEvent.target.result; // <--- data: base64
+	// 			var newImage = document.createElement('img');
+	// 			newImage.src = srcData; 
+	// 			newImage.width = '200';
+	// 			document.getElementById("imgTest").innerHTML = newImage.outerHTML;
 				
-			};
-		}	
-      	fileReader.readAsDataURL(fileToLoad);
-    }
+	// 		};
+	// 	}	
+    //   	fileReader.readAsDataURL(fileToLoad);
+    // }
+
+	// function encodeImageFileAsURLEdit() {
+	// 	var status_allow = '';
+	// 	var filesSelected = document.getElementById("inputFileToLoad1").files;
+	// 	var test = filesSelected && filesSelected[0];
+	// 	var img = new Image();
+	// 	img.src = window.URL.createObjectURL(test);
+	// 	var fileToLoad = filesSelected[0];
+	// 	var fileReader = new FileReader();
+
+    //   	fileReader.onload = function(fileLoadedEvent) {
+	// 		img.onload = function() {
+	// 			var width = img.naturalWidth,
+	// 			height = img.naturalHeight;
+	// 			window.URL.revokeObjectURL(img.src);
+								
+	// 			var srcData = fileLoadedEvent.target.result; // <--- data: base64
+	// 			var newImage = document.createElement('img');
+	// 			newImage.src = srcData; 
+	// 			newImage.width = '200';
+	// 			document.getElementById("imgTest1").innerHTML = newImage.outerHTML;
+				
+	// 		};
+	// 	}	
+    //   	fileReader.readAsDataURL(fileToLoad);
+    // }
 
 	/// fungsi rupiah
     var min_harga_create = document.getElementById('min_harga');
@@ -1711,6 +1789,12 @@
 
 	});
     
+	$('#hpsfotokamar').click(function editdata() {
+		document.getElementById("divupload_kamar").style.display = "block";
+		document.getElementById("divimage_kamar").style.display = "none";
+    // status_foto = '1';
+
+	});
 
 
 </script>

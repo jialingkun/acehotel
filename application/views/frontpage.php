@@ -11,6 +11,6 @@
 	<br>
 	<a href="<?php echo base_url() ?>index.php/loginreceptionist">LOGIN RECEPTIONIST</a>
 	<br>
-	<a href="<?php echo base_url() ?>index.php/loginuser">LOGIN User</a>
+	<a href="<?php echo base_url() ?>index.php/loginuser">LOGIN USER</a>
 </body>
 </html>

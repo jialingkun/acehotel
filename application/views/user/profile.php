@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
 
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap.min.css");?>">
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap-grid.min.css");?>">
@@ -128,61 +129,21 @@
                         <div class="form-group">
                             <label>Email</label>
                             <input type="text" id="email_pemesan" name="email_pemesan" class="form-control"
-                                required>
+                                readonly>
                         </div>
                     </form>
 				</a>
                         <div style="margin-top:20px;">
 
-                            <button type="button" class="btn btn-block btn-primary btn-lg" style="font-size: 17px;">Edit Profile</button>
+                            <button type="button" id="editbtn" class="btn btn-block btn-primary btn-lg" style="font-size: 17px;">Edit Profile</button>
+
+                            <button type="button" id="exitbtn" class="btn btn-block btn-danger btn-lg" style="font-size: 17px;">Log Out</button>
 
                         </div>
 
-				<!-- <a href="#" class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
-					<div class="w-100 ">
-						<canvas id="myLineChart" height="200"></canvas>
-					</div>
-				</a>
-				<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
-					<div class="w-100 ">
-						<span>Total Order</span>
-						<h5 id="totalSource"></h5>
-					</div>
-				</a>
-				<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mgn-list">
-					<div class="w-100 ">
-						<canvas id="myDoughnutChart" height="200"></canvas>
-					</div>
-				</a> -->
 			</div>
 		</div>
-		<div class="modal fade" id="revenueModal" tabindex="-1" role="dialog" aria-labelledby="revenueModalLabel"
-			aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<form id="checkin_booking">
-						<div class="modal-header">
-							<h5 class="modal-title" id="revenueModalLabel">Detail Revenue</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<p id="waitDetail">Please Wait</p>
-							<div class="col-12 no-padding" id="modalContent">
-
-								<a id="downloadReport"><button type="button" class="btn btn-success w-100">Download
-										Report</button></a>
-								<div id="listRevenue" class="tab-pane active"><br>
-								</div>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-							</div>
-					</form>
-				</div>
-			</div>
-		</div>
+		
 	</div>
 
 	<?php $this->load->view("user/footer");?>
@@ -199,25 +160,6 @@
 	<a class="dropdown-item" id="hotel-item" href="#"></a>
 </script>
 
-<script id="list_revenue" type="text/HTML">
-	<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mgn-list" >
-		<div class="w-100 ">
-			<h5 class="mb-1" id="namaUser"></h5>
-			<h6 class="mb-1" id="namaKamar"></h6>
-		</div>
-		<div class="mgn-list">
-			<span id="jmlRoom"></span> Room
-			.
-			<span id="jmlMalam"></span> Night
-			.
-			<span id="jmlGuest"></span> Guest
-		</div>
-		<div class="mgn-list">
-			<span class="badge badge-pill badge-danger"><span id="reqInAwal"></span> - <span id="reqInAkhir"></span></span>
-			<span class="sm-font" id="totHarga"></span>
-		</div>
-	</a>
-</script>
 
 <script>
 	$(document).ready(function () {
@@ -235,248 +177,121 @@
 	// var today = getToday();
 	// var dateFilter = lastWeek();
 
-	// $(function () {
-	// 	$('input[name="daterange"]').daterangepicker({
-	// 		opens: 'left'
-	// 	}, function (start, end, label) {
-	// 		$('#nama_date').text(start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-	// 		filter = start.format('YYYY-MM-DD');
-	// 		today = end.format('YYYY-MM-DD');
-	// 		getData(idHotelC, namaHotelC, filter, today);
-	// 	});
-	// });
-
-	// function getAllHotel() {
-	// 	return $.ajax(
-	// 		"<?php echo base_url() ?>index.php/get_all_hotel", {
-	// 			dataType: 'json'
-	// 		}
-	// 	);
-	// }
-
-	// function getRevenue(idHotel, tglawal, tglakhir) {
-
-	// 	return $.ajax(
-	// 		"<?php echo base_url() ?>index.php/get_revenue_hotel_by_tanggalcheckin/" + idHotel + "/" + tglawal + "/" +
-	// 		tglakhir, {
-	// 			dataType: 'json'
-	// 		}
-	// 	);
-	// }
-
-	// function getSource(idHotel, tglawal, tglakhir) {
-	// 	return $.ajax(
-	// 		"<?php echo base_url() ?>index.php/get_sumber_order_hotel_by_tanggalcheckin/" + idHotel + "/" + tglawal +
-	// 		"/" + tglakhir, {
-	// 			dataType: 'json'
-	// 		}
-	// 	);
-	// }
-
-	// function lastWeek() {
-	// 	var today = new Date();
-	// 	var week = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-	// 	var y = week.getFullYear();
-	// 	var m = (week.getMonth() + 1) < 10 ? '0' + (week.getMonth() + 1) : (week.getMonth() + 1);
-	// 	var d = week.getDate() < 10 ? '0' + week.getDate() : week.getDate();
-	// 	var a = y + '-' + m + '-' + d;
-	// 	return a;
-	// }
-
-	// function lastMonth() {
-	// 	var today = new Date();
-	// 	var week = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-	// 	var y = week.getFullYear();
-	// 	var m = (week.getMonth() + 1) < 10 ? '0' + (week.getMonth() + 1) : (week.getMonth() + 1);
-	// 	var d = week.getDate() < 10 ? '0' + week.getDate() : week.getDate();
-	// 	var a = y + '-' + m + '-' + d;
-	// 	return a;
-	// }
-
-	// function getToday() {
-	// 	var today = new Date();
-	// 	var dd = String(today.getDate()).padStart(2, '0');
-	// 	var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-	// 	var yyyy = today.getFullYear();
-
-	// 	today = yyyy + '-' + mm + '-' + dd;
-	// 	return today;
-	// }
-
-	// function reformatDate(oldformat) {
-	// 	var mydate = new Date(oldformat);
-	// 	var month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-	// 		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-	// 	][mydate.getMonth()];
-	// 	return mydate.getDate() + ' ' + month;
-	// }
-
-	// function getData(idHotel, namaHotel, filterDate, today) {
-	// 	$.when(getAllHotel(), getRevenue(idHotel, filterDate, today), getSource(idHotel, filterDate,
-	// 		today)).done(
-
-	// 		function (allHotel, getrevenue, getsource) {
-	// 			$('#list_hotel').empty();
-	// 			$('.lds-ring').hide();
-	// 			$('.container').show();
-	// 			var datarevenue = getrevenue[0];
-	// 			var datalabels = [];
-	// 			var datavalues = [];
-	// 			var totalRevenue = 0;
-	// 			console.log(getrevenue);
-	// 			for (i = 0; i < allHotel[0].length; i++) {
-	// 				var tmp = $('#hotel_option')[0].innerHTML;
-	// 				tmp = $.parseHTML(tmp);
-	// 				$(tmp).text(allHotel[0][i].nama_hotel);
-	// 				$(tmp).data('id', allHotel[0][i].id_hotel);
-	// 				$(tmp).data('nama', allHotel[0][i].nama_hotel);
-	// 				$(tmp).appendTo('#list_hotel');
-	// 			}
-	// 			$('.dropdown-toggle').dropdown();
-	// 			$('#nama_hotel').text(namaHotel);
-
-	// 			for (var i = 0; i < datarevenue.length; i++) {
-	// 				datalabels.push(reformatDate(datarevenue[i].tanggal_check_in_real));
-	// 				datavalues.push(datarevenue[i].revenue / 1000);
-	// 				totalRevenue = totalRevenue + parseInt(datarevenue[i].revenue);
-	// 			}
-	// 			$("#totalRevenue").html(currency.format(totalRevenue));
-
-	// 			var linectx = document.getElementById('myLineChart').getContext('2d');
-	// 			var chart = new Chart(linectx, {
-	// 				type: 'line',
-
-	// 				data: {
-	// 					labels: datalabels,
-	// 					datasets: [{
-	// 						label: 'Ribu Rupiah',
-	// 						backgroundColor: 'rgb(255, 99, 132)',
-	// 						borderColor: 'rgb(255, 99, 132)',
-	// 						data: datavalues
-	// 					}]
-	// 				},
-
-	// 				options: {
-	// 					scales: {
-	// 						xAxes: [{
-	// 							ticks: {
-	// 								maxTicksLimit: 5
-	// 							}
-	// 						}],
-	// 						yAxes: [{
-	// 							ticks: {
-	// 								suggestedMin: 0
-	// 							}
-	// 						}]
-	// 					}
-	// 				}
-	// 			});
-	// 			var datasource = getsource[0];
-	// 			var datalabels = [];
-	// 			var datavalues = [];
-	// 			var totalSource = 0;
-	// 			for (var i = 0; i < datasource.length; i++) {
-	// 				datalabels.push(datasource[i].sumber_order);
-	// 				datavalues.push(datasource[i].frekuensi);
-	// 				totalSource = totalSource + parseInt(datasource[i].frekuensi);
-	// 			}
-	// 			$("#totalSource").html(totalSource);
-
-	// 			var doughnutctx = document.getElementById('myDoughnutChart').getContext('2d');
-	// 			var chart = new Chart(doughnutctx, {
-	// 				type: 'doughnut',
-
-	// 				data: {
-	// 					labels: datalabels,
-	// 					datasets: [{
-	// 						backgroundColor: [
-	// 							'rgb(255, 99, 132)',
-	// 							'rgb(99, 255, 132)',
-	// 							'rgb(132, 99, 255)',
-	// 							'rgb(99, 132, 255)',
-	// 							'rgb(255, 132, 99)'
-	// 						],
-	// 						data: datavalues
-	// 					}]
-	// 				},
-
-	// 				options: {
-
-	// 				}
-	// 			});
-	// 		});
-	// }
-
-	// $(document).on('click', '#hotel-item', function () {
-	// 	let namaHotel = $(this).data('nama');
-	// 	let idHotel = $(this).data('id');
-
-	// 	$('#nama_hotel').text(namaHotel);
-	// 	namaHotelC = namaHotel;
-	// 	idHotelC = idHotel;
-	// 	getData(idHotelC, namaHotelC, dateFilter, today);
-	// });
-
-	// $(document).on('click', '#date-item', function () {
-	// 	var namaDate = $(this).text();
-	// 	var filter = 0;
-	// 	today = getToday();
-	// 	if (namaDate == "This Week") {
-	// 		filter = lastWeek();
-	// 		$('#nama_date').text(namaDate);
-	// 		dateFilter = filter;
-	// 		getData(idHotelC, namaHotelC, filter, today);
-	// 	} else if (namaDate == "This Month") {
-	// 		filter = lastMonth();
-	// 		$('#nama_date').text(namaDate);
-	// 		dateFilter = filter;
-	// 		getData(idHotelC, namaHotelC, filter, today);
-	// 	}
-	// });
-
-	// $(document).on('click', '#totalDetail', function () {
-	// 	urls = "get_report_hotel_by_tanggalcheckin/";
-	// 	$('#kamar').empty();
-	// 	$('#listRevenue').empty();
-	// 	let link_download = "<?php echo base_url() ?>index.php/exportCSV/"+idHotelC+"/"+dateFilter+"/"+today;
-	// 	$('#downloadReport').attr('href',link_download);
-	// 	$.ajax({
-	// 		url: "<?php echo base_url() ?>index.php/" + urls + idHotelC + "/" + dateFilter + "/" + today,
-	// 		type: 'GET',
-	// 		dataType: 'json',
-	// 		beforeSend: function () {
-	// 			$('#waitDetail').show();
-	// 			$('#modalContent').hide();
-	// 		},
-	// 		success: function (dataComplete) {
-	// 			$('#waitDetail').hide();
-	// 			$('#modalContent').show();
-	// 			for (var i = 0; i < dataComplete.length; i++) {
-	// 				var ckInDate = new Date(dataComplete[i].tanggal_check_in);
-	// 				var ckOtDate = new Date(dataComplete[i].tanggal_check_out);
-	// 				var selisihDate = Math.ceil((ckOtDate - ckInDate) / (1000 * 60 * 60 * 24));
-	// 				var tmp = $('#list_revenue')[0].innerHTML;
-	// 				tmp = $.parseHTML(tmp);
+	
+	var loginuserid = '';
+	var loginuseroauth = "<?php echo $_SESSION['login_oauth'] ?>";
+	var loginuserName = "<?php echo $_SESSION['login_nama'] ?>";
+	var loginuseremail = "<?php echo $_SESSION['login_email'] ?>";
 
 
-	// 				$(tmp).data('id', dataComplete[i].id_order);
-	// 				$(tmp).find('#namaUser').text(dataComplete[i].nama_pemesan);
-	// 				$(tmp).find('#namaKamar').text(dataComplete[i].nama_kamar);
-	// 				$(tmp).find('#jmlRoom').text(dataComplete[i].jumlah_room);
-	// 				$(tmp).find('#jmlMalam').text(selisihDate);
-	// 				$(tmp).find('#jmlGuest').text(dataComplete[i].jumlah_guest);
-	// 				if (dataComplete[i].request_jam_check_in_awal != null) {
-	// 					$(tmp).find('#reqInAwal').text(dataComplete[i].request_jam_check_in_awal);
-	// 					$(tmp).find('#reqInAkhir').text(dataComplete[i].request_jam_check_in_akhir);
-	// 				} else {
-	// 					$(tmp).find('#reqInAkhir').parent('.badge').hide();
-	// 				}
-	// 				$(tmp).find('#totHarga').text(currency.format(dataComplete[i].total_harga));
-	// 				$(tmp).appendTo('#listRevenue');
-	// 			}
-	// 		}
-	// 	});
-	// });
+	
+	// $('#nama_pemesan').val(loginuserName)
+	// $('#telepon_pemesan').val('123')
+	$('#email_pemesan').val(loginuseremail)
+
+	
+	$.when(getProfile()).done(function (getProfile) {
+
+		console.log('----------- getProfile-')
+		console.log(getProfile[0]);
+		console.log(getProfile[0]['telepon_user']);
+		console.log(getProfile[0]['nama_user']);
+
+		loginuserid = getProfile[0]['id_user'];
+		
+		$('#nama_pemesan').val(getProfile[0]['nama_user'])
+
+		if(getProfile[0]['telepon_user'] == null){
+			$('#telepon_pemesan').val('00')
+
+		}else {
+			$('#telepon_pemesan').val(getProfile[0]['telepon_user'])
+		}
+
+	})
+
+
+	
+	function getProfile() {
+		return $.ajax(
+			"<?php echo base_url() ?>index.php/get_user_by_email/" + loginuseroauth , {
+				dataType: 'json'
+			}
+		);
+	}
+
+
+	$(document).on('click', '#editbtn', function () {
+		if (confirm("Apakah anda yakin ?")) {
+
+
+			let formData = new FormData();
+			// var inputid = document.getElementById("id_akun").value;
+			var inputnama = document.getElementById("nama_pemesan").value;
+			var inputtelp = document.getElementById("telepon_pemesan").value;
+			var inputemail = document.getElementById("email_pemesan").value;
+
+			
+			// formData.append('id_kamar', arr_data_kamar.id_kamar);
+			// formData.append('id_user', loginuserid);
+			// formData.append('id_hotel', arr_data_kamar.id_hotel);
+			formData.append('nama_pemesan', inputnama);
+			formData.append('telepon_pemesan', inputtelp);
+			// formData.append('email_pemesan', inputemail);
+
+
+			$.ajax({
+				url: "<?php echo base_url()?>index.php/update_user/"+ loginuserid,
+				type: 'POST',
+				timeout: 1800000,
+				data: formData,
+				cache: false,
+				processData: false,
+				contentType: false,
+				beforeSend: function(){			
+					// $("#submit_add").prop("disabled", true);				
+				},
+				success: function (json) {
+					alert(json)
+
+				},
+				error: function () {
+					$("#submit_add").prop("disabled", false);
+					console.log('gagal')	
+				}
+			});
+		}
+	})
+
+
+	
+
+	$(document).on('click', '#exitbtn', function () {
+		if (confirm("Apakah anda yakin ?")) {
+			// return $.ajax(
+			// 	"<?php echo base_url() ?>index.php/logoutsession" , {
+			// 		dataType: 'json'
+			// 	}
+			// );
+
+			$.ajax({
+				url: "<?php echo base_url()?>index.php/logoutsession",
+				type: 'POST',
+				success: function (json) {
+					// alert(json)
+					
+					window.location = "<?php echo base_url() ?>index.php";
+
+				},
+				error: function () {
+					$("#submit_add").prop("disabled", false);
+					console.log('gagal')	
+				}
+			});
+
+		}
+	})
+	
 
 </script>
 

@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
 
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap.min.css");?>">
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap-grid.min.css");?>">
@@ -167,9 +168,13 @@
 			<div class="col-sm-12">
 				<div class="card" style="border-radius: 5px;margin-top:20px;margin-bottom:50px;">
 					<div class="card-body">
-                        <button type="submit" id="submitButton" class="btn btn-primary btn-md float-right" style="width:100%;">
-                            <span id="submit">Download Invoice</span>
-                        </button>
+                        <a id="invoicebtn" class="btn btn-primary btn-md float-right" style="width:100%; dispaly:none;">
+                            <span>Download Invoice</span>
+						</a>
+						
+                        <a id="paymentbtn" class="btn btn-primary btn-md float-right" style="width:100%; dispaly:none;">
+							<span>Payment</span>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -286,6 +291,7 @@
 
         console.log('getKamar[0][i].total_harga');
         console.log(getKamar[0].total_harga);
+		var no = 1;
         
 		$('#nama_hotel').text(getKamar[0].nama_hotel)
 	    $('#total_bayar').text('Total : ' + pembulatan(parseInt(getKamar[0].total_harga)))
@@ -300,6 +306,19 @@
         $('#telepon_pemesan').append('<ul style="list-style-type:disc; margin-left: 40px; color:gray; width: 100%;"><li>'+ getKamar[0].telepon_pemesan +'</li></ul>')
         $('#email_pemesan').append('<ul style="list-style-type:disc; margin-left: 40px; color:gray; width: 100%;"><li>'+ getKamar[0].email_pemesan +'</li></ul>')
 
+		if(getKamar[0].status_order == 'waiting_payment'){
+			document.getElementById("paymentbtn").style.display = "block";
+			document.getElementById("invoicebtn").style.display = "none";
+			// document.getElementById("paymentbtn").href = "<?=base_url("/index.php/profileuser");?>"
+			
+
+		} else {
+			document.getElementById("invoicebtn").style.display = "block";
+			document.getElementById("paymentbtn").style.display = "none";
+			document.getElementById("invoicebtn").href = '<?php echo base_url() ?>' + 'index.php/invoice_pdf?id=' + no ;
+
+		}
+		
 		type = getKamar[0].type_bed;
 		fas = '';
 		fas = fas + '<li>' + getKamar[0].max_guest + ' Tamu </li>' 

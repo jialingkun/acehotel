@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
 
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap.min.css");?>">
 	<link rel="stylesheet" href="<?=base_url("dist/css/bootstrap-grid.min.css");?>">
@@ -106,6 +107,7 @@
 			<div style="margin-left:5%; margin-right:5%;">
 				<label>Ace Hotel</label>
 				<label>Temukan Hotel yang sesuai kebutuhan Anda.</label>
+				<input type="hidden" id="hdnSession" data-value="@Request.RequestContext.HttpContext.Session['user_data']" />
 
 				<div style="margin-top:10%;">
 					<form id="insert_booking" onsubmit="insertSearchHotel(event)">
@@ -166,132 +168,59 @@
 
 	
 	var status_data_booking = getCookie('status_data_booking');
+	var arr_data_booking = [];
 
+	var sessionValue= $("#hdnSession").data('value');
+	console.log('sessionValue')
+	console.log(sessionValue)
+	var userid = "<?php echo $_SESSION['login_id'] ?>";
+	var userName = "<?php echo $_SESSION['login_nama'] ?>";
+	console.log(userid)
+	console.log(userName)
 
 	if(status_data_booking == 'active'){
 		console.log('keisin databnya')
 		// $('#kota_tujuan').val('1');
-		// document.getElementById("kota_tujuan").value = '2';
+		document.getElementById("kota_tujuan").value = '2';
 		console.log(document.getElementById("kota_tujuan").value)
+
+		var data_booking = getCookie('data_booking');
+		console.log(data_booking)
+
+		
+		var_lokasi = '';
+		pos_awal = 0;
+		
+		if(data_booking != null){
+			for(var i=0; i<data_booking.length;i++) {
+				if (data_booking[i] === ",") {
+					// var_lokasi = var_lokasi +data_booking.slice(pos_awal, (i)) + '<br>';
+					var_lokasi = data_booking.slice(pos_awal, (i));
+					arr_data_booking.push(var_lokasi);   
+					pos_awal = i+1;
+				}
+			}
+		}
+
+		$("#tanggal_check_in").val(arr_data_booking[2])
+		$("#lama_menginap").val(arr_data_booking[3])
+		$("#jml_tamu").val(arr_data_booking[4])
+		tgl_skrng = arr_data_booking[2]
+
+	
+
 	}
-
-	// function getData(idHotel, namaHotel) {
-	// 	setCookie('id_hotel', idHotel);
-	// 	setCookie('nama_hotel', namaHotel);
-
-		// $('.lds-ring').show();
-	// 	$('.container').hide();
-
-	// 	$.when(getCkInTd(idHotel), getCkOtTd(idHotel), getInHsTd(idHotel)).done(function (ckIn, ckOt, inHs) {
-			$('.lds-ring').hide();
-	// 		$('.container').show();
-
-	// 		// Checkin
-	// 		$('.square-box:eq(0) span:eq(0)').text(('0' + ckIn[0].finished_checkin).slice(-2));
-	// 		$('.square-box:eq(0) span:eq(2)').text(('0' + ckIn[0].required_checkin).slice(-2));
-
-	// 		// CheckOut
-	// 		$('.square-box:eq(1) span:eq(0)').text(('0' + ckOt[0].finished_checkout).slice(-2));
-	// 		$('.square-box:eq(1) span:eq(2)').text(('0' + ckOt[0].required_checkout).slice(-2));
-
-	// 		// InHouse
-	// 		$('.square-box:eq(2) span:eq(0)').text(('0' + inHs[0].finished_inhouse).slice(-2));
-	// 		$('.square-box:eq(2) span:eq(2)').text(('0' + inHs[0].required_inhouse).slice(-2));
-
-	// 		// EOD
-	// 		var tmp = Math.round(inHs[0].finished_inhouse / inHs[0].required_inhouse * 100);
-	// 		$('.square-box:eq(3) span:eq(0)').text((isNaN(tmp) ? 0 : tmp));
-	// 	});
-
-	// }
-
-	// function getCkInTd(idHotel) {
-	// 	return $.ajax(
-	// 		"<?php echo base_url() ?>index.php/get_info_checkin_today/" + idHotel, {
-	// 			dataType: 'json'
-	// 		}
-	// 	);
-	// }
-
-	// function getCkOtTd(idHotel) {
-	// 	return $.ajax(
-	// 		"<?php echo base_url() ?>index.php/get_info_checkout_today/" + idHotel, {
-	// 			dataType: 'json'
-	// 		}
-	// 	);
-	// }
-
-	// function getInHsTd(idHotel) {
-	// 	return $.ajax(
-	// 		"<?php echo base_url() ?>index.php/get_info_inhouse_today/" + idHotel, {
-	// 			dataType: 'json'
-	// 		}
-	// 	);
-	// }
 
 	$(document).ready(function () {
 		$("#explore_footer").addClass('is-active');
 		$("#header_title").text('Cari Hotel');
-
 	});
-
-	// $('#myModal').on('shown.bs.modal', function () {
-	// 	$('#myInput').trigger('focus');
-	// });
-	// $.when(getLoginCookieServer('receptionistCookie')).done(function (response) {
-	// 	$.ajax({
-	// 		url: "<?php echo base_url() ?>index.php/get_receptionist_by_id/" + response,
-	// 		type: 'get',
-	// 		dataType: "json",
-	// 		beforeSend: function () {
-	// 			$('.lds-ring').show();
-	// 			$('.container').hide();
-	// 		},
-	// 		success: function (response) {
-	// 			for (i = 0; i < response.length; i++) {
-	// 				var tmp = $('#hotel_option')[0].innerHTML;
-	// 				tmp = $.parseHTML(tmp);
-	// 				$(tmp).text(response[i].nama_hotel);
-	// 				$(tmp).data('id', response[i].id_hotel);
-	// 				$(tmp).data('nama', response[i].nama_hotel);
-	// 				$(tmp).appendTo('#list_hotel');
-	// 			}
-	// 			$('.dropdown-toggle').dropdown();
-	// 		},
-	// 		complete: function () {
-	// 			$('.lds-ring').hide();
-	// 			$('.container').show();
-	// 			if (getCookie('id_hotel') != "") {
-	// 				getData(getCookie('id_hotel'), getCookie('nama_hotel'));
-	// 				$('#nama_hotel').text(getCookie('nama_hotel'));
-	// 			} else {
-	// 				let idHotel = $('.dropdown-item:first').data('id');
-	// 				let namaHotel = $('.dropdown-item:first').data('nama');
-	// 				$('#nama_hotel').text(namaHotel);
-	// 				getData(idHotel, namaHotel);
-	// 			}
-	// 		}
-	// 	});
-	// });
-	// $(document).on('click', '.dropdown-item', function () {
-	// 	let namaHotel = $(this).data('nama');
-	// 	let idHotel = $(this).data('id');
-
-	// 	$('#nama_hotel').text(namaHotel);
-	// 	getData(idHotel, namaHotel);
-	// });
-
-	// function detail(active) {
-	// 	setCookie('booking_section', active);
-	// 	window.location = "<?=base_url(" / index.php / bookingreceptionist ");?>";
-	// }
-
 
 	
 	$(function () {
 		$('input[name="tanggal_check_in"]').daterangepicker({
 			opens: 'left',
-			startDate: new Date(),
+			startDate: new Date(tgl_skrng),
 			singleDatePicker: true,
 			showDropdowns: true,
      		minDate: new Date(),
@@ -301,10 +230,6 @@
 		}, function (start, end, label) {
         	tgl_skrng = start.format('YYYY-MM-DD');
 			console.log(tgl_skrng)
-			// $('#nama_date').text(start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-			// filter = start.format('YYYY-MM-DD');
-			// today = end.format('YYYY-MM-DD');
-			// getData(idHotelC, namaHotelC, filter, today);
 		});
 
 	});
@@ -314,14 +239,12 @@
 	$.when(getAllKota()).done(function (getKota) {
 
 		$('.lds-ring').hide();
-
-
 		for (var i = 0; i < getKota.length; i++) {
 			// var tmp = $('#list_hotel')[0].innerHTML;
 			// tmp = $.parseHTML(tmp);
 			
-			console.log('------------')
-			console.log(getKota[i].id_master_kota)
+			// console.log('------------')
+			// console.log(getKota[i].id_master_kota)
 			
 			$('#kota_tujuan').append(new Option(getKota[i].nama_kota,getKota[i].id_master_kota)); 
 
@@ -332,6 +255,10 @@
 
 		}
 
+		
+		if(status_data_booking == 'active'){
+			document.getElementById('kota_tujuan').value = '1';
+		}
 
 	});
 	
