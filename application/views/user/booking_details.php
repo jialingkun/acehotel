@@ -309,7 +309,7 @@
 		if(getKamar[0].status_order == 'waiting_payment'){
 			document.getElementById("paymentbtn").style.display = "block";
 			document.getElementById("invoicebtn").style.display = "none";
-			// document.getElementById("paymentbtn").href = "<?=base_url("/index.php/profileuser");?>"
+			document.getElementById("paymentbtn").href = getKamar[0].url_payment
 			
 
 		} else {

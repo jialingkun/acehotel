@@ -168,6 +168,18 @@ class Default_model extends CI_Model {
 	}
 
 
+	public function get_last_orders($id = NULL){
+		$this->db->select('*');
+		$this->db->from('orders');
+		$this->db->where('id_user',$id);
+		$this->db->order_by('id_order', 'DESC');
+		$this->db->limit(1);
+		
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+
 	//INSERT DATABASE
 	public function insert_admin($data){
 		$this->db->insert('admin', $data);

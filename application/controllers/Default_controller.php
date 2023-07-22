@@ -1069,6 +1069,7 @@ class Default_controller extends Loadview {
 			$filter = array('email_user'=>$this->input->post('email_pemesan'));
 			$datauser = $this->Default_model->get_data_user($filter);
 			$id_user = '';
+			$arr_hasil = [];
 			
 			
 			if (!empty($datauser)){
@@ -1102,7 +1103,13 @@ class Default_controller extends Loadview {
 				'status_order' => $status_order
 			);
 			$insertStatus = $this->Default_model->insert_order($data);
-			echo $insertStatus;
+			
+			$last_data_ordes = $this->Default_model->get_last_orders($id_user);
+			$idorders = $last_data_ordes[0]['id_order'];	
+			array_push($arr_hasil, array('id_orders' => $idorders, 'status' => $insertStatus));
+
+			// echo $insertStatus;
+			echo json_encode($arr_hasil);
 
 			//call ipaymu
 			$arr_product = [];
@@ -1112,7 +1119,7 @@ class Default_controller extends Loadview {
 			array_push($arr_jml, $this->input->post('jumlah_room'));
 			array_push($arr_harga, $this->input->post('total_harga'));
 
-			// $this->apisendbox($arr_product, $arr_jml, $arr_harga);
+			// $this->apisendbox($arr_product, $arr_jml, $arr_harga, $);
 		// }else{
 		// 	echo "access denied";
 		// }
@@ -1580,7 +1587,7 @@ class Default_controller extends Loadview {
 	//note: API hanya bisa diakses saat ada cookie admin
 	//output: success/failed/access denied
 	public function update_user($id){
-		if ($this->checkcookieadmin()) {
+		// if ($this->checkcookieadmin()) {
 			$data = array(
 				'nama_user' => $this->input->post('nama_pemesan'),
 				'telepon_user' => $this->input->post('telepon_pemesan'),
@@ -1588,9 +1595,9 @@ class Default_controller extends Loadview {
 			);
 			$updateStatus = $this->Default_model->update_user_by_id($id,$data);
 			echo $updateStatus;
-		}else{
-			echo "access denied";
-		}
+		// }else{
+		// 	echo "access denied";
+		// }
 	}
 
 
@@ -1993,6 +2000,10 @@ class Default_controller extends Loadview {
         // $google_client->setClientId('166111118733-9u055jkuq1ald16q76o6053vk0qs5ged.apps.googleusercontent.com'); //masukkan ClientID anda 
         // $google_client->setClientSecret('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'); //masukkan Client Secret Key anda
         // $google_client->setRedirectUri('https://abcprivilegeclub.com/testing_acehotel/index.php/loginuser'); //Masukkan Redirect Uri anda
+        
+		// $google_client->setClientId('823366245044-1pau5uhste7n4m2qmlatf6h3l4pa2gbs.apps.googleusercontent.com'); //masukkan ClientID anda 
+        // $google_client->setClientSecret('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'); //masukkan Client Secret Key anda
+        // $google_client->setRedirectUri('https://acehotel-indonesia.com/manajemen/index.php/loginuser'); //Masukkan Redirect Uri anda
         $google_client->addScope('email');
         $google_client->addScope('profile');
         // $google_client->setAccessType('offline');
@@ -2077,7 +2088,7 @@ class Default_controller extends Loadview {
         if(!$this->session->userdata('access_token'))
         {
 		  	
-            $login_button = '<a href="'.$google_client->createAuthUrl().'"><img src="https://1.bp.blogspot.com/-gvncBD5VwqU/YEnYxS5Ht7I/AAAAAAAAAXU/fsSRah1rL9s3MXM1xv8V471cVOsQRJQlQCLcBGAsYHQ/s320/google_logo.png" /></a>';
+            $login_button = '<a href="'.$google_client->createAuthUrl().'"><img src="http://localhost/acehotel/upload/google_logo.png" style="margin-left: -10px; width: 300px;"/></a>';
             $data['login_button'] = $login_button;
             $this->load->view('user/login', $data);
         }
@@ -2124,14 +2135,14 @@ class Default_controller extends Loadview {
 
 			// }
 			
-            // header("Location: "."http://abcprivilegeclub.com/testing_acehotel/index.php/dashboarduser");
+            // header("Location: "."http://acehotel-indonesia.com/manajemen/index.php/dashboarduser");
             header("Location: "."http://localhost/acehotel/index.php/dashboarduser");
            
         }
 
         // if ($this->session->userdata('access_token') != '') 
         // {
-        //     header("Location: "."http://abcprivilegeclub.com/testing_acehotel/index.php/dashboarduser");
+        //     header("Location: "."http://acehotel-indonesia.com/manajemen/index.php/dashboarduser");
             // redirect('login/frontpage');
 
         // }
@@ -2164,16 +2175,17 @@ class Default_controller extends Loadview {
 		$arr_product = [];
 		$arr_jml = [];
 		$arr_harga = [];
+		$ids = 0;
 		array_push($arr_product, 'kamar mahal');
 		array_push($arr_jml, 2);
 		array_push($arr_harga, 10000);
 
-		$this->apisendbox($arr_product, $arr_jml, $arr_harga);
+		$this->apisendbox($arr_product, $arr_jml, $arr_harga, $ids);
 
 	}
 
 	
-	public function testdatanya2($nama, $jml, $price, $return_var = NULL){
+	public function testdatanya2($nama, $jml, $price, $idorders, $return_var = NULL){
 		$arr_product = [];
 		$arr_jml = [];
 		$arr_harga = [];
@@ -2181,11 +2193,11 @@ class Default_controller extends Loadview {
 		array_push($arr_jml, $jml);
 		array_push($arr_harga, $price);
 
-		$this->apisendbox($arr_product, $arr_jml, $arr_harga);
+		$this->apisendbox($arr_product, $arr_jml, $arr_harga, $idorders);
 
 	}
 	
-	public function apisendbox($arr_product, $arr_jml, $arr_harga){
+	public function apisendbox($arr_product, $arr_jml, $arr_harga, $idorders){
 
 
 		$va           = '0000005397163756'; //get on iPaymu dashboard
@@ -2203,9 +2215,9 @@ class Default_controller extends Loadview {
 		$body['returnUrl']  = 'http://localhost/acehotel/index.php/orderuser'; //yg ini
 		$body['cancelUrl']  = 'http://localhost/acehotel/index.php/dashboarduser';
 		$body['notifyUrl']  = 'http://localhost/acehotel/index.php/dashboarduser';
-		// $body['returnUrl']  = 'http://abcprivilegeclub.com/testing_acehotel/index.php/orderuser'; //yg ini
-		// $body['cancelUrl']  = 'http://abcprivilegeclub.com/testing_acehotel/index.php/dashboarduser';
-		// $body['notifyUrl']  = 'http://abcprivilegeclub.com/testing_acehotel/index.php/dashboarduser';
+		// $body['returnUrl']  = 'http://acehotel-indonesia.com/manajemen/index.php/orderuser'; //yg ini
+		// $body['cancelUrl']  = 'http://acehotel-indonesia.com/manajemen/index.php/dashboarduser';
+		// $body['notifyUrl']  = 'http://acehotel-indonesia.com/manajemen/index.php/dashboarduser';
 		$body['referenceId'] = '1234'; //your reference id
 		//End Request Body//
 
@@ -2253,16 +2265,17 @@ class Default_controller extends Loadview {
 				$url        =  $ret->Data->Url;
 				
 				// $datas = array(
+				// 	'id_log' => Date('YmdHis'),
 				// 	'value' => $awal
 				// );
 				// $insertStatus = $this->Default_model->insert_error_log($datas);
 
-				$datas = array(
+				$data_update = array(
 					'url_payment' =>$ret->Data->Url,
 					'session_id' => $ret->Data->SessionID
 				);
 				
-				$updateStatus = $this->Default_model->update_order($id,$datas);
+				$updateStatus = $this->Default_model->update_order($idorders,$data_update);
 
 
 				header('Location:' . $url);

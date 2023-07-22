@@ -428,10 +428,22 @@
 					$('.lds-ring').show();			
 				},
 				success: function (json) {
+					var response = JSON.parse(json);
 					// alert(json);
-					console.log(json);
+					console.log(response.length);
+					console.log(response[0]);
+					console.log(response[0]['id_orders']);
+					
 					setCookie('status_data_booking', 'non_active');
 					setCookie('data_booking', 'null');
+
+					if(response.length == 1){
+						window.location = "<?php echo base_url() ?>index.php/testdatanya2/"+ nama_kamar + "/" + arr_data_booking[3] + "/" + harga_kamar + "/" + response[0]['id_orders'];
+
+					} else {
+						alert('Pembayaran tidak bisa terkonfirmasi, silahkan coba kembali...')
+						window.location = "<?php echo base_url() ?>index.php/dashboarduser";
+					}
 
 			// 		$.ajax({
 			// 			url: "<?php echo base_url() ?>index.php/testdatanya",
@@ -454,7 +466,7 @@
 					// });
 					// alert('Data Berhasil Ditambahkan!');
 					// window.location = "<?php echo base_url() ?>index.php/orderuser";
-					window.location = "<?php echo base_url() ?>index.php/testdatanya2/"+ nama_kamar + "/" + arr_data_booking[3] + "/" + harga_kamar;
+					// window.location = "<?php echo base_url() ?>index.php/testdatanya2/"+ nama_kamar + "/" + arr_data_booking[3] + "/" + harga_kamar;
 
 
 				},

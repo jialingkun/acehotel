@@ -180,7 +180,7 @@
 	// var dateFilter = lastWeek();
 	var data_booking = getCookie('data_booking');
     var arr_data_booking = [];
-	// var path = 'abcprivilegeclub.com/testing_acehotel';
+	// var path = 'acehotel-indonesia.com/manajemen';
 	var path = 'localhost/acehotel';
 
 	

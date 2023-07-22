@@ -280,7 +280,7 @@
 				success: function (json) {
 					// alert(json)
 					
-					window.location = "<?php echo base_url() ?>index.php";
+					window.location = "<?php echo base_url() ?>index.php/loginuser";
 
 				},
 				error: function () {

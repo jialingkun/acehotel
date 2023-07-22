@@ -866,7 +866,7 @@
 	var temp_harga_min = 0;
 	var temp_harga_max = 0;
 	var status_edit = '0';
-	// var path = 'abcprivilegeclub.com/testing_acehotel';
+	// var path = 'acehotel-indonesia.com/manajemen';
 	var path = 'localhost/acehotel';
 
 
